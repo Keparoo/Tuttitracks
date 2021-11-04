@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/app.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-light bg-primary justify-content-between ">
+    <div class="container">
+      <a href="/users" class="navbar-brand text-light">Spotiflavor</a>
+      <ul class="nav navbar-nav flex-row float-right">
+        {% if session['username'] %}
+        <li class="nav-item">
+          <a class="nav-link pr-3 text-light" href="/users/{{session['username']}}">User: {{session['username']}}</a>
+          </li>
+          <li>
+          <a class="nav-link pr-3 text-light" href="/logout">Logout</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link pr-3 text-light" href="/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-light" href="/register">Sign up</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true)%}
+    {% if messages %}
+    <section class="container flash-messages">
+        {% for category, msg in messages %}
+        {% if category == message %}
+        <p class="bg-info">{{ msg }}</p>
+        {% else %}
+        <p class="bg-{{ category }} text-center">{{ msg }}</p>
+        {% endif %}
+        {% endfor %}
+    </section>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</body>
+
+</html>
