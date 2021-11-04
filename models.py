@@ -43,7 +43,7 @@ class User(db.Model):
     email = db.Column(db.Text(50), nullable=False)
     spotify_user_id = db.Column(db.Text)
     spotify_display_name = db.Column(db.Text)
-    user_image = db.Column(db.String)
+    user_image = db.Column(db.String, default="/static/images/default-pic.png")
     is_admin = db.Column(db.Boolean, nullable = False, default=False)
     country = db.Column(db.String(2), default='US')
 
