@@ -29,6 +29,10 @@ def connect_db(app):
     db.init_app(app)
     print(f'Connecting to: {database_path}')
 
+#==================================================================================================
+# User Model
+#==================================================================================================
+
 class User(db.Model):
     """Model for User class"""
 
@@ -105,6 +109,10 @@ class User(db.Model):
         db.session.delete(user)
         db.session.commit()
 
+#==================================================================================================
+# Track Model
+#==================================================================================================
+
 class Track(db.Model):
     """Model for music track class"""
 
@@ -141,6 +149,10 @@ class Track(db.Model):
 
         return f"<Track {self.id} {self.name} {self.spotify_track_id} {self.spotify_track_uri}>"
 
+#==================================================================================================
+# Playlist Models
+#==================================================================================================
+
 class Playlist(db.Model):
     """Model for music track playlist class"""
 
@@ -175,6 +187,10 @@ class PlaylistTrack(db.Model):
         """Show info about playlist-track relationship"""
 
         return f"<PlaylistTrack {self.id} {self.playlist_id} {self.track_id} {self.index}>"
+
+#==================================================================================================
+# Album, Artist, Genre Models
+#==================================================================================================
 
 class Album(db.Model):
     """Model of music albums"""
