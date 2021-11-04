@@ -67,7 +67,7 @@ class User(db.Model):
         }
 
     @classmethod
-    def register(cls, username, password, email, country):
+    def signup(cls, username, password, email, country):
         """Register user with hashed password & return user"""
 
         hashed = bcrypt.generate_password_hash(password)
