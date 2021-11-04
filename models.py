@@ -45,12 +45,12 @@ class User(db.Model):
     spotify_display_name = db.Column(db.Text)
     user_image = db.Column(db.String)
     is_admin = db.Column(db.Boolean, nullable = False, default=False)
-    current_market = db.Column(db.String(2), default='US')
+    country = db.Column(db.String(2), default='US')
 
     def __repr__(self):
         """Show info about a User"""
 
-        return f"<User {self.username} {self.email} {self.is_admin} {self.current_market}>"
+        return f"<User {self.username} {self.email} {self.country} {self.spotify_user_id} {self.spotify_display_name} {self.is_admin}>"
 
     def serialize(self):
         """Turn object into dictionary"""
@@ -59,12 +59,15 @@ class User(db.Model):
             "username": self.username,
             "password": self.password,
             "email": self.email,
+            "spotify_user_id": self.spotify_user_id,
+            "spotify_display_name": self.spotify_display_name,
+            "user_image": self.user_image,
             "is_admin": self.is_admin,
-            "current_market": self.current_market
+            "country": self.country
         }
 
     @classmethod
-    def register(cls, username, password, email, is_admin, current_market):
+    def register(cls, username, password, email, country):
         """Register user with hashed password & return user"""
 
         hashed = bcrypt.generate_password_hash(password)
@@ -72,7 +75,7 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
 
         # return instance of user w/username and hashed pwd
-        return cls(username=username, password=hashed_utf8, email=email, is_admin=is_admin, current_market=current_market)
+        return cls(username=username, password=hashed_utf8, email=email, country=country)
 
     @classmethod
     def authenticate(cls, username, password):
