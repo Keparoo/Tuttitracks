@@ -1,14 +1,19 @@
 """Spotiflavor Springboard Capstone 1"""
 
 import os
+import requests
 from flask import Flask, render_template, request, redirect, flash, session
 from dotenv import load_dotenv
 
 from models import db, connect_db, User
-from forms import LoginUserForm, RegisterUserForm
+# from forms import LoginUserForm, RegisterUserForm
 from auth import requires_signed_in, requires_auth, requires_feedback_auth, requires_signed_out
 
 load_dotenv()
+
+# Spotify app client id and client secret
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
