@@ -136,6 +136,11 @@ class Track(db.Model):
     lyrics = db.Column(db.String)
     lyrics_language = db.Column(db.Text(2))
 
+    def __repr__(self):
+        """Show info about a Track"""
+
+        return f"<Track {self.id} {self.name} {self.spotify_track_id} {self.spotify_track_uri}>"
+
 class Playlist(db.Model):
     """Model for music track playlist class"""
 
@@ -149,6 +154,11 @@ class Playlist(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
 
+    def __repr__(self):
+        """Show info about a Playlist"""
+
+        return f"<Playlist {self.id} {self.user_id} {self.name} {self.description} {self.spotify_playlist_id}>"
+
 class PlaylistTrack(db.Model):
     """Model joins playlists to tracks"""
 
@@ -160,6 +170,11 @@ class PlaylistTrack(db.Model):
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.id'), nullable=False)
     # Playlists need an order
     index = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        """Show info about playlist-track relationship"""
+
+        return f"<PlaylistTrack {self.id} {self.playlist_id} {self.track_id} {self.index}>"
 
 class Album(db.Model):
     """Model of music albums"""
@@ -173,6 +188,11 @@ class Album(db.Model):
     image_height = db.Column(db.Integer, nullable=False) # may not be needed
     image_width = db.Column(db.Integer, nullable=False) # may not be needed
 
+    def __repr__(self):
+        """Show info about album"""
+
+        return f"<Album {self.id} {self.name} {self.spotify_album_id}>"
+
 class TrackAlbum(db.Model):
     """Model joins tracks to albums"""
 
@@ -180,6 +200,11 @@ class TrackAlbum(db.Model):
 
     track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
     album_id = db.Column(db.Integer, db.ForeignKey("albums.id"), primary_key=True)
+
+    def __repr__(self):
+        """Show info about track-album relationship"""
+
+        return f"<TrackAlbum {self.track_id} {self.album_id}>"
 
 class Artist(db.Model):
     """Model of music artists"""
@@ -190,6 +215,11 @@ class Artist(db.Model):
     spotify_artist_id = db.Column(db.String, nullable=False)
     name = db.Column(db.String, nullable=False)
 
+    def __repr__(self):
+        """Show info about Artist"""
+
+        return f"<Artist {self.id} {self.name} {self.spotify_artist_id}>"
+
 class TrackArtist(db.Model):
     """Model joins tracks to artists"""
 
@@ -197,6 +227,11 @@ class TrackArtist(db.Model):
 
     track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
     artist_id = db.Column(db.Integer, db.ForeignKey("artists.id"), primary_key=True)
+
+    def __repr__(self):
+        """Show info about track-artist relationship"""
+
+        return f"<TrackArtist {self.track_id} {self.artist_id}>"
 
 class Genre(db.Model):
     """Model of music genres"""
@@ -206,6 +241,11 @@ class Genre(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
 
+    def __repr__(self):
+        """Show info about Genre"""
+
+        return f"<Genre {self.id} {self.name}>"
+
 class TrackGenre(db.Model):
     """Model joins tracks to genres"""
 
@@ -213,3 +253,8 @@ class TrackGenre(db.Model):
 
     track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
     genre_id = db.Column(db.Integer, db.ForeignKey("genres.id"), primary_key=True)
+
+    def __repr__(self):
+        """Show info about track-genre relationship"""
+
+        return f"<TrackGenre {self.track_id} {self.genre_id}>"
