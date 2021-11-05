@@ -1,7 +1,7 @@
 """Spotiflavor Forms"""
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField, TextAreaField, IntegerField
 from wtforms.fields.core import BooleanField
 from wtforms.validators import InputRequired, Email, Length
 
@@ -25,3 +25,15 @@ class PlaylistForm(FlaskForm):
     name = StringField("Name of playlist", validators=[InputRequired()])
     description = TextAreaField("Description of playlist", validators=[InputRequired()])
     public = BooleanField("Is playlist public?")
+
+class SearchTracksForm(FlaskForm):
+    """Search Spotify database for tracks"""
+
+    artist = StringField("Name of artist")
+    track = StringField("Name of track")
+    album = StringField("Name of album")
+    genre = StringField("Name of Genre")
+    playlist = StringField("Name of playlist")
+    year = IntegerField("Year")
+    new = BooleanField("Tag: New")
+    hipster = BooleanField("Tag: Hipster")

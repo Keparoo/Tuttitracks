@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from dotenv import load_dotenv
 
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
-from forms import SignupForm, LoginForm
+from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import requires_signed_in, requires_auth, requires_feedback_auth, requires_signed_out
 
 load_dotenv()
@@ -18,7 +18,7 @@ load_dotenv()
 CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
-# Session key to determine logged in
+# Session key assigned to user object if user is logged in
 CURR_USER_KEY = 'curr_user'
 
 app = Flask(__name__)
@@ -74,7 +74,6 @@ def signup():
                 user_image=User.user_image.default.arg,
             )
             User.insert(user)
-            # db.session.commit()
 
         except IntegrityError:
             flash("Username already taken", 'danger')
@@ -125,7 +124,31 @@ def homepage():
 
     return render_template('homepage.html')
 
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    """Display form to search and post on successful submit"""
 
+    form = SearchTracksForm()
+
+    if form.validate_on_submit():
+
+        query = {
+
+        "artist": form.artist.data,
+        "track":form.track.data,
+        "album": form.album.data,
+        "genre": form.genre.data,
+        "playlist": form.playlist.data,
+        "year": form.year.data,
+        "new": form.new.data,
+        "hipster": form.hipster.data
+        }
+        print(query)
+
+        return render_template("/results.html", query=query)
+
+    else:
+        return render_template('/search.html', form=form)
 
 #====================================================================================
 # error handlers
