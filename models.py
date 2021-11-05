@@ -38,12 +38,12 @@ class User(db.Model):
 
     __tablename__ = 'users'
 
-    username = db.Column(db.Text(25), primary_key=True)
-    password = db.Column(db.String, nullable=False)
-    email = db.Column(db.Text(50), nullable=False)
+    username = db.Column(db.String(25), primary_key=True)
+    password = db.Column(db.Text, nullable=False)
+    email = db.Column(db.String(50), nullable=False)
     spotify_user_id = db.Column(db.Text)
     spotify_display_name = db.Column(db.Text)
-    user_image = db.Column(db.String, default="/static/images/default-pic.png")
+    user_image = db.Column(db.Text, default="/static/images/default-pic.png")
     is_admin = db.Column(db.Boolean, nullable = False, default=False)
     country = db.Column(db.String(2), default='US')
 
@@ -122,12 +122,12 @@ class Track(db.Model):
     __tablename__ = 'tracks'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    spotify_track_id = db.Column(db.String, nullable=False)
-    name = db.Column(db.String, nullable=False)
-    spotify_track_url = db.Column(db.String, nullable=False)
-    spotify_track_uri = db.Column(db.String, nullable=False)
+    spotify_track_id = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    spotify_track_url = db.Column(db.Text, nullable=False)
+    spotify_track_uri = db.Column(db.Text, nullable=False)
     is_playable = db.Column(db.Boolean, nullable=False)
-    preview_url = db.Column(db.String) # can be null
+    preview_url = db.Column(db.Text) # can be null
     release_year = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Integer) # (0-100)
     duration = db.Column(db.Integer, nullable=False)
@@ -144,8 +144,8 @@ class Track(db.Model):
     key = db.Column(db.Integer) # (0-11: 0=C, 1=D-flat/C-sharp, 11=B)
     time_signature = db.Column(db.Integer) # (number beats/measure)
 
-    lyrics = db.Column(db.String)
-    lyrics_language = db.Column(db.Text(2))
+    lyrics = db.Column(db.Text)
+    lyrics_language = db.Column(db.String(2))
 
     def __repr__(self):
         """Show info about a Track"""
@@ -162,12 +162,12 @@ class Playlist(db.Model):
     __tablename__ = 'playlists'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.username'), nullable=False)
-    spotify_playlist_id = db.Column(db.String)
-    image = db.Column(db.String)
+    username = db.Column(db.String(25), db.ForeignKey('users.username'), nullable=False)
+    spotify_playlist_id = db.Column(db.Text)
+    image = db.Column(db.Text)
     public = db.Column(db.Boolean, default=True)
-    name = db.Column(db.String, nullable=False)
-    description = db.Column(db.String)
+    name = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text)
 
     def __repr__(self):
         """Show info about a Playlist"""
@@ -201,9 +201,9 @@ class Album(db.Model):
     __tablename__ = 'albums'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    spotify_album_id = db.Column(db.String, nullable=False)
-    name = db.Column(db.String, nullable=False)
-    image = db.Column(db.String, nullable=False)
+    spotify_album_id = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
+    image = db.Column(db.Text, nullable=False)
     image_height = db.Column(db.Integer, nullable=False) # may not be needed
     image_width = db.Column(db.Integer, nullable=False) # may not be needed
 
@@ -231,8 +231,8 @@ class Artist(db.Model):
     __tablename__ = 'artists'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    spotify_artist_id = db.Column(db.String, nullable=False)
-    name = db.Column(db.String, nullable=False)
+    spotify_artist_id = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         """Show info about Artist"""
@@ -258,7 +258,7 @@ class Genre(db.Model):
     __tablename__ = 'genres'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         """Show info about Genre"""
