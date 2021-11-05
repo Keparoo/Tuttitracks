@@ -14,7 +14,7 @@
 <body>
   <nav class="navbar navbar-light bg-primary justify-content-between ">
     <div class="container">
-      <a href="/users" class="navbar-brand text-light">Spotiflavor</a>
+      <a href="/" class="navbar-brand text-light">Spotiflavor</a>
       <ul class="nav navbar-nav flex-row float-right">
         {% if session['username'] %}
         <li class="nav-item">
@@ -28,7 +28,7 @@
           <a class="nav-link pr-3 text-light" href="/login">Login</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-light" href="/register">Sign up</a>
+          <a class="nav-link text-light" href="/signup">Sign up</a>
         </li>
         {% endif %}
       </ul>
