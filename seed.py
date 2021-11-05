@@ -13,7 +13,7 @@ user1 = User(
     spotify_display_name="",
     user_image="",
     country="US",
-    is_admin="True"
+    is_admin=True
 )
 
 user2 = User(
@@ -24,7 +24,7 @@ user2 = User(
     spotify_display_name="",
     user_image="",
     country="FR",
-    is_admin="False"
+    is_admin=False
 )
 
 db.session.add_all([user1, user2])

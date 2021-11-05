@@ -23,7 +23,7 @@ def connect_db(app):
 
     app.config['SQLALCHEMY_DATABASE_URI'] = database_path
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    # app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_ECHO'] = True
 
     db.app = app
     db.init_app(app)
@@ -44,7 +44,7 @@ class User(db.Model):
     spotify_user_id = db.Column(db.Text)
     spotify_display_name = db.Column(db.Text)
     user_image = db.Column(db.Text, default="/static/images/default-pic.png")
-    is_admin = db.Column(db.Boolean, nullable = False, default=False)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
     country = db.Column(db.String(2), default='US')
 
     def __repr__(self):
@@ -67,7 +67,7 @@ class User(db.Model):
         }
 
     @classmethod
-    def signup(cls, username, password, email, country):
+    def signup(cls, username, password, email, country, user_image):
         """Register user with hashed password & return user"""
 
         hashed = bcrypt.generate_password_hash(password)
@@ -75,7 +75,7 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
 
         # return instance of user w/username and hashed pwd
-        return cls(username=username, password=hashed_utf8, email=email, country=country)
+        return cls(username=username, password=hashed_utf8, email=email, country=country, user_image=user_image)
 
     @classmethod
     def authenticate(cls, username, password):

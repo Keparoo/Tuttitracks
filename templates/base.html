@@ -16,9 +16,9 @@
     <div class="container">
       <a href="/" class="navbar-brand text-light">Spotiflavor</a>
       <ul class="nav navbar-nav flex-row float-right">
-        {% if session['username'] %}
+        {% if g.user %}
         <li class="nav-item">
-          <a class="nav-link pr-3 text-light" href="/users/{{session['username']}}">User: {{session['username']}}</a>
+          <a class="nav-link pr-3 text-light" href="/users/{{session['curr_user']}}">User: {{session['curr_user']}}</a>
           </li>
           <li>
           <a class="nav-link pr-3 text-light" href="/logout">Logout</a>

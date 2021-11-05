@@ -70,10 +70,11 @@ def signup():
                 username=form.username.data,
                 password=form.password.data,
                 email=form.email.data,
-                country=form.country.data,
-                image_url=User.image_url.default.arg,
+                country=form.country.data or User.country.default.arg,
+                user_image=User.user_image.default.arg,
             )
-            db.session.commit()
+            User.insert(user)
+            # db.session.commit()
 
         except IntegrityError:
             flash("Username already taken", 'danger')
