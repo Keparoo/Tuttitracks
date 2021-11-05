@@ -23,7 +23,7 @@ def connect_db(app):
 
     app.config['SQLALCHEMY_DATABASE_URI'] = database_path
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = True
+    # app.config['SQLALCHEMY_ECHO'] = True
 
     db.app = app
     db.init_app(app)
@@ -40,7 +40,7 @@ class User(db.Model):
 
     username = db.Column(db.String(25), primary_key=True)
     password = db.Column(db.Text, nullable=False)
-    email = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False, unique=True)
     spotify_user_id = db.Column(db.Text)
     spotify_display_name = db.Column(db.Text)
     user_image = db.Column(db.Text, default="/static/images/default-pic.png")
