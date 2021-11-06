@@ -1,6 +1,7 @@
 """Spotiflavor Springboard Capstone 1"""
 
 import os
+import json
 import requests
 from flask import Flask, render_template, request, redirect, flash, session, g
 from sqlalchemy.exc import IntegrityError
@@ -17,6 +18,12 @@ load_dotenv()
 # Spotify app client id and client secret
 CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+BASE_URL = 'https://api.spotify.com/v1/'
+ACCESS_TOKEN = 'BQCFZ3LPLq1EFYRnhuI_Eo8mqsZfs_A4ZDUiXdXnPf_pqjs2XWdOReLu-LHGG_s2IRgvJjWNZKblu1Ko095S8cjFzT_uSggHdc7XFI-oAHMhOo0EVxIPlgva9FKRHJ1ONgBiV-n3eFcvmNsmu74daXLVy-OXpG15a_4'
+
+HEADERS = {
+    'Authorization': f'Bearer {ACCESS_TOKEN}'
+}
 
 # Session key assigned to user object if user is logged in
 CURR_USER_KEY = 'curr_user'
@@ -139,13 +146,22 @@ def search():
         "album": form.album.data,
         "genre": form.genre.data,
         "playlist": form.playlist.data,
-        "year": form.year.data,
+        # "year": form.year.data,
         "new": form.new.data,
         "hipster": form.hipster.data
         }
-        print(query)
 
-        return render_template("/results.html", query=query)
+        track_id="6y0igZArWVi6Iz0rj35c1Y"
+
+        artist = query['artist']
+        # r = requests.get(BASE_URL + 'audio-features/' + track_id, headers=HEADERS)
+        r = requests.get(BASE_URL + 'search' + f'?q={artist}&type=album,track&limit=5', headers=HEADERS)
+        # r = r.json()
+        r = r.text
+        # id = r['albums']['items'][0]['id']
+        # print(id)
+
+        return render_template("/results.html", query=query, r=r)
 
     else:
         return render_template('/search.html', form=form)
