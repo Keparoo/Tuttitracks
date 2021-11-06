@@ -18,8 +18,13 @@ load_dotenv()
 # Spotify app client id and client secret
 CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+
+AUTH_URL = 'https://accounts.spotify.com/authorize'
+TOKEN_URL = 'https://accounts.spotify.com/api/token'
 BASE_URL = 'https://api.spotify.com/v1/'
-ACCESS_TOKEN = 'BQCFZ3LPLq1EFYRnhuI_Eo8mqsZfs_A4ZDUiXdXnPf_pqjs2XWdOReLu-LHGG_s2IRgvJjWNZKblu1Ko095S8cjFzT_uSggHdc7XFI-oAHMhOo0EVxIPlgva9FKRHJ1ONgBiV-n3eFcvmNsmu74daXLVy-OXpG15a_4'
+
+ACCESS_TOKEN = os.environ.get('BEARER_TOKEN')
+user_token = None
 
 HEADERS = {
     'Authorization': f'Bearer {ACCESS_TOKEN}'
@@ -51,6 +56,11 @@ def add_user_to_g():
 
     else:
         g.user = None
+
+    if 'token' in session:
+        g.token = session['token']
+    else:
+        g.token = None
 
 
 def do_login(user):
@@ -106,11 +116,31 @@ def login():
         if user:
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
-            return redirect("/")
+
+            r = requests.get(AUTH_URL, {
+                'client_id': CLIENT_ID,
+                'response_type': 'code',
+                'redirect_uri': 'http://127.0.0.1:5000/authorize'
+            })
+            print(r.url)
+
+            return redirect(r.url)
 
         flash("Invalid credentials.", 'danger')
 
     return render_template('users/login.html', form=form)
+
+@app.route('/authorize', methods=['GET'])
+def get_auth_token():
+    """Get auth token from query string"""
+
+    token = request.args.get('code')
+    session['token'] = token
+    g.token = token
+    print('Token:', token)
+  
+
+    return redirect('/')
 
 
 @app.route('/logout')
@@ -155,7 +185,8 @@ def search():
 
         artist = query['artist']
         # r = requests.get(BASE_URL + 'audio-features/' + track_id, headers=HEADERS)
-        r = requests.get(BASE_URL + 'search' + f'?q={artist}&type=album,track&limit=5', headers=HEADERS)
+        # r = requests.get(BASE_URL + 'search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
+        r = requests.get(BASE_URL + 'me/tracks/', headers=HEADERS)
         # r = r.json()
         r = r.text
         # id = r['albums']['items'][0]['id']
