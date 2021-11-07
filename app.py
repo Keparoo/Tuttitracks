@@ -2,6 +2,7 @@
 
 import os
 import json
+import base64
 import requests
 from flask import Flask, render_template, request, redirect, flash, session, g
 from sqlalchemy.exc import IntegrityError
@@ -24,6 +25,7 @@ TOKEN_URL = 'https://accounts.spotify.com/api/token'
 BASE_URL = 'https://api.spotify.com/v1/'
 
 ACCESS_TOKEN = os.environ.get('BEARER_TOKEN')
+
 user_token = None
 
 HEADERS = {
@@ -56,6 +58,11 @@ def add_user_to_g():
 
     else:
         g.user = None
+
+    if 'code' in session:
+        g.code = session['code']
+    else:
+        g.code = None
 
     if 'token' in session:
         g.token = session['token']
@@ -117,10 +124,13 @@ def login():
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
 
+            scope = "user-library-read playlist-read-private playlist-modify-private playlist-modify-public user-top-read"
+
             r = requests.get(AUTH_URL, {
                 'client_id': CLIENT_ID,
                 'response_type': 'code',
-                'redirect_uri': 'http://127.0.0.1:5000/authorize'
+                'redirect_uri': 'http://127.0.0.1:5000/authorize',
+                "scope": scope
             })
             print(r.url)
 
@@ -134,10 +144,35 @@ def login():
 def get_auth_token():
     """Get auth token from query string"""
 
-    token = request.args.get('code')
-    session['token'] = token
-    g.token = token
-    print('Token:', token)
+    code = request.args.get('code')
+    session['code'] = code
+    g.token = code
+    print('Code:', code)
+
+    headers = {}
+    data = {
+        "code": code,
+        "redirect_uri": "http://127.0.0.1:5000/authorize",
+        "grant_type": "authorization_code"
+    }
+
+    message = f"{CLIENT_ID}:{CLIENT_SECRET}"
+    messageBytes = message.encode('ascii')
+    base64Bytes = base64.b64encode(messageBytes)
+    base64Message = base64Bytes.decode('ascii')
+
+    headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    headers['Authorization'] = f"Basic {base64Message}"
+    # data['grant_type'] = "client_credentials"
+    
+    r = requests.post(TOKEN_URL, headers=headers, data=data)
+    print('request', r.text)
+    if 'error' in r.json():
+        print(r.json()['error'], r.json()['error_description'])
+    else:
+        token = r.json()['access_token']
+        print("New Token", token)
+        session['token'] = token
   
 
     return redirect('/')
@@ -166,6 +201,11 @@ def search():
     """Display form to search and post on successful submit"""
 
     form = SearchTracksForm()
+    token = session['token']
+
+    headers = {
+    'Authorization': f'Bearer {g.token}'
+}
 
     if form.validate_on_submit():
 
@@ -186,7 +226,7 @@ def search():
         artist = query['artist']
         # r = requests.get(BASE_URL + 'audio-features/' + track_id, headers=HEADERS)
         # r = requests.get(BASE_URL + 'search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
-        r = requests.get(BASE_URL + 'me/tracks/', headers=HEADERS)
+        r = requests.get(BASE_URL + 'me/tracks/', headers=headers)
         # r = r.json()
         r = r.text
         # id = r['albums']['items'][0]['id']
