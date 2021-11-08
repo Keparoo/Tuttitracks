@@ -1,6 +1,6 @@
 """Helper Functions for Spotiflavor"""
 
-from models import Track, Album, Artist, TrackAlbum, TrackArtist
+from models import Track, Album, Artist, Genre, PlaylistTrack, TrackArtist, TrackGenre
 
 def get_spotify_track_ids(items):
     """Create list of found track ids from Spotify"""

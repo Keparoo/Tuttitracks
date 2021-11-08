@@ -45,6 +45,7 @@ class User(db.Model):
     spotify_display_name = db.Column(db.Text)
     user_image = db.Column(db.Text, default="/static/images/default-pic.png")
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    refresh_token = db.Column(db.Text)
     country = db.Column(db.String(2), default='US')
 
     # playlists = db.relationship('Playlist')
@@ -246,7 +247,7 @@ class Artist(db.Model):
     spotify_artist_id = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text, nullable=False)
 
-    tracks = db.relationship('Track', backref='artists')
+    tracks = db.relationship('Track', secondary='tracks_artists', backref='artists')
 
     def __repr__(self):
         """Show info about Artist"""
@@ -274,7 +275,7 @@ class Genre(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False)
 
-    tracks = db.relationship('Track', backref='genres')
+    tracks = db.relationship('Track', secondary='tracks_genres', backref='genres')
 
     def __repr__(self):
         """Show info about Genre"""
