@@ -128,7 +128,7 @@ class Track(db.Model):
     name = db.Column(db.Text, nullable=False)
     spotify_track_url = db.Column(db.Text, nullable=False)
     spotify_track_uri = db.Column(db.Text, nullable=False)
-    is_playable = db.Column(db.Boolean, nullable=False)
+    # is_playable = db.Column(db.Boolean, nullable=False)
     preview_url = db.Column(db.Text) # can be null
     release_year = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Integer) # (0-100)
@@ -213,8 +213,8 @@ class Album(db.Model):
     spotify_album_id = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text, nullable=False)
     image = db.Column(db.Text, nullable=False)
-    image_height = db.Column(db.Integer, nullable=False) # may not be needed
-    image_width = db.Column(db.Integer, nullable=False) # may not be needed
+    # image_height = db.Column(db.Integer, nullable=False)
+    # image_width = db.Column(db.Integer, nullable=False)
 
     tracks = db.relationship('Track', backref='album')
 
