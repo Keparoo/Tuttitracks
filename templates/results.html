@@ -15,6 +15,11 @@
         {% endfor %}
         </ul>
         <br>
+
+        {% for item in r['items'] %}
+           <p> {{ item['track']['name'] }} {{ item['track']['id'] }} </p>
+        {% endfor %}
+        <br>
         {{ r }}
         {# <p>{{ r['albums']['href']}}</p>
         <p>{{ r['albums']['items'][0]['id']}}</p>

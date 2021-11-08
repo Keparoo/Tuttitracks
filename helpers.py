@@ -1,15 +1,56 @@
 """Helper Functions for Spotiflavor"""
 
+from models import Track
+
+def get_spotify_track_ids(items):
+    """Create list of found track ids from Spotify"""
+
+    spot_track_ids = []
+    for item in items:
+        spot_track_ids.append(item['track']['id'])
+    return spot_track_ids
+
+def process_track_search(spotify_track_ids):
+    """Check if db has each spotify track id
+        if spotify_track_id not found, create entry return id
+        if spotify_track_id is found, return id
+        return a list of ids (both found and created) from search
+    """
+
+    track_ids = []
+    for track in spotify_track_ids:
+        #Check if in db
+        track_result = Track.query.filter(track==Track.spotify_track_id)
+        #If yes, get id, append to track_ids[]
+        if track_result:
+            pass
+        #If no, populate db, append id to track_ids[]
+        else:
+            pass
+        
+        
+        
+
+    return track_ids
+
 def parse_search(obj):
     """parse a returned search object and return the values"""
 
     href = obj['href']
-    items = obj['href']
-    limit = obj['href']
-    next = obj['href']
-    offset = obj['href']
-    previous = obj['href']
-    total = obj['href']
+    items = obj['items']
+    limit = obj['limit']
+    next = obj['next']
+    offset = obj['offset']
+    previous = obj['previous']
+    total = obj['total']
+
+    print('HREF', obj['href'])
+
+    return {
+        obj['href']
+    }
+
+
 
 def parse_tracks_items(obj):
     """Parse the object items of a search track request"""

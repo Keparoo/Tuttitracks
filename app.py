@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
+from helpers import get_spotify_track_ids, process_track_search, parse_search
 
 load_dotenv()
 
@@ -20,15 +21,11 @@ load_dotenv()
 CLIENT_ID = os.environ.get('CLIENT_ID')
 CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
-AUTH_URL = 'https://accounts.spotify.com/authorize'
-TOKEN_URL = 'https://accounts.spotify.com/api/token'
-BASE_URL = 'https://api.spotify.com/v1/'
-REDIRECT_URI = os.environ.get('REDIRECT_URI')
+# AUTH_URL = 'https://accounts.spotify.com/authorize'
+# TOKEN_URL = 'https://accounts.spotify.com/api/token'
+BASE_URL = 'https://api.spotify.com/v1'
 
-# ACCESS_TOKEN = os.environ.get('BEARER_TOKEN')
-# HEADERS = {
-#     'Authorization': f'Bearer {ACCESS_TOKEN}'
-# }
+REDIRECT_URI = os.environ.get('REDIRECT_URI')
 
 # Session key assigned to user object if user is logged in
 CURR_USER_KEY = 'curr_user'
@@ -222,13 +219,17 @@ def search():
         track_id="6y0igZArWVi6Iz0rj35c1Y"
 
         artist = query['artist']
-        # r = requests.get(BASE_URL + 'audio-features/' + track_id, headers=HEADERS)
-        # r = requests.get(BASE_URL + 'search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
-        r = requests.get(BASE_URL + 'me/tracks/', headers=headers)
-        # r = r.json()
-        r = r.text
-        # id = r['albums']['items'][0]['id']
-        # print(id)
+        # r = requests.get(BASE_URL + '/audio-features/' + track_id, headers=HEADERS)
+        # r = requests.get(BASE_URL + '/search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
+        r = requests.get(BASE_URL + '/me/tracks?limit=2', headers=headers)
+        r = r.json()
+        # print('HFEF: ', r['items'])
+        spotify_track_ids = get_spotify_track_ids(r['items'])
+        track_ids = process_track_search(spotify_track_ids)
+        print(track_ids)
+        # r = r.text
+
+        
 
         return render_template("/results.html", query=query, r=r)
 

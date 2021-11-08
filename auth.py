@@ -16,7 +16,8 @@ CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
-BASE_URL = 'https://api.spotify.com/v1/'
+# BASE_URL = 'https://api.spotify.com/v1'
+
 REDIRECT_URI = os.environ.get('REDIRECT_URI')
 SCOPE = "user-library-read playlist-read-private playlist-modify-private playlist-modify-public user-top-read"
 
