@@ -26,9 +26,27 @@ def process_track_search(spotify_track_ids):
             track_ids.append(track_result.id)
         #If no, populate db, append id to track_ids[]
         else:
-            new_track = Track(spotify_track_id=track['id'], name=track['name'], popularity=track['popularity'], spotify_track_url=track['external_urls']['spotify'], spotify_track_uri=track['uri'], is_playable=True, priview_url=track['preview_url'], release_year=track['id'], duration_ms=track['duration_ms'])
-            # check if album in db, add if not
-            # check if artists in db, add if not
+            new_track = Track(
+                spotify_track_id=track['id'],
+                name=track['name'],
+                popularity=track['popularity'],
+                spotify_track_url=track['external_urls']['spotify'],
+                spotify_track_uri=track['uri'],
+                is_playable=True,
+                priview_url=track['preview_url'],
+                release_year=track['id'],
+                duration_ms=track['duration_ms'])
+            # check if album in db, if so connect to track else create and connect
+            album = Track.query.filter(Track.id==track['album']['id']).first()
+            if album:
+                pass
+                #connect to track
+            else:
+                pass
+                #add album and connect to track
+            #loop through artists
+            #if exists connect to track
+            #if new create and connect to track
         
         
         
