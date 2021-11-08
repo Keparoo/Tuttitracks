@@ -97,7 +97,12 @@ def signup():
 
         do_login(user)
 
-        return redirect("/")
+        # Get Spotify user code needed to request bearer token
+        redirect_url = get_spotify_user_code()
+        # redirect to oath url asking user permission to log into spotify
+        return redirect(redirect_url)
+
+        # return redirect("/")
 
     else:
         return render_template('users/signup.html', form=form)
