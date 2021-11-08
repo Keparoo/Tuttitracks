@@ -47,6 +47,8 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
     country = db.Column(db.String(2), default='US')
 
+    # playlists = db.relationship('Playlist')
+
     def __repr__(self):
         """Show info about a User"""
 
@@ -131,6 +133,11 @@ class Track(db.Model):
     release_year = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Integer) # (0-100)
     duration = db.Column(db.Integer, nullable=False)
+    album_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
+
+    album = db.relationship('Album', backref='tracks')
+
+
 
     acousticness = db.Column(db.Float) # (0.0-1.0)
     danceability = db.Column(db.Float) # (0.0-1.0)
@@ -168,6 +175,8 @@ class Playlist(db.Model):
     public = db.Column(db.Boolean, default=True)
     name = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
+
+    user = db.relationship('User', backref='playlists')
 
     def __repr__(self):
         """Show info about a Playlist"""
@@ -207,23 +216,26 @@ class Album(db.Model):
     image_height = db.Column(db.Integer, nullable=False) # may not be needed
     image_width = db.Column(db.Integer, nullable=False) # may not be needed
 
+    tracks = db.relationship('Track', backref='album')
+
     def __repr__(self):
         """Show info about album"""
 
         return f"<Album {self.id} {self.name} {self.spotify_album_id}>"
 
-class TrackAlbum(db.Model):
-    """Model joins tracks to albums"""
+# In case a many to many is needed. Currently I think album to track is one to many
+# class TrackAlbum(db.Model):
+#     """Model joins tracks to albums"""
 
-    __tablename__ = 'tracks_albums'
+#     __tablename__ = 'tracks_albums'
 
-    track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
-    album_id = db.Column(db.Integer, db.ForeignKey("albums.id"), primary_key=True)
+#     track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
+#     album_id = db.Column(db.Integer, db.ForeignKey("albums.id"), primary_key=True)
 
-    def __repr__(self):
-        """Show info about track-album relationship"""
+#     def __repr__(self):
+#         """Show info about track-album relationship"""
 
-        return f"<TrackAlbum {self.track_id} {self.album_id}>"
+#         return f"<TrackAlbum {self.track_id} {self.album_id}>"
 
 class Artist(db.Model):
     """Model of music artists"""
@@ -233,6 +245,8 @@ class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     spotify_artist_id = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text, nullable=False)
+
+    tracks = db.relationship('Track', backref='artists')
 
     def __repr__(self):
         """Show info about Artist"""
@@ -259,6 +273,8 @@ class Genre(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False)
+
+    tracks = db.relationship('Track', backref='genres')
 
     def __repr__(self):
         """Show info about Genre"""

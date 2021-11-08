@@ -1,6 +1,6 @@
 """Helper Functions for Spotiflavor"""
 
-from models import Track
+from models import Track, Album, Artist, TrackAlbum, TrackArtist
 
 def get_spotify_track_ids(items):
     """Create list of found track ids from Spotify"""
@@ -20,7 +20,7 @@ def process_track_search(spotify_track_ids):
     track_ids = []
     for track in spotify_track_ids:
         #Check if in db
-        track_result = Track.query.filter(Track.spotify_track_id==track['id'])
+        track_result = Track.query.filter(Track.spotify_track_id==track['id']).first()
         #If yes, get id, append to track_ids[]
         if track_result:
             track_ids.append(track_result.id)
@@ -37,16 +37,18 @@ def process_track_search(spotify_track_ids):
                 release_year=track['id'],
                 duration_ms=track['duration_ms'])
             # check if album in db, if so connect to track else create and connect
-            album = Track.query.filter(Track.id==track['album']['id']).first()
+            album = Album.query.filter(Track.id==track['album']['id']).first()
             if album:
                 pass
-                #connect to track
+                TrackAlbum(track_id=new_track.id, album_id=album.id)
             else:
                 pass
                 #add album and connect to track
             #loop through artists
             #if exists connect to track
             #if new create and connect to track
+
+            #Genre
         
         
         
