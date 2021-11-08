@@ -1,9 +1,99 @@
 """Authentication tools for Spotiflavor"""
 
+import os
+import base64
+import requests
 from functools import wraps
 from flask import redirect, session, flash, abort
 from models import User
+from dotenv import load_dotenv
 
+load_dotenv()
+
+# Spotify app client id and client secret
+CLIENT_ID = os.environ.get('CLIENT_ID')
+CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
+
+AUTH_URL = 'https://accounts.spotify.com/authorize'
+TOKEN_URL = 'https://accounts.spotify.com/api/token'
+BASE_URL = 'https://api.spotify.com/v1/'
+REDIRECT_URI = os.environ.get('REDIRECT_URI')
+SCOPE = "user-library-read playlist-read-private playlist-modify-private playlist-modify-public user-top-read"
+
+#====================================================================================
+# Auth helpers
+#====================================================================================
+
+def get_spotify_user_code():
+    """Get url containing spotify user coded needed to request bearer token"""
+
+    r = requests.get(AUTH_URL, {
+        'client_id': CLIENT_ID,
+        'response_type': 'code',
+        'redirect_uri': REDIRECT_URI,
+        "scope": SCOPE
+    })
+
+    return r.url
+
+def get_bearer_token(code):
+    """Get bearer token from Spotify"""
+
+    message = f"{CLIENT_ID}:{CLIENT_SECRET}"
+    messageBytes = message.encode('ascii')
+    base64Bytes = base64.b64encode(messageBytes)
+    base64Message = base64Bytes.decode('ascii')
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization": f"Basic {base64Message}"
+    }
+
+    data = {
+        "code": code,
+        "redirect_uri": REDIRECT_URI,
+        "grant_type": "authorization_code"
+    }
+    try:
+        r = requests.post(TOKEN_URL, headers=headers, data=data)
+        print('****************', r.status_code)
+    except:
+        return {
+            "error": "Authorization Error",
+            "error_description": "Unable to get authorization token"
+        }
+
+    if r.status_code != 200:
+        return {
+            "error": r.status_code,
+            "error_description": "Unable to get authorization token"
+            }
+    else:
+        return {
+            "access_token": r.json()['access_token'],
+            "token_type": r.json()['token_type'],
+            "scope": r.json()['scope'],
+            "expires_in": r.json()['expires_in'],
+            "refresh_token": r.json()['refresh_token'],
+            }
+
+class Spotify_Auth:
+    """Auth token class for Spotify"""
+
+    def __init__(self, access_token, token_type, scope, expires_in, refresh_token):
+        self.access_token = access_token
+        self.token_type = token_type
+        self.scope = scope
+        self.expires_in = expires_in
+        self.refresh_token = refresh_token
+    
+    def __repr__(self):
+        """Return readable representation"""
+        return f'<Spotify_Auth {self.access_token} {self.scope} {self.expires_in} {self.refresh_token}>'
+
+#====================================================================================
+# Auth decorators
+#====================================================================================       
 
 def requires_auth(username=''):
   '''Takes username from URL and checks if user is logged in'''

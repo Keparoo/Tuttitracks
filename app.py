@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
-from auth import requires_signed_in, requires_auth, requires_feedback_auth, requires_signed_out
+from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_feedback_auth, requires_signed_out
 
 load_dotenv()
 
@@ -23,14 +23,12 @@ CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
 BASE_URL = 'https://api.spotify.com/v1/'
+REDIRECT_URI = os.environ.get('REDIRECT_URI')
 
-ACCESS_TOKEN = os.environ.get('BEARER_TOKEN')
-
-user_token = None
-
-HEADERS = {
-    'Authorization': f'Bearer {ACCESS_TOKEN}'
-}
+# ACCESS_TOKEN = os.environ.get('BEARER_TOKEN')
+# HEADERS = {
+#     'Authorization': f'Bearer {ACCESS_TOKEN}'
+# }
 
 # Session key assigned to user object if user is logged in
 CURR_USER_KEY = 'curr_user'
@@ -55,17 +53,11 @@ def add_user_to_g():
 
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
-
     else:
         g.user = None
 
-    if 'code' in session:
-        g.code = session['code']
-    else:
-        g.code = None
-
-    if 'token' in session:
-        g.token = session['token']
+    if 'auth' in session:
+        g.token = session['auth']['access_token']
     else:
         g.token = None
 
@@ -124,17 +116,10 @@ def login():
             do_login(user)
             flash(f"Hello, {user.username}!", "success")
 
-            scope = "user-library-read playlist-read-private playlist-modify-private playlist-modify-public user-top-read"
-
-            r = requests.get(AUTH_URL, {
-                'client_id': CLIENT_ID,
-                'response_type': 'code',
-                'redirect_uri': 'http://127.0.0.1:5000/authorize',
-                "scope": scope
-            })
-            print(r.url)
-
-            return redirect(r.url)
+            # Get Spotify user code needed to request bearer token
+            redirect_url = get_spotify_user_code()
+            # redirect to oath url asking user permission to log into spotify
+            return redirect(redirect_url)
 
         flash("Invalid credentials.", 'danger')
 
@@ -144,37 +129,45 @@ def login():
 def get_auth_token():
     """Get auth token from query string"""
 
+    # Get Spotify user code from redirected request get_spotify_user_code()
     code = request.args.get('code')
-    session['code'] = code
-    g.token = code
-    print('Code:', code)
+    auth = get_bearer_token(code)
 
-    headers = {}
-    data = {
-        "code": code,
-        "redirect_uri": "http://127.0.0.1:5000/authorize",
-        "grant_type": "authorization_code"
-    }
+    # message = f"{CLIENT_ID}:{CLIENT_SECRET}"
+    # messageBytes = message.encode('ascii')
+    # base64Bytes = base64.b64encode(messageBytes)
+    # base64Message = base64Bytes.decode('ascii')
 
-    message = f"{CLIENT_ID}:{CLIENT_SECRET}"
-    messageBytes = message.encode('ascii')
-    base64Bytes = base64.b64encode(messageBytes)
-    base64Message = base64Bytes.decode('ascii')
+    # headers = {
+    #     "Content-Type": "application/x-www-form-urlencoded",
+    #     "Authorization": f"Basic {base64Message}"
+    # }
 
-    headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    headers['Authorization'] = f"Basic {base64Message}"
-    # data['grant_type'] = "client_credentials"
+    # data = {
+    #     "code": code,
+    #     "redirect_uri": REDIRECT_URI,
+    #     "grant_type": "authorization_code"
+    # }
     
-    r = requests.post(TOKEN_URL, headers=headers, data=data)
-    print('request', r.text)
-    if 'error' in r.json():
-        print(r.json()['error'], r.json()['error_description'])
-    else:
-        token = r.json()['access_token']
-        print("New Token", token)
-        session['token'] = token
-  
+    # r = requests.post(TOKEN_URL, headers=headers, data=data)
 
+    # if 'error' in r.json():
+    #     flash(f"Auth Error: {r.json()['error']} {r.json()['error_description']}", "danger")
+    #     print('Auth Error: ', r.json()['error'], r.json()['error_description'])
+    # else:
+    #     auth = {
+    #         "access_token": r.json()['access_token'],
+    #         "token_type": r.json()['token_type'],
+    #         "scope": r.json()['scope'],
+    #         "expires_in": r.json()['expires_in'],
+    #         "refresh_token": r.json()['refresh_token'],
+    #         }
+    if 'error' in auth:
+        flash(f"Error: {auth['error']} {auth['error_description']}", "danger")
+        print('Error: ', auth['error'], auth['error_description'])
+    else:
+        session['auth'] = auth
+  
     return redirect('/')
 
 
