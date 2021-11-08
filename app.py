@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
-from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_feedback_auth, requires_signed_out
+from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
 
 load_dotenv()
 
