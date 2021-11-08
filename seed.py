@@ -13,6 +13,7 @@ user1 = User(
     spotify_display_name="",
     user_image="",
     country="US",
+    refresh_token="",
     is_admin=True
 )
 
@@ -24,6 +25,7 @@ user2 = User(
     spotify_display_name="",
     user_image="",
     country="FR",
+    refresh_token="",
     is_admin=False
 )
 

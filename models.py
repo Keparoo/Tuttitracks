@@ -48,7 +48,7 @@ class User(db.Model):
     refresh_token = db.Column(db.Text)
     country = db.Column(db.String(2), default='US')
 
-    # playlists = db.relationship('Playlist')
+    # playlists = db.relationship('Playlist', back_populates='user', cascade='delete-orphan')
 
     def __repr__(self):
         """Show info about a User"""
@@ -136,7 +136,7 @@ class Track(db.Model):
     duration = db.Column(db.Integer, nullable=False)
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
 
-    album = db.relationship('Album', backref='tracks')
+    album = db.relationship('Album', backref='tracks', cascade='delete, merge, save-update')
 
 
 
@@ -177,7 +177,9 @@ class Playlist(db.Model):
     name = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
 
-    user = db.relationship('User', backref='playlists')
+
+    # delete: delete playlist if user is deleted
+    user = db.relationship('User', backref='playlists', cascade='delete, merge, save-update')
 
     def __repr__(self):
         """Show info about a Playlist"""
@@ -217,7 +219,7 @@ class Album(db.Model):
     # image_height = db.Column(db.Integer, nullable=False)
     # image_width = db.Column(db.Integer, nullable=False)
 
-    tracks = db.relationship('Track', backref='album')
+    # tracks = db.relationship('Track', back_populates='album', cascade='delete-orphan')
 
     def __repr__(self):
         """Show info about album"""
