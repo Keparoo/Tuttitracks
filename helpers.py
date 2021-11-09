@@ -52,18 +52,25 @@ def process_track_search(found_tracks):
             Track.insert(new_track)
             track_ids.append(new_track.id)
 
-        track_id = track_exists.id or new_track.id
+        if track_exists:
+             track_id = track_exists.id
+        else:
+            track_id = new_track.id
 
         #loop through artists
-        for artist in track['track']['album']['artists']:
+        for artist in track['track']['artists']:
             #Check if in db
             artist_exists = Artist.query.filter(Artist.spotify_artist_id==artist['id']).first()
-            #If yes, get id, append to track_ids[]
-            if artist_exists:
+            #If artist in db and track is not in db
+            if artist_exists and not track_exists:
                 #if exists connect to track
                 new_track_artist = TrackArtist(track_id=track_id, artist_id=artist_exists.id)
                 db.session.add(new_track_artist)
                 db.session.commit()
+            #If artist in db and track track is in db: do nothing
+            elif artist_exists:
+                pass
+            #Artist not in db
             else:
                 new_artist = Artist(
                     spotify_artist_id=artist['id'],

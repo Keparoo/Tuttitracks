@@ -221,7 +221,7 @@ def search():
         artist = query['artist']
         # r = requests.get(BASE_URL + '/audio-features/' + track_id, headers=HEADERS)
         # r = requests.get(BASE_URL + '/search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
-        r = requests.get(BASE_URL + '/me/tracks?limit=2', headers=headers)
+        r = requests.get(BASE_URL + '/me/tracks?limit=6', headers=headers)
         r = r.json()
         # print('HFEF: ', r['items'])
         spotify_track_ids = get_spotify_track_ids(r['items'])
