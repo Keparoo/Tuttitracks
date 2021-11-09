@@ -225,13 +225,16 @@ def search():
         r = r.json()
         # print('HFEF: ', r['items'])
         spotify_track_ids = get_spotify_track_ids(r['items'])
-        track_ids = process_track_search(r['items'])
-        print(track_ids)
+        tracks = process_track_search(r['items'])
+        print('Track IDs', tracks)
+        for track in tracks:
+            pass
+            #get local record of each track
         # r = r.text
 
         
 
-        return render_template("/results.html", query=query, r=r)
+        return render_template("/results.html", query=query, r=r, tracks=tracks)
 
     else:
         return render_template('/search.html', form=form)

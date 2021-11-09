@@ -59,18 +59,17 @@ def process_track_search(found_tracks):
 
         #loop through artists
         for artist in track['track']['artists']:
-            #Check if in db
+            #Check if artist is in db
             artist_exists = Artist.query.filter(Artist.spotify_artist_id==artist['id']).first()
-            #If artist in db and track is not in db
-            if artist_exists and not track_exists:
-                #if exists connect to track
-                new_track_artist = TrackArtist(track_id=track_id, artist_id=artist_exists.id)
-                db.session.add(new_track_artist)
-                db.session.commit()
-            #If artist in db and track track is in db: do nothing
-            elif artist_exists:
-                pass
-            #Artist not in db
+            #If artist is in db and track new
+            if artist_exists:
+                if not track_exists:
+                    #connect existing artist to new track
+                    new_track_artist = TrackArtist(track_id=track_id, artist_id=artist_exists.id)
+                    db.session.add(new_track_artist)
+                    db.session.commit()
+
+            #Artist not in db: create new artist and link to track
             else:
                 new_artist = Artist(
                     spotify_artist_id=artist['id'],
@@ -81,12 +80,6 @@ def process_track_search(found_tracks):
                 db.session.add(new_track_artist)
                 db.session.commit()
             
-
-            #Genre
-        
-        
-        
-
     return track_ids
 
 def parse_search(obj):
