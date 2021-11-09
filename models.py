@@ -160,6 +160,26 @@ class Track(db.Model):
 
         return f"<Track {self.id} {self.name} {self.spotify_track_id} {self.spotify_track_uri}>"
 
+    @staticmethod
+    def insert(track):
+        """Insert track record into database"""
+
+        db.session.add(track)
+        db.session.commit()
+
+    @staticmethod
+    def update():
+        """Update track record in database"""
+
+        db.session.commit()
+
+    @staticmethod
+    def delete(track):
+        """Delete track record from database"""
+
+        db.session.delete(track)
+        db.session.commit()
+
 #==================================================================================================
 # Playlist Models
 #==================================================================================================
@@ -185,6 +205,26 @@ class Playlist(db.Model):
         """Show info about a Playlist"""
 
         return f"<Playlist {self.id} {self.user_id} {self.name} {self.description} {self.spotify_playlist_id}>"
+
+    @staticmethod
+    def insert(playlist):
+        """Insert playlist record into database"""
+
+        db.session.add(playlist)
+        db.session.commit()
+
+    @staticmethod
+    def update():
+        """Update playlist record in database"""
+
+        db.session.commit()
+
+    @staticmethod
+    def delete(playlist):
+        """Delete playlist record from database"""
+
+        db.session.delete(playlist)
+        db.session.commit()
 
 class PlaylistTrack(db.Model):
     """Model joins playlists to tracks"""
@@ -226,6 +266,26 @@ class Album(db.Model):
 
         return f"<Album {self.id} {self.name} {self.spotify_album_id}>"
 
+    @staticmethod
+    def insert(album):
+        """Insert album record into database"""
+
+        db.session.add(album)
+        db.session.commit()
+
+    @staticmethod
+    def update():
+        """Update album record in database"""
+
+        db.session.commit()
+
+    @staticmethod
+    def delete(album):
+        """Delete album record from database"""
+
+        db.session.delete(album)
+        db.session.commit()
+
 # In case a many to many is needed. Currently I think album to track is one to many
 # class TrackAlbum(db.Model):
 #     """Model joins tracks to albums"""
@@ -256,6 +316,26 @@ class Artist(db.Model):
 
         return f"<Artist {self.id} {self.name} {self.spotify_artist_id}>"
 
+    @staticmethod
+    def insert(artist):
+        """Insert artist record into database"""
+
+        db.session.add(artist)
+        db.session.commit()
+
+    @staticmethod
+    def update():
+        """Update artist record in database"""
+
+        db.session.commit()
+
+    @staticmethod
+    def delete(artist):
+        """Delete artist record from database"""
+
+        db.session.delete(artist)
+        db.session.commit()
+
 class TrackArtist(db.Model):
     """Model joins tracks to artists"""
 
@@ -283,6 +363,26 @@ class Genre(db.Model):
         """Show info about Genre"""
 
         return f"<Genre {self.id} {self.name}>"
+
+    @staticmethod
+    def insert(genre):
+        """Insert genre record into database"""
+
+        db.session.add(genre)
+        db.session.commit()
+
+    @staticmethod
+    def update():
+        """Update genre record in database"""
+
+        db.session.commit()
+
+    @staticmethod
+    def delete(genre):
+        """Delete genre record from database"""
+
+        db.session.delete(genre)
+        db.session.commit()
 
 class TrackGenre(db.Model):
     """Model joins tracks to genres"""

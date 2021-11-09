@@ -1,5 +1,6 @@
 """Helper Functions for Spotiflavor"""
 
+from re import M
 from models import Track, Album, Artist, Genre, PlaylistTrack, TrackArtist, TrackGenre
 
 def get_spotify_track_ids(items):
@@ -39,11 +40,16 @@ def process_track_search(spotify_track_ids):
             # check if album in db, if so connect to track else create and connect
             album = Album.query.filter(Track.id==track['album']['id']).first()
             if album:
-                pass
-                TrackAlbum(track_id=new_track.id, album_id=album.id)
+                new_track.album_id = album.id
             else:
-                pass
-                #add album and connect to track
+                new_album = Album(
+                    spotify_album_id = track['album']['id'],
+                    name = track['album']['name'],
+                    image = track['album']['images'][2]['url']
+                )
+                Album.insert(new_album)
+                new_track.album_id = new_album.id
+
             #loop through artists
             #if exists connect to track
             #if new create and connect to track
