@@ -56,7 +56,6 @@ def add_user_to_g():
     if 'auth' in session:
         g.token = session['auth']['access_token']
         g.refresh = session['auth']['refresh_token']
-        print(g.refresh)
     else:
         g.token = None
         g.refresh = None
@@ -225,20 +224,26 @@ def search():
         artist = query['artist']
         # r = requests.get(BASE_URL + '/audio-features/' + track_id, headers=HEADERS)
         # r = requests.get(BASE_URL + '/search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
-        r = requests.get(BASE_URL + '/me/tracks?limit=6', headers=headers)
-        r = r.json()
-        # print('HFEF: ', r['items'])
-        spotify_track_ids = get_spotify_track_ids(r['items'])
-        tracks = process_track_search(r['items'])
-        print('Track IDs', tracks)
-        for track in tracks:
-            pass
-            #get local record of each track
-        # r = r.text
 
+        #Get users saved tracks
+        # r = requests.get(BASE_URL + '/me/tracks?limit=20', headers=headers)
+        # tracks = process_track_search(r['items'])
+
+        #Create playlist
+        data = {
+            "name": "New Test Playlist",
+            "description": "This is a really cool plalist. Please listen"
+        }
+
+        user = User.query.get('kep')
+        print(user.spotify_user_id)
+        r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
+        r = r.json()
+        # r = r.text
         
 
-        return render_template("/results.html", query=query, r=r, tracks=tracks)
+        return render_template("/results.html", query=query, r=r)
+        # return render_template("/results.html", query=query, r=r, tracks=tracks)
 
     else:
         return render_template('/search.html', form=form)

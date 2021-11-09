@@ -9,6 +9,7 @@ from models import User
 from dotenv import load_dotenv
 
 CURR_USER_KEY = 'curr_user'
+BASE_URL = 'https://api.spotify.com/v1'
 
 load_dotenv()
 
@@ -50,6 +51,21 @@ def get_spotify_user_code():
 
     return r.url
 
+def get_user_id(token):
+    """Query Spotify, and update user record with Spotify user id, Spotify display name, and Spotify user image"""
+
+    headers = {
+    'Authorization': f'Bearer {token}'
+    }
+
+    r = requests.get(BASE_URL + '/me', headers=headers)
+
+    g.user.spotify_user_id = r.json()['id']
+    g.user.spotify_display_name = r.json()['display_name']
+    g.user.user_image = r.json()['images'][0]['url']
+    User.update()
+    
+
 def get_bearer_token(code):
     """Get bearer token from Spotify"""
 
@@ -73,6 +89,8 @@ def get_bearer_token(code):
             "error_description": "Unable to get authorization token"
             }
     else:
+        get_user_id(r.json()['access_token'])
+
         g.user.refresh_token = r.json()['refresh_token']
         User.update()
         return {
