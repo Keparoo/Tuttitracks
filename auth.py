@@ -7,6 +7,7 @@ from functools import wraps
 from flask import redirect, session, flash, abort
 from models import User
 from dotenv import load_dotenv
+from app import CURR_USER_KEY
 
 load_dotenv()
 
@@ -140,13 +141,15 @@ def requires_auth(username=''):
       @wraps(f)
       def wrapper(username, *args, **kwargs):
 
-        current_user = session.get('username', None)
+        current_user = session.get(CURR_USER_KEY, None)
 
-        if username != current_user:
+        if username != current_user.username:
             if current_user:
-                flash('A user can only modify their own content!', category='danger')
+                flash('Access unauthorized', category='danger')
+                # return redirect('/')
                 abort(401)
-            flash('You must be logged in to view or edit your info', category='danger')
+            flash('Access unauthorized', category='danger')
+            # return redirect('/')
             abort(401)
             
         return f(username, *args, **kwargs)
@@ -183,8 +186,9 @@ def requires_signed_in(f):
     
     @wraps(f)
     def decorated(*args, **kwargs):
-        if 'username' not in session:
-            flash('You must be logged in to view!', category='danger')
+        if CURR_USER_KEY not in session:
+            flash('Access unauthorized', category='danger')
+            # return redirect('/')
             abort(401)
         return f(*args, **kwargs)
 
@@ -198,8 +202,8 @@ def requires_signed_out(f):
     def decorated(*args, **kwargs):
         if 'username' in session:
             flash('You are already logged in!', category='warning')
-            username = session.get('username')
-            return redirect(f'/users/{username}')
+            user = session.get(CURR_USER_KEY)
+            return redirect(f'/users/{user.username}')
         return f(*args, **kwargs)
 
     return decorated
