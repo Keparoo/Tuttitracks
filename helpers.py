@@ -1,7 +1,7 @@
 """Helper Functions for Spotiflavor"""
 
 from re import M
-from models import Track, Album, Artist, Genre, PlaylistTrack, TrackArtist, TrackGenre
+from models import db, Track, Album, Artist, Genre, PlaylistTrack, TrackArtist, TrackGenre
 
 def get_spotify_track_ids(items):
     """Create list of found track ids from Spotify"""
@@ -21,41 +21,59 @@ def process_track_search(found_tracks):
     track_ids = []
     for track in found_tracks:
         #Check if in db
-        track_result = Track.query.filter(Track.spotify_track_id==track['id']).first()
+        track_exists = Track.query.filter(Track.spotify_track_id==track['track']['id']).first()
         #If yes, get id, append to track_ids[]
-        if track_result:
-            track_ids.append(track_result.id)
+        if track_exists:
+            track_ids.append(track_exists.id)
         #If no, populate db, append id to track_ids[]
         else:
             new_track = Track(
-                spotify_track_id=track['id'],
-                name=track['name'],
-                popularity=track['popularity'],
-                spotify_track_url=track['external_urls']['spotify'],
-                spotify_track_uri=track['uri'],
-                is_playable=True,
-                priview_url=track['preview_url'],
-                release_year=track['id'],
-                duration_ms=track['duration_ms'])
+                spotify_track_id=track['track']['id'],
+                name=track['track']['name'],
+                popularity=track['track']['popularity'],
+                spotify_track_url=track['track']['external_urls']['spotify'],
+                spotify_track_uri=track['track']['uri'],
+                preview_url=track['track']['preview_url'],
+                release_year=track['track']['album']['release_date'][:4],
+                duration=track['track']['duration_ms'])
             
             # check if album in db, if so connect to track else create and connect
-            album = Album.query.filter(Track.id==track['album']['id']).first()
+            album = Album.query.filter(Album.spotify_album_id==track['track']['album']['id']).first()
             if album:
                 new_track.album_id = album.id
             else:
                 new_album = Album(
-                    spotify_album_id = track['album']['id'],
-                    name = track['album']['name'],
-                    image = track['album']['images'][2]['url']
+                    spotify_album_id = track['track']['album']['id'],
+                    name = track['track']['album']['name'],
+                    image = track['track']['album']['images'][2]['url']
                 )
                 Album.insert(new_album)
                 new_track.album_id = new_album.id
             Track.insert(new_track)
-        
+            track_ids.append(new_track.id)
 
-            #loop through artists
-            #if exists connect to track
-            #if new create and connect to track
+        track_id = track_exists.id or new_track.id
+
+        #loop through artists
+        for artist in track['track']['album']['artists']:
+            #Check if in db
+            artist_exists = Artist.query.filter(Artist.spotify_artist_id==artist['id']).first()
+            #If yes, get id, append to track_ids[]
+            if artist_exists:
+                #if exists connect to track
+                new_track_artist = TrackArtist(track_id=track_id, artist_id=artist_exists.id)
+                db.session.add(new_track_artist)
+                db.session.commit()
+            else:
+                new_artist = Artist(
+                    spotify_artist_id=artist['id'],
+                    name=artist['name']
+                )
+                Artist.insert(new_artist)
+                new_track_artist = TrackArtist(track_id=track_id, artist_id=new_artist.id)
+                db.session.add(new_track_artist)
+                db.session.commit()
+            
 
             #Genre
         
