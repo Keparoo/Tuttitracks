@@ -225,7 +225,7 @@ def search():
         r = r.json()
         # print('HFEF: ', r['items'])
         spotify_track_ids = get_spotify_track_ids(r['items'])
-        track_ids = process_track_search(spotify_track_ids)
+        track_ids = process_track_search(r['items'])
         print(track_ids)
         # r = r.text
 
