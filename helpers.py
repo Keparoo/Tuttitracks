@@ -2,6 +2,10 @@
 
 from re import M
 from models import db, Track, Album, Artist, Genre, PlaylistTrack, TrackArtist, TrackGenre
+from flask import session, g
+import requests
+
+BASE_URL = 'https://api.spotify.com/v1'
 
 def get_spotify_track_ids(items):
     """Create list of found track ids from Spotify"""
@@ -79,8 +83,47 @@ def process_track_search(found_tracks):
                 new_track_artist = TrackArtist(track_id=track_id, artist_id=new_artist.id)
                 db.session.add(new_track_artist)
                 db.session.commit()
+
+    get_audio_features(track_ids)
             
     return track_ids
+
+def create_track_list(track_ids):
+    """Take a list of track_ids and return a comma separated list of spotify_track_ids"""
+
+    tracks = ''
+    for track in track_ids:
+        track= Track.query.get(track)
+        tracks += track.spotify_track_id + ','
+    return tracks[:-1]
+   
+def get_audio_features(track_ids):
+    """Take list of track_ids, query Spotify and populate db with audio features"""
+
+    headers = {
+    'Authorization': f'Bearer {g.token}'
+    }
+
+    tracks = create_track_list(track_ids)
+
+    r = requests.get(BASE_URL + '/audio-features?ids=' + tracks, headers=headers)
+
+    for track in r.json()['audio_features']:
+        db_track = Track.query.filter(Track.spotify_track_id==track['id']).first()
+        db_track.danceability = track['danceability']
+        db_track.energy = track['energy']
+        db_track.key = track['key']
+        db_track.loudness = track['loudness']
+        db_track.mode = track['mode']
+        db_track.speechiness = track['speechiness']
+        db_track.acousticness = track['speechiness']
+        db_track.instrumentalness = track['acousticness']
+        db_track.liveness = track['liveness']
+        db_track.valence = track['valence']
+        db_track.tempo = track['tempo']
+        db_track.time_signature = track['time_signature']
+        Track.update()
+
 
 def parse_search(obj):
     """parse a returned search object and return the values"""
