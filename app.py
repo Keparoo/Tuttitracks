@@ -55,8 +55,11 @@ def add_user_to_g():
 
     if 'auth' in session:
         g.token = session['auth']['access_token']
+        g.refresh = session['auth']['refresh_token']
+        print(g.refresh)
     else:
         g.token = None
+        g.refresh = None
 
 
 def do_login(user):
@@ -192,6 +195,7 @@ def homepage():
     return render_template('homepage.html')
 
 @app.route('/search', methods=['GET', 'POST'])
+@requires_signed_in
 def search():
     """Display form to search and post on successful submit"""
 

@@ -4,10 +4,11 @@ import os
 import base64
 import requests
 from functools import wraps
-from flask import redirect, session, flash, abort
+from flask import redirect, session, flash, abort, g
 from models import User
 from dotenv import load_dotenv
-from app import CURR_USER_KEY
+
+CURR_USER_KEY = 'curr_user'
 
 load_dotenv()
 
@@ -72,6 +73,8 @@ def get_bearer_token(code):
             "error_description": "Unable to get authorization token"
             }
     else:
+        g.user.refresh_token = r.json()['refresh_token']
+        User.update()
         return {
             "access_token": r.json()['access_token'],
             "token_type": r.json()['token_type'],
