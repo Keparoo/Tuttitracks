@@ -230,14 +230,23 @@ def search():
         # tracks = process_track_search(r['items'])
 
         #Create playlist
-        data = {
-            "name": "New Test Playlist",
-            "description": "This is a really cool plalist. Please listen"
-        }
+        # data = {
+        #     "name": "New Test Playlist",
+        #     "description": "This is a really cool playlist. Please listen",
+        #     "public": False, #Defaults to True
+        #     "collaborative": False #Defaults to False
+        # }
+        # r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
 
-        user = User.query.get('kep')
-        print(user.spotify_user_id)
-        r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
+        #Add Tracks to playlist
+        test_playlist_id = '6AGIfhZ6I4AXYpvf9A5LAo'
+        data = {
+            "uris": ["spotify:track:0wipEzrv6p17BPiVCKATIE","spotify:track:2Amj13n8K8JRaSNXh2C10G"],
+            "position": 0 #Optional, Defaults to append
+        }
+        r = requests.post(BASE_URL + f'/playlists/{test_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
+
         r = r.json()
         # r = r.text
         
