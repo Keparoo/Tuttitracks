@@ -247,13 +247,12 @@ def search():
         # print(playlist)
 
         # spotify_uri_list = get_playlist_tracks(1)
-        spotify_uri_list = [{'uri':'spotify:track:3cTX97kSfqIs9U68fOjIEB'}]
-        print(spotify_uri_list)
+        # spotify_uri_list = [{'uri':'spotify:track:3cTX97kSfqIs9U68fOjIEB'}]
+        # print(spotify_uri_list)
         # add_tracks_to_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
         # replace_spotify_playlist_items('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
         # delete_tracks_from_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
-
-        update_spotify_playlist_details('5gprcPiOPACeLyPB0y6MkE', 'Spotiflavor Playlist', 'This is a groovy new playlist brought to you by Spotiflavor', True, False)
+        # update_spotify_playlist_details('5gprcPiOPACeLyPB0y6MkE', 'Spotiflavor Playlist', 'This is a groovy new playlist brought to you by Spotiflavor', True, False)
         
 
         # r = r.json()
