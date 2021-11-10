@@ -166,8 +166,8 @@ def get_playlist_tracks(playlist_id):
     Return a list of spotify uris in index order
     """
 
-    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).all()
-    playlist_tracks.sort(key=lambda x: x.index)
+    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).order_by(PlaylistTrack.index).all()
+
     spotify_uris = []
     for item in playlist_tracks:
         track=Track.query.get(item.track_id)
