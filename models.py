@@ -192,8 +192,10 @@ class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(25), db.ForeignKey('users.username'), nullable=False)
     spotify_playlist_id = db.Column(db.Text)
+    spotify_snapshot_id = db.Column(db.Text)
     image = db.Column(db.Text)
     public = db.Column(db.Boolean, default=True)
+    collaborative = db.Column(db.Boolean, default=False)
     name = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
 
@@ -204,7 +206,7 @@ class Playlist(db.Model):
     def __repr__(self):
         """Show info about a Playlist"""
 
-        return f"<Playlist {self.id} {self.user_id} {self.name} {self.description} {self.spotify_playlist_id}>"
+        return f"<Playlist {self.id} {self.username} {self.name} {self.description} {self.spotify_playlist_id}>"
 
     @staticmethod
     def insert(playlist):
@@ -242,6 +244,26 @@ class PlaylistTrack(db.Model):
         """Show info about playlist-track relationship"""
 
         return f"<PlaylistTrack {self.id} {self.playlist_id} {self.track_id} {self.index}>"
+
+    @staticmethod
+    def insert(track):
+        """Insert track in playlist"""
+
+        db.session.add(track)
+        db.session.commit()
+
+    @staticmethod
+    def update():
+        """Update track in playlist"""
+
+        db.session.commit()
+
+    @staticmethod
+    def delete(track):
+        """Delete track from playlist"""
+
+        db.session.delete(track)
+        db.session.commit()
 
 #==================================================================================================
 # Album, Artist, Genre Models
