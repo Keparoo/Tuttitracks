@@ -176,21 +176,49 @@ def create_spotify_playlist(playlist_id):
 
     return playlist
 
-def delete_spotify_playlist_tracks(spotify_playlist_id):
-    """Delete a playlist from Spotify"""
+def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], position=None):
+    """
+    Add tracks to an existing Spotify playlist
+
+    Given a list of spotify_uris to add in the following form. Max: 100 uris
+    ["spotify:track:0wipEzrv6p17BPiVCKATIE","spotify:track:2Amj13n8K8JRaSNXh2C10G", ...]
+
+    Optional position arg is 0 based index of where to insert uris. Default is to append.
+
+    Returns snapshot_id of playlist
+    """
 
     headers = {
         'Authorization': f'Bearer {g.token}'
     }
-
     data = {
-        "name": playlist.name,
-        "description": playlist.description,
-        "public": playlist.public #Defaults to True
-        # "collaborative": False #Defaults to False
+        "uris": spotify_uri_list,
+        "position": position #Optional, Defaults to append
     }
     r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
+    return r.json()['snapshot_id']
+
+def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]):
+    """
+    Delete tracks from a spotify playlist
+
+    Given a list of spotify_uris to remove in the following form. Max: 100 uris
+    [{"uri":"spotify:track:0wipEzrv6p17BPiVCKATIE"}, {"uri:"spotify:track:2Amj13n8K8JRaSNXh2C10G"}, ...]
+
+    Returns snapshot_id of playlist
+    """
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+    data = {
+        "tracks": spotify_uri_list
+    }
+
+    r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
+    return r.json()['snapshot_id']
 
 
 def parse_search(obj):
