@@ -181,7 +181,7 @@ def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], pos
     Add tracks to an existing Spotify playlist
 
     Given a list of spotify_uris to add in the following form. Max: 100 uris
-    ["spotify:track:0wipEzrv6p17BPiVCKATIE","spotify:track:2Amj13n8K8JRaSNXh2C10G", ...]
+    ["spotify:track:0wipEzrv6p17BPiVCKATIE", "spotify:track:2Amj13n8K8JRaSNXh2C10G", ...]
 
     Optional position arg is 0 based index of where to insert uris. Default is to append.
 
@@ -196,6 +196,28 @@ def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], pos
         "position": position #Optional, Defaults to append
     }
     r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
+    return r.json()['snapshot_id']
+
+def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
+    """
+    Replace all current tracks with new tracks, same tracks in new order, both or an empty playlist
+
+    Given a list of spotify_uris to remove in the following form. Max: 100 uris
+    ["spotify:track:0wipEzrv6p17BPiVCKATIE", "spotify:track:2Amj13n8K8JRaSNXh2C10G", ...]
+
+    Sending an empty list will clear the entire playlist yielding an empty playlist
+
+    Returns the snapshot_id of the playlist
+    """
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+    data = {
+        "uris": spotify_uri_list
+    }
+    r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
     return r.json()['snapshot_id']
 
@@ -216,10 +238,33 @@ def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]
         "tracks": spotify_uri_list
     }
 
-    r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+    r = requests.delete(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
     return r.json()['snapshot_id']
 
+def update_spotify_playlist_details(spotify_playlist_id, name, description, public, collaborative):
+    """
+    Update the details of a spotify playlist
+    collborative can only be set to True on non-public playlists
+    """
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+    data = {
+        "name": name,
+        "description": description,
+        "public": public,
+        "collaborative": collaborative
+    }
+
+    r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}', headers=headers, data=json.dumps(data))
+
+    return r.status_code
+
+#==================================================================================================
+# Parsing Methods
+#==================================================================================================
 
 def parse_search(obj):
     """parse a returned search object and return the values"""
