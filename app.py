@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
-from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists
+from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks
 
 load_dotenv()
 
@@ -235,35 +235,25 @@ def search():
         # print(playlists)
 
 
-        new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [6, 7, 8, 9])
-        print(new_playlist)
+        # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
+        # print(new_playlist)
 
         #Create playlist
-        # data = {
-        #     "name": "New Test Playlist",
-        #     "description": "This is a really cool playlist. Please listen",
-        #     "public": False, #Defaults to True
-        #     "collaborative": False #Defaults to False
-        # }
-        # r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
-        # create_spotify_playlist("New Test Playlist", "This is a really cool playlist. Please listen", False)
-
-        #Add Tracks to playlist
-        # test_playlist_id = '6AGIfhZ6I4AXYpvf9A5LAo'
-        # data = {
-        #     "uris": ["spotify:track:0wipEzrv6p17BPiVCKATIE","spotify:track:2Amj13n8K8JRaSNXh2C10G"],
-        #     "position": 0 #Optional, Defaults to append
-        # }
-        # r = requests.post(BASE_URL + f'/playlists/{test_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+        # playlist = create_spotify_playlist(1)
+        # print(playlist)
 
         # To test:
         # playlist = create_spotify_playlist(1)
         # print(playlist)
-        
-        # add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], position=None)
-        # delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[])
-        # replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[])
-        # update_spotify_playlist_details(spotify_playlist_id, name, description, public, collaborative)
+
+        # spotify_uri_list = get_playlist_tracks(1)
+        spotify_uri_list = [{'uri':'spotify:track:3cTX97kSfqIs9U68fOjIEB'}]
+        print(spotify_uri_list)
+        # add_tracks_to_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
+        # replace_spotify_playlist_items('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
+        # delete_tracks_from_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
+
+        update_spotify_playlist_details('5gprcPiOPACeLyPB0y6MkE', 'Spotiflavor Playlist', 'This is a groovy new playlist brought to you by Spotiflavor', True, False)
         
 
         # r = r.json()

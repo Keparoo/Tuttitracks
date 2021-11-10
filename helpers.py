@@ -136,7 +136,7 @@ def get_audio_features(track_ids):
         db_track.time_signature = track['time_signature']
         Track.update()
 
-def create_playlist(name="New Playlist", description=None, public=True, collaborative=False, tracks=[]):
+def create_playlist(name="New Playlist", description=None, public=True, tracks=[]):
     """Create a working playlist locally"""
 
     new_playlist = Playlist(
@@ -144,7 +144,7 @@ def create_playlist(name="New Playlist", description=None, public=True, collabor
         name = name,
         description = description,
         public = public,
-        collaborative = collaborative
+        collaborative = False # Can only be True if public is False
     )
     Playlist.insert(new_playlist)
 
@@ -159,6 +159,21 @@ def create_playlist(name="New Playlist", description=None, public=True, collabor
         index += 1
 
     return new_playlist
+
+def get_playlist_tracks(playlist_id):
+    """
+    Get the current tracks from a local playlist
+    Return a list of spotify uris in index order
+    """
+
+    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).all()
+    playlist_tracks.sort(key=lambda x: x.index)
+    spotify_uris = []
+    for item in playlist_tracks:
+        track=Track.query.get(item.track_id)
+        spotify_uris.append(track.spotify_track_uri)
+
+    return spotify_uris
 
 #==================================================================================================
 # Spotify Playlist Crud Methods
@@ -193,7 +208,7 @@ def create_spotify_playlist(playlist_id):
     
     #Update local playlist object with spotify_playlist_id and image if available
     playlist.spotify_playlist_id = r.json()['id']
-    playlist.spotify_snapshot_id = r.json()['spotify_snapshot']
+    playlist.spotify_snapshot_id = r.json()['snapshot_id']
     if r.json()['images']:
         playlist.image = r.json()['images'][0]['url']
     Playlist.update()
@@ -221,7 +236,11 @@ def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], pos
     }
     r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
-    return r.json()['snapshot_id']
+    playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
+    playlist.spotify_snapshot_id = r.json()['snapshot_id']
+    Playlist.update()
+
+    return playlist
 
 def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
     """
@@ -243,7 +262,11 @@ def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
     }
     r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
-    return r.json()['snapshot_id']
+    playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
+    playlist.spotify_snapshot_id = r.json()['snapshot_id']
+    Playlist.update()
+
+    return playlist
 
 def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]):
     """
@@ -264,7 +287,13 @@ def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]
 
     r = requests.delete(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
-    return r.json()['snapshot_id']
+    playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
+    playlist.spotify_snapshot_id = r.json()['snapshot_id']
+    Playlist.update()
+
+    return playlist
+
+
 
 def update_spotify_playlist_details(spotify_playlist_id, name, description, public, collaborative):
     """
