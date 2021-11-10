@@ -5,7 +5,7 @@
 {% block content %}
 
 <div class="container">
-    <h1 class="display-3 text-center">Search</h1>
+    <h1 class="display-3 text-center">Search for tracks</h1>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <form method="POST">
@@ -13,16 +13,18 @@
                 {% for field in form if field.widget.input_type != 'hidden' %}
                 <div class="form-group>
                     {{ field.label }}
-                    {{ field(class_=" form-control") }} {% for err in field.errors %} <small
-                    class="form-text text-danger">
+                    {{ field(class_=" form-control") }} {% for err in field.errors %}
+                    <small class="form-text text-danger">
                     {{ err }}
                     </small>
                     {% endfor %}
                 </div>
                 {% endfor %}
                 <br>
-                <button class="btn btn-success btn-lg">Search</button>
+                <button class="btn btn-success btn-lg">Search</button><br><br>
                 <a href="/tracks" class="btn btn-success btn-lg">Get Spotify Saved Tracks</a>
+                <a href="/tracks" class="btn btn-success btn-lg">Get an album</a>
+                <a href="/tracks" class="btn btn-success btn-lg">Get a playlist</a>
             </form>
         </div>
     </div>
