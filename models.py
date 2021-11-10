@@ -207,7 +207,7 @@ class Playlist(db.Model):
     def __repr__(self):
         """Show info about a Playlist"""
 
-        return f"<Playlist {self.id} {self.username} {self.name} {self.description} {self.spotify_playlist_id}>"
+        return f"<Playlist {self.id} {self.username} {self.name} {self.description} {self.spotify_playlist_id} {self.spotify_snapshot_id}>"
 
     @staticmethod
     def insert(playlist):
