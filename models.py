@@ -202,6 +202,7 @@ class Playlist(db.Model):
 
     # delete: delete playlist if user is deleted
     user = db.relationship('User', backref='playlists', cascade='delete, merge, save-update')
+    tracks = db.relationship('Track', secondary="playlists_tracks", backref='playlist')
 
     def __repr__(self):
         """Show info about a Playlist"""
