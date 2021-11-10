@@ -1,7 +1,7 @@
 """Helper Functions for Spotiflavor"""
 
-from re import M
-from models import db, Track, Album, Artist, Genre, PlaylistTrack, TrackArtist, TrackGenre
+import json
+from models import db, Track, Album, Artist, TrackArtist, Playlist, PlaylistTrack, Genre, TrackGenre
 from flask import session, g
 import requests
 
@@ -124,6 +124,74 @@ def get_audio_features(track_ids):
         db_track.time_signature = track['time_signature']
         Track.update()
 
+def create_playlist(name="New Playlist", description=None, public=True, tracks=[]):
+    """Create a working playlist locally"""
+
+    new_playlist = Playlist(
+        username = g.user.username,
+        name = name,
+        description = description,
+        public = public
+    )
+    Playlist.insert(new_playlist)
+
+    index = 0
+    for track in tracks:
+        new_playlist_track = PlaylistTrack(
+            playlist_id = new_playlist.id,
+            track_id = track,
+            index = index
+        )
+        PlaylistTrack.insert(new_playlist_track)
+        index += 1
+
+    return new_playlist
+
+#==================================================================================================
+# Spotify Playlist Crud Methods
+#==================================================================================================
+
+def create_spotify_playlist(playlist_id):
+    """Create a new playlist on Spotify server from local playlist id"""
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    playlist = Playlist.query.get(playlist_id)
+
+    data = {
+        "name": playlist.name,
+        "description": playlist.description,
+        "public": playlist.public #Defaults to True
+        # "collaborative": False #Defaults to False
+    }
+    r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
+    
+    #Update local playlist object with spotify_playlist_id and image if available
+    playlist.spotify_playlist_id = r.json()['id']
+    if r.json()['images']:
+        playlist.image = r.json()['images'][0]['url']
+    Playlist.update()
+
+    return playlist
+
+def delete_spotify_playlist_tracks(spotify_playlist_id):
+    """Delete a playlist from Spotify"""
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    data = {
+        "name": playlist.name,
+        "description": playlist.description,
+        "public": playlist.public #Defaults to True
+        # "collaborative": False #Defaults to False
+    }
+    r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
+
 
 def parse_search(obj):
     """parse a returned search object and return the values"""
@@ -141,56 +209,3 @@ def parse_search(obj):
     return {
         obj['href']
     }
-
-
-
-def parse_tracks_items(obj):
-    """Parse the object items of a search track request"""
-
-    album = obj['album']
-    artists = obj['artists']
-    available_markets = obj['available_markets']
-    disc_number = obj['disc_number']
-    duration_ms = obj['duration_ms']
-    explicit = obj['explicit']
-    external_ids = obj['external_ids']
-    external_urls = obj['external_urls']
-    href = obj['href']
-    id = obj['id']
-    is_local = obj['is_local']
-    name = obj['name']
-    popularity = obj['popularity']
-    preview_url = obj['preview_url']
-    track_number = obj['track_number']
-    type = obj['type']
-    uri = obj['uri']
-
-def parse_album_items(obj):
-    """Parse the object items of a search album request"""
-
-    album_type = obj['album_type']
-    artists = obj['artists']
-    available_markets = obj['available_markets']
-    external_urls = obj['external_urls']
-    href = obj['href']
-    id = obj['id']
-    images = obj['images'][0]['url']
-    images = obj['images'][0]['height']
-    images = obj['images'][0]['width']
-    name = obj['name']
-    release_date = obj['release_date']
-    release_date_precision = obj['release_date_precision']
-    total_tracks = obj['total_tracks']
-    type = obj['type']
-    uri = obj['uri']
-
-def parse_artist_items(obj):
-    """Parse the object items of a search artist"""
-
-
-    external_urls = obj['external_urls']
-    href = obj['href']
-    id = obj['id']
-    name = obj['name']
-    type = obj['type']
-    uri = obj['uri']

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
-from helpers import get_spotify_track_ids, process_track_search, parse_search
+from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search
 
 load_dotenv()
 
@@ -219,6 +219,11 @@ def search():
         "hipster": form.hipster.data
         }
 
+        track1 = "6, 0wipEzrv6p17BPiVCKATIE, Gnossienne Nr. 1, spotify:track:0wipEzrv6p17BPiVCKATIE"
+        track2 = '7, 2Amj13n8K8JRaSNXh2C10G, Pure Imagination (from "Charlie and the Chocolate Factory"), spotify:track:2Amj13n8K8JRaSNXh2C10G'
+        track3 = '8, 7ma87nv4jgpXfjlwMFOvLn, Allez donc vous faire bronzer, spotify:track:7ma87nv4jgpXfjlwMFOvLn'
+        track4 = '9, 4qqf1avpzRUnVowNQd1jFw, Zou bisou bisou, spotify:track:4qqf1avpzRUnVowNQd1jFw'
+
         track_id="6y0igZArWVi6Iz0rj35c1Y"
 
         artist = query['artist']
@@ -229,6 +234,12 @@ def search():
         # r = requests.get(BASE_URL + '/me/tracks?limit=20', headers=headers)
         # tracks = process_track_search(r['items'])
 
+        # new_playlist = create_playlist("First Playlist", "This is the first local playlist", True, [6, 7, 8, 9])
+        # print(new_playlist)
+
+        playlist = create_spotify_playlist(1)
+        print(playlist)
+
         #Create playlist
         # data = {
         #     "name": "New Test Playlist",
@@ -237,19 +248,20 @@ def search():
         #     "collaborative": False #Defaults to False
         # }
         # r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
+        # create_spotify_playlist("New Test Playlist", "This is a really cool playlist. Please listen", False)
 
         #Add Tracks to playlist
-        test_playlist_id = '6AGIfhZ6I4AXYpvf9A5LAo'
-        data = {
-            "uris": ["spotify:track:0wipEzrv6p17BPiVCKATIE","spotify:track:2Amj13n8K8JRaSNXh2C10G"],
-            "position": 0 #Optional, Defaults to append
-        }
-        r = requests.post(BASE_URL + f'/playlists/{test_playlist_id}/tracks', headers=headers, data=json.dumps(data))
-
-
-        r = r.json()
-        # r = r.text
+        # test_playlist_id = '6AGIfhZ6I4AXYpvf9A5LAo'
+        # data = {
+        #     "uris": ["spotify:track:0wipEzrv6p17BPiVCKATIE","spotify:track:2Amj13n8K8JRaSNXh2C10G"],
+        #     "position": 0 #Optional, Defaults to append
+        # }
+        # r = requests.post(BASE_URL + f'/playlists/{test_playlist_id}/tracks', headers=headers, data=json.dumps(data))
         
+
+        # r = r.json()
+        # r = r.text
+        r=1
 
         return render_template("/results.html", query=query, r=r)
         # return render_template("/results.html", query=query, r=r, tracks=tracks)
