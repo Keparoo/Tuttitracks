@@ -136,14 +136,15 @@ def get_audio_features(track_ids):
         db_track.time_signature = track['time_signature']
         Track.update()
 
-def create_playlist(name="New Playlist", description=None, public=True, tracks=[]):
+def create_playlist(name="New Playlist", description=None, public=True, collaborative=False, tracks=[]):
     """Create a working playlist locally"""
 
     new_playlist = Playlist(
         username = g.user.username,
         name = name,
         description = description,
-        public = public
+        public = public,
+        collaborative = collaborative
     )
     Playlist.insert(new_playlist)
 
@@ -185,13 +186,14 @@ def create_spotify_playlist(playlist_id):
     data = {
         "name": playlist.name,
         "description": playlist.description,
-        "public": playlist.public #Defaults to True
-        # "collaborative": False #Defaults to False
+        "public": playlist.public, #Defaults to True
+        "collaborative": playlist.collaborative #Defaults to False, can only be true when public is False
     }
     r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
     
     #Update local playlist object with spotify_playlist_id and image if available
     playlist.spotify_playlist_id = r.json()['id']
+    playlist.spotify_snapshot_id = r.json()['spotify_snapshot']
     if r.json()['images']:
         playlist.image = r.json()['images'][0]['url']
     Playlist.update()

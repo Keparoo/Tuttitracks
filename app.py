@@ -235,8 +235,8 @@ def search():
         # print(playlists)
 
 
-        # new_playlist = create_playlist("First Playlist", "This is the first local playlist", True, [6, 7, 8, 9])
-        # print(new_playlist)
+        new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [6, 7, 8, 9])
+        print(new_playlist)
 
         #Create playlist
         # data = {
