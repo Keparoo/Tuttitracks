@@ -129,6 +129,7 @@ def login():
 
     return render_template('users/login.html', form=form)
 
+
 @app.route('/authorize', methods=['GET'])
 def get_auth_token():
     """Get auth token from query string"""
@@ -193,6 +194,24 @@ def homepage():
 
     return render_template('homepage.html')
 
+def create_query(artist, track, album, genre, year):
+    "Create a query string from passed in query filters"
+
+    query = ''
+    if artist:
+        query += f'artist:{artist}&'
+    if track:
+        query += f'track:{track}&'
+    if album:
+        query += f'album:{album}&'
+    if genre:
+        query += f'genre:{genre}&'
+    if year:
+        query += f'year{year}&'
+
+    return query
+    
+
 @app.route('/search', methods=['GET', 'POST'])
 @requires_signed_in
 def search():
@@ -208,11 +227,18 @@ def search():
         "track":form.track.data,
         "album": form.album.data,
         "genre": form.genre.data,
-        "playlist": form.playlist.data,
-        # "year": form.year.data,
-        "new": form.new.data,
-        "hipster": form.hipster.data
+        # "playlist": form.playlist.data,
+        "year": form.year.data
+        # "new": form.new.data,
+        # "hipster": form.hipster.data
         }
+
+        artist = form.artist.data
+        track = form.track.data
+        album = form.album.data
+        genre = form.genre.data
+        year = form.year.data
+        
 
         headers = {
             'Authorization': f'Bearer {g.token}'
@@ -224,12 +250,15 @@ def search():
         track4 = '9, 4qqf1avpzRUnVowNQd1jFw, Zou bisou bisou, spotify:track:4qqf1avpzRUnVowNQd1jFw'
 
         artist = query['artist']
-        # track_id="6y0igZArWVi6Iz0rj35c1Y"
+        # track_id="2Amj13n8K8JRaSNXh2C10G"
         # r = requests.get(BASE_URL + '/audio-features/' + track_id, headers=HEADERS)
-        # r = requests.get(BASE_URL + '/search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
+        # r = requests.get(BASE_URL + '/search' + f'?q={artist}&type=track&limit=25', headers=headers)
+        query_string = create_query(artist, track, album, genre, year)
+
+        r = requests.get(BASE_URL + '/search' + f'?q={query_string}type=track&limit=25', headers=headers)
 
         # Get users saved tracks
-        tracks = get_spotify_saved_tracks(limit=25)
+        # tracks = get_spotify_saved_tracks(limit=25)
 
         # playlists = get_spotify_playlists(limit=20, offset=0)
         # print(playlists)
@@ -255,15 +284,24 @@ def search():
         # update_spotify_playlist_details('5gprcPiOPACeLyPB0y6MkE', 'Spotiflavor Playlist', 'This is a groovy new playlist brought to you by Spotiflavor', True, False)
         
 
-        # r = r.json()
+        r = r.json()
         # r = r.text
-        r=1
+        # r=1
 
         # return render_template("/results.html", query=query, r=r)
-        return render_template("/results.html", query=query, r=r, tracks=tracks)
+        return render_template("results.html", query=query, r=r)
 
     else:
-        return render_template('/search.html', form=form)
+        return render_template('search.html', form=form)
+
+@app.route('/tracks', methods=['GET'])
+@requires_signed_in
+def get_tracks():
+    """Query Spotify for Users' saved tracks"""
+
+    tracks = get_spotify_saved_tracks(limit=25)
+
+    return render_template("display_tracks.html", tracks=tracks)
 
 #====================================================================================
 # error handlers

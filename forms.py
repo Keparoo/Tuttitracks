@@ -3,7 +3,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, IntegerField
 from wtforms.fields.core import BooleanField
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.validators import InputRequired, Email, Length, Optional
 
 class SignupForm(FlaskForm):
     """Form for registering a new user"""
@@ -33,7 +33,7 @@ class SearchTracksForm(FlaskForm):
     track = StringField("Name of track")
     album = StringField("Name of album")
     genre = StringField("Name of Genre")
-    playlist = StringField("Name of playlist")
-    # year = IntegerField("Year")
-    new = BooleanField("Tag: New")
-    hipster = BooleanField("Tag: Hipster")
+    # playlist = StringField("Name of playlist")
+    year = IntegerField("Year", validators=[Optional()])
+    # new = BooleanField("Tag: New")
+    # hipster = BooleanField("Tag: Hipster")

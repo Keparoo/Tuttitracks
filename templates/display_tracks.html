@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Spotiflavor{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="display-3 text-center">Search Results</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+        <a href="/search" class="btn btn-info">Search</a>
+
+    <iframe src="https://open.spotify.com/embed/track/2s25WcjhpjL7CC1n5aW9yx" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    <iframe src="https://open.spotify.com/embed/playlist/5gprcPiOPACeLyPB0y6MkE" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+
+
+        {% for item in tracks['items'] %}
+           <p> {{ item['track']['name'] }} {{ item['track']['id'] }} </p>
+        {% endfor %}
+        <br>
+        
+        </div>
+    </div>
+</div>
+
+{% endblock %}
