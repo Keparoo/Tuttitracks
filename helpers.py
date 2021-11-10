@@ -15,6 +15,18 @@ def get_spotify_track_ids(items):
         spot_track_ids.append(item['track']['id'])
     return spot_track_ids
 
+def get_spotify_saved_tracks(limit=20):
+    """
+    Return a list of user's saved Spotify track objects
+    """
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+    
+    r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
+    process_track_search(r.json()['items'])
+    return r.json()
+
 def process_track_search(found_tracks):
     """Check if db has each spotify track id
         if spotify_track_id not found, create entry return id
@@ -150,6 +162,16 @@ def create_playlist(name="New Playlist", description=None, public=True, tracks=[
 #==================================================================================================
 # Spotify Playlist Crud Methods
 #==================================================================================================
+
+def get_spotify_playlists(limit=20, offset=0):
+    """Retrieve current users' playlists"""
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    r = requests.get(BASE_URL + f'/me/playlists?limit={limit}&offset={offset}', headers=headers)
+    return r.json()
 
 def create_spotify_playlist(playlist_id):
     """Create a new playlist on Spotify server from local playlist id"""

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
-from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search
+from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists
 
 load_dotenv()
 
@@ -199,11 +199,6 @@ def search():
     """Display form to search and post on successful submit"""
 
     form = SearchTracksForm()
-    token = session['token']
-
-    headers = {
-    'Authorization': f'Bearer {g.token}'
-}
 
     if form.validate_on_submit():
 
@@ -219,26 +214,29 @@ def search():
         "hipster": form.hipster.data
         }
 
+        headers = {
+            'Authorization': f'Bearer {g.token}'
+        }
+
         track1 = "6, 0wipEzrv6p17BPiVCKATIE, Gnossienne Nr. 1, spotify:track:0wipEzrv6p17BPiVCKATIE"
         track2 = '7, 2Amj13n8K8JRaSNXh2C10G, Pure Imagination (from "Charlie and the Chocolate Factory"), spotify:track:2Amj13n8K8JRaSNXh2C10G'
         track3 = '8, 7ma87nv4jgpXfjlwMFOvLn, Allez donc vous faire bronzer, spotify:track:7ma87nv4jgpXfjlwMFOvLn'
         track4 = '9, 4qqf1avpzRUnVowNQd1jFw, Zou bisou bisou, spotify:track:4qqf1avpzRUnVowNQd1jFw'
 
-        track_id="6y0igZArWVi6Iz0rj35c1Y"
-
         artist = query['artist']
+        # track_id="6y0igZArWVi6Iz0rj35c1Y"
         # r = requests.get(BASE_URL + '/audio-features/' + track_id, headers=HEADERS)
         # r = requests.get(BASE_URL + '/search' + f'?q={artist}&type=track&limit=5', headers=HEADERS)
 
-        #Get users saved tracks
-        # r = requests.get(BASE_URL + '/me/tracks?limit=20', headers=headers)
-        # tracks = process_track_search(r['items'])
+        # Get users saved tracks
+        tracks = get_spotify_saved_tracks(limit=25)
+
+        # playlists = get_spotify_playlists(limit=20, offset=0)
+        # print(playlists)
+
 
         # new_playlist = create_playlist("First Playlist", "This is the first local playlist", True, [6, 7, 8, 9])
         # print(new_playlist)
-
-        playlist = create_spotify_playlist(1)
-        print(playlist)
 
         #Create playlist
         # data = {
@@ -257,14 +255,23 @@ def search():
         #     "position": 0 #Optional, Defaults to append
         # }
         # r = requests.post(BASE_URL + f'/playlists/{test_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
+        # To test:
+        # playlist = create_spotify_playlist(1)
+        # print(playlist)
+        
+        # add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], position=None)
+        # delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[])
+        # replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[])
+        # update_spotify_playlist_details(spotify_playlist_id, name, description, public, collaborative)
         
 
         # r = r.json()
         # r = r.text
         r=1
 
-        return render_template("/results.html", query=query, r=r)
-        # return render_template("/results.html", query=query, r=r, tracks=tracks)
+        # return render_template("/results.html", query=query, r=r)
+        return render_template("/results.html", query=query, r=r, tracks=tracks)
 
     else:
         return render_template('/search.html', form=form)
