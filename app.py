@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
-from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks
+from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track
 
 load_dotenv()
 
@@ -259,11 +259,18 @@ def search():
     # delete_tracks_from_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
     # update_spotify_playlist_details('5gprcPiOPACeLyPB0y6MkE', 'Spotiflavor Playlist', 'This is a groovy new playlist brought to you by Spotiflavor', True, False)
     
+  
+
+
     # Search query for this route
 
     form = SearchTracksForm()
 
     if form.validate_on_submit():
+
+        # insert_playlist_track(1, 25, 2)
+        # append_playlist_tracks(1, [8, 24])
+        delete_playlist_track(1, 25)
 
         QUERY_LIMIT = 25
         QUERY_TYPE = 'track'
@@ -281,22 +288,22 @@ def search():
             # "hipster": form.hipster.data
         }
 
-        artist = form.artist.data
-        track = form.track.data
-        album = form.album.data
-        genre = form.genre.data
-        year = form.year.data
+        # artist = form.artist.data
+        # track = form.track.data
+        # album = form.album.data
+        # genre = form.genre.data
+        # year = form.year.data
 
-        query_string = create_query(artist, track, album, genre, year)
-        r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
+        # query_string = create_query(artist, track, album, genre, year)
+        # r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
 
-        tracks = r.json()['tracks']['items']
-        r = r.text
-        print(r)
-        # r=1
+        # tracks = r.json()['tracks']['items']
+        # r = r.text
+        # print(r)
+        r=1
 
-        # return render_template("/results.html", query=query, r=r)
-        return render_template("results.html", query=query, r=r, tracks=tracks)
+        return render_template("/results.html", query=query, r=r)
+        # return render_template("results.html", query=query, r=r, tracks=tracks)
 
     else:
         return render_template('search.html', form=form)

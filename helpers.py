@@ -7,6 +7,7 @@ import requests
 
 BASE_URL = 'https://api.spotify.com/v1'
 
+
 def get_spotify_track_ids(items):
     """Create list of found track ids from Spotify"""
 
@@ -14,6 +15,7 @@ def get_spotify_track_ids(items):
     for item in items:
         spot_track_ids.append(item['track']['id'])
     return spot_track_ids
+
 
 def get_spotify_saved_tracks(limit=20):
     """
@@ -26,6 +28,7 @@ def get_spotify_saved_tracks(limit=20):
     r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
     process_track_search(r.json()['items'])
     return r.json()
+
 
 def process_track_search(found_tracks):
     """Check if db has each spotify track id
@@ -100,6 +103,7 @@ def process_track_search(found_tracks):
             
     return track_ids
 
+
 def create_track_list(track_ids):
     """Take a list of track_ids and return a comma separated list of spotify_track_ids"""
 
@@ -109,6 +113,7 @@ def create_track_list(track_ids):
         tracks += track.spotify_track_id + ','
     return tracks[:-1]
    
+
 def get_audio_features(track_ids):
     """Take list of track_ids, query Spotify and populate db with audio features"""
 
@@ -136,6 +141,7 @@ def get_audio_features(track_ids):
         db_track.time_signature = track['time_signature']
         Track.update()
 
+
 def create_playlist(name="New Playlist", description=None, public=True, tracks=[]):
     """Create a working playlist locally"""
 
@@ -160,6 +166,7 @@ def create_playlist(name="New Playlist", description=None, public=True, tracks=[
 
     return new_playlist
 
+
 def get_playlist_tracks(playlist_id):
     """
     Get the current tracks from a local playlist
@@ -174,6 +181,56 @@ def get_playlist_tracks(playlist_id):
         spotify_uris.append(track.spotify_track_uri)
 
     return spotify_uris
+
+
+def append_playlist_tracks(playlist_id, track_ids):
+    """Append a list of track ids to existing playlist"""
+
+    last_track = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).order_by(PlaylistTrack.index.desc()).first()
+    if last_track:
+        index = last_track.index + 1
+    else:
+        index = 0
+    
+    for track in track_ids:
+        new_playlist_track = PlaylistTrack(
+            playlist_id = playlist_id,
+            track_id = track,
+            index = index
+        )
+        PlaylistTrack.insert(new_playlist_track)
+        index += 1
+
+
+def insert_playlist_track(playlist_id, track_id, index):
+    """Insert a track into an existing playlist"""
+
+    # Check current user owns playlist
+
+    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id, PlaylistTrack.index >= index).order_by(PlaylistTrack.index).all()
+
+    for track in playlist_tracks:
+        track.index += 1
+    new_playlist_track = PlaylistTrack(
+        playlist_id = playlist_id,
+        track_id = track_id,
+        index = index
+    )
+    PlaylistTrack.insert(new_playlist_track)
+
+
+def delete_playlist_track(playlist_id, track_id):
+    """Delete a track from a playlist"""
+
+    track = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id, PlaylistTrack.track_id==track_id).first()
+    index = track.index
+    PlaylistTrack.delete(track)
+
+    tracks_after = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id, PlaylistTrack.index > index).order_by(PlaylistTrack.index).all()
+    for track in tracks_after:
+        track.index -= 1
+    PlaylistTrack.update()
+
 
 #==================================================================================================
 # Spotify Playlist Crud Methods
