@@ -19,7 +19,6 @@ TEST_USER_1 = {
     "spotify_user_id": "TestSpotifyUid",
     "spotify_display_name": "TestUserDisplayName",
     "user_image": "http://www.test.com",
-    "country": "US",
     "is_admin": "True"
 }
 

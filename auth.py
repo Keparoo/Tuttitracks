@@ -91,8 +91,8 @@ def get_bearer_token(code):
     else:
         get_user_id(r.json()['access_token'])
 
-        g.user.refresh_token = r.json()['refresh_token']
-        User.update()
+        # g.user.refresh_token = r.json()['refresh_token']
+        # User.update()
         return {
             "access_token": r.json()['access_token'],
             "token_type": r.json()['token_type'],

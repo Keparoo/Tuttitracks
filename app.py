@@ -272,6 +272,8 @@ def search():
         # append_playlist_tracks(1, [9, 10])
         # delete_playlist_track(1, 25)
         # move_playlist_track(1, 8, 4)
+        # playlist = Playlist.query.get(1)
+        # Playlist.delete(playlist)
 
         QUERY_LIMIT = 25
         QUERY_TYPE = 'track'

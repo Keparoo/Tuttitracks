@@ -45,8 +45,6 @@ class User(db.Model):
     spotify_display_name = db.Column(db.Text)
     user_image = db.Column(db.Text, default="/static/images/default-pic.png")
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
-    refresh_token = db.Column(db.Text)
-    country = db.Column(db.String(2), default='US')
 
     # playlists = db.relationship('Playlist', back_populates='user', cascade='delete-orphan')
 
@@ -65,8 +63,7 @@ class User(db.Model):
             "spotify_user_id": self.spotify_user_id,
             "spotify_display_name": self.spotify_display_name,
             "user_image": self.user_image,
-            "is_admin": self.is_admin,
-            "country": self.country
+            "is_admin": self.is_admin
         }
 
     @classmethod
@@ -129,7 +126,6 @@ class Track(db.Model):
     name = db.Column(db.Text, nullable=False)
     spotify_track_url = db.Column(db.Text, nullable=False)
     spotify_track_uri = db.Column(db.Text, nullable=False)
-    # is_playable = db.Column(db.Boolean, nullable=False)
     preview_url = db.Column(db.Text) # can be null
     release_year = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Integer) # (0-100)
@@ -137,8 +133,6 @@ class Track(db.Model):
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
 
     album = db.relationship('Album', backref='tracks', cascade='delete, merge, save-update')
-
-
 
     acousticness = db.Column(db.Float) # (0.0-1.0)
     danceability = db.Column(db.Float) # (0.0-1.0)
@@ -153,7 +147,6 @@ class Track(db.Model):
     time_signature = db.Column(db.Integer) # (number beats/measure)
 
     lyrics = db.Column(db.Text)
-    lyrics_language = db.Column(db.String(2))
 
     def __repr__(self):
         """Show info about a Track"""
@@ -199,10 +192,9 @@ class Playlist(db.Model):
     name = db.Column(db.Text, nullable=False)
     description = db.Column(db.Text)
 
-
     # delete: delete playlist if user is deleted
     user = db.relationship('User', backref='playlists', cascade='delete, merge, save-update')
-    tracks = db.relationship('Track', secondary="playlists_tracks", backref='playlist')
+    tracks = db.relationship('Track', secondary="playlists_tracks", backref='playlist', cascade='all, delete')
 
     def __repr__(self):
         """Show info about a Playlist"""
@@ -279,8 +271,6 @@ class Album(db.Model):
     spotify_album_id = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text, nullable=False)
     image = db.Column(db.Text, nullable=False)
-    # image_height = db.Column(db.Integer, nullable=False)
-    # image_width = db.Column(db.Integer, nullable=False)
 
     # tracks = db.relationship('Track', back_populates='album', cascade='delete-orphan')
 
@@ -308,20 +298,6 @@ class Album(db.Model):
 
         db.session.delete(album)
         db.session.commit()
-
-# In case a many to many is needed. Currently I think album to track is one to many
-# class TrackAlbum(db.Model):
-#     """Model joins tracks to albums"""
-
-#     __tablename__ = 'tracks_albums'
-
-#     track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
-#     album_id = db.Column(db.Integer, db.ForeignKey("albums.id"), primary_key=True)
-
-#     def __repr__(self):
-#         """Show info about track-album relationship"""
-
-#         return f"<TrackAlbum {self.track_id} {self.album_id}>"
 
 class Artist(db.Model):
     """Model of music artists"""
