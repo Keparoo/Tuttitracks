@@ -219,6 +219,30 @@ def insert_playlist_track(playlist_id, track_id, index):
     PlaylistTrack.insert(new_playlist_track)
 
 
+def move_playlist_track(playlist_id, track_id, new_index):
+    """Move a playlist track from its current index to a new index"""
+
+    track_to_move = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id, PlaylistTrack.track_id==track_id).first()
+    current_index = track_to_move.index
+    if new_index > current_index:
+        
+        tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id, PlaylistTrack.index > current_index).order_by(PlaylistTrack.index).all()
+        for track in tracks:
+            if track.index <= new_index:
+                track.index -= 1
+        track_to_move.index = new_index
+
+    else:
+        tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id, PlaylistTrack.index >= new_index).order_by(PlaylistTrack.index).all()
+        
+        for track in tracks:
+            if track.index <= current_index:
+                track.index += 1
+        track_to_move.index = new_index
+
+    PlaylistTrack.update()
+    
+
 def delete_playlist_track(playlist_id, track_id):
     """Delete a track from a playlist"""
 

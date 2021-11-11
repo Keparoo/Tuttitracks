@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
-from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track
+from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track, move_playlist_track
 
 load_dotenv()
 
@@ -269,8 +269,10 @@ def search():
     if form.validate_on_submit():
 
         # insert_playlist_track(1, 25, 2)
-        # append_playlist_tracks(1, [8, 24])
-        delete_playlist_track(1, 25)
+        # append_playlist_tracks(1, [9, 10])
+        # delete_playlist_track(1, 25)
+        db.session.rollback()
+        move_playlist_track(1, 8, 4)
 
         QUERY_LIMIT = 25
         QUERY_TYPE = 'track'
