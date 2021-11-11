@@ -271,8 +271,7 @@ def search():
         # insert_playlist_track(1, 25, 2)
         # append_playlist_tracks(1, [9, 10])
         # delete_playlist_track(1, 25)
-        db.session.rollback()
-        move_playlist_track(1, 8, 4)
+        # move_playlist_track(1, 8, 4)
 
         QUERY_LIMIT = 25
         QUERY_TYPE = 'track'
