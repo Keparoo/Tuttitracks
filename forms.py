@@ -11,7 +11,6 @@ class SignupForm(FlaskForm):
     username = StringField("User Name", validators=[InputRequired(), Length(min=3, max=25, message="Username must be between 8 and 25 characters long.")], render_kw={'autofocus': True})
     password = PasswordField("Password", validators=[InputRequired()])
     email = StringField("Email", validators=[InputRequired(), Email(), Length(min=1, max=50, message="Email cannot be longer than 50 characters.")])
-    country = StringField("Country Code")
 
 class LoginForm(FlaskForm):
     """Form for logging in user"""

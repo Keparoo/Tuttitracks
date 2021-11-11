@@ -85,7 +85,6 @@ def signup():
                 username=form.username.data,
                 password=form.password.data,
                 email=form.email.data,
-                country=form.country.data or User.country.default.arg,
                 user_image=User.user_image.default.arg,
             )
             User.insert(user)
@@ -239,10 +238,6 @@ def search():
     # playlists = get_spotify_playlists(limit=20, offset=0)
     # print(playlists)
 
-
-    # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
-    # print(new_playlist)
-
     #Create playlist
     # playlist = create_spotify_playlist(1)
     # print(playlist)
@@ -272,8 +267,10 @@ def search():
         # append_playlist_tracks(1, [9, 10])
         # delete_playlist_track(1, 25)
         # move_playlist_track(1, 8, 4)
-        # playlist = Playlist.query.get(1)
-        # Playlist.delete(playlist)
+        playlist = Playlist.query.get(1)
+        Playlist.delete(playlist)
+        # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
+        # print(new_playlist)
 
         QUERY_LIMIT = 25
         QUERY_TYPE = 'track'

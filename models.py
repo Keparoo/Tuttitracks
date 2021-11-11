@@ -51,7 +51,7 @@ class User(db.Model):
     def __repr__(self):
         """Show info about a User"""
 
-        return f"<User {self.username} {self.email} {self.country} {self.spotify_user_id} {self.spotify_display_name} {self.is_admin}>"
+        return f"<User {self.username} {self.email} {self.spotify_user_id} {self.spotify_display_name} {self.is_admin}>"
 
     def serialize(self):
         """Turn object into dictionary"""
@@ -67,7 +67,7 @@ class User(db.Model):
         }
 
     @classmethod
-    def signup(cls, username, password, email, country, user_image):
+    def signup(cls, username, password, email, user_image):
         """Register user with hashed password & return user"""
 
         hashed = bcrypt.generate_password_hash(password)
@@ -75,7 +75,7 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
 
         # return instance of user w/username and hashed pwd
-        return cls(username=username, password=hashed_utf8, email=email, country=country, user_image=user_image)
+        return cls(username=username, password=hashed_utf8, email=email, user_image=user_image)
 
     @classmethod
     def authenticate(cls, username, password):
@@ -129,7 +129,7 @@ class Track(db.Model):
     preview_url = db.Column(db.Text) # can be null
     release_year = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Integer) # (0-100)
-    duration = db.Column(db.Integer, nullable=False)
+    duration_ms = db.Column(db.Integer, nullable=False)
     album_id = db.Column(db.Integer, db.ForeignKey('albums.id'))
 
     album = db.relationship('Album', backref='tracks', cascade='delete, merge, save-update')
