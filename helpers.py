@@ -54,7 +54,7 @@ def process_track_search(found_tracks):
                 spotify_track_uri=track['track']['uri'],
                 preview_url=track['track']['preview_url'],
                 release_year=track['track']['album']['release_date'][:4],
-                duration=track['track']['duration_ms'])
+                duration_ms=track['track']['duration_ms'])
             
             # check if album in db, if so connect to track else create and connect
             album = Album.query.filter(Album.spotify_album_id==track['track']['album']['id']).first()
