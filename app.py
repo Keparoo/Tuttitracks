@@ -328,7 +328,6 @@ def get_tracks():
     """Query Spotify for Users' saved tracks"""
 
     track_tuples, tracks = get_spotify_saved_tracks(limit=30)
-    print(track_tuples)
 
     return render_template("display_tracks.html", tracks=tracks, track_tuples=track_tuples)
 
@@ -336,38 +335,81 @@ def get_tracks():
 # Database api routes
 #====================================================================================
 
-# get user's playlists: GET /users/<user_id>/playlists   
+def get_track_ids(tracks):
+    track_ids = []
+    for track in tracks:
+        track_ids.append(track['id'])
+    return track_ids
+
+# get user's playlists: GET /users/<user_id>/playlists
+# update playlist details: PUT /playlists/<playlist_id>   
 
 
 @app.post('/api/users/<username>/playlists')
-def create_playlist(username):
+def create_playlist_route(username):
     """Create a playlist locally"""
+
+    name = request.json['name']
+    description = request.json['description']
+    tracks = request.json['playlistTracks']
+    print('New Playlist & Tracks: ', name, description, tracks)
+
+    track_ids = get_track_ids(tracks)
+    print(track_ids)
+
+    playlist = create_playlist(name, description, track_ids)
+    print('New Playlist id:', playlist.id)
+
+    return jsonify({
+        'success': True,
+        'name': name,
+        'description': description, 
+        'playlist_id': playlist.id
+    }), 200
+
+@app.put('/api/playlists/<int:playlist_id>')
+def update_playlist_details_route(playlist_id):
+    """Update playlist name or description"""
 
     name = request.json['name']
     description = request.json['description']
     print('New Playlist: ', name, description)
 
+    playlist = Playlist.query.get_or_404(playlist_id)
+    playlist.name = name
+    playlist.description = description
+    Playlist.update()
+
     return jsonify({
         'success': True,
-        'name': name,
-        'description': description
+        'name': playlist.name,
+        'description': playlist.description, 
+        'playlist_id': playlist_id
     }), 200
 
 @app.get('/api/me/playlists')
 def get_my_playlists(username):
     """Get current users playlists"""
 
-@app.get('/api/playlists/<playlist_id>')
+@app.get('/api/playlists/<int:playlist_id>')
 def get_playlist(playlist_id):
     """Get a playlist"""
 
-@app.get('/api/playlists/<playlist_id>/tracks')
+@app.get('/api/playlists/<int:playlist_id>/tracks')
 def get_playlist_items(playlist_id):
-    """Get plylist tracks"""
+    """Get playlist tracks"""
 
-@app.post('/api/playlists/<playlist_id>/tracks')
+@app.post('/api/playlists/<int:playlist_id>/tracks')
 def add_tracks_to_playlist(playlist_id):
     """Add tracks to playlist"""
+
+    track_ids = request.json['id']
+    append_playlist_tracks(playlist_id, track_ids)
+
+    return jsonify({
+        'success': True,
+        'playlist': playlist_id
+    })
 
 @app.put('/api/playlists/<playlist_id>/tracks')
 def update_playlist_tracks(playlist_id):

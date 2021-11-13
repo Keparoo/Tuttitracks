@@ -111,7 +111,7 @@ def process_track_search(found_tracks):
                 db.session.commit()
 
     get_audio_features(track_ids)
-    
+
     return track_tuples        
 
 
@@ -158,8 +158,11 @@ def get_audio_features(track_ids):
         db_track.time_signature = track['time_signature']
         Track.update()
 
+#====================================================================================
+# api CRUD methods
+#====================================================================================
 
-def create_playlist(name="New Playlist", description=None, public=True, tracks=[]):
+def create_playlist(name="New Playlist", description=None, tracks=[], public=True):
     """Create a working playlist locally"""
 
     new_playlist = Playlist(

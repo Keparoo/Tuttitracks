@@ -2,7 +2,8 @@ const $body = $('body');
 
 BASE_URL = 'http://127.0.0.1:5000/api';
 
-const playlist = [];
+const playlistTracks = [];
+let currentPlaylist;
 
 const makePlaylistHTML = (name, id) => {
 	return `<li data-id=${id}> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
@@ -11,7 +12,7 @@ const makePlaylistHTML = (name, id) => {
 const updatePlaylist = () => {
 	let newTrack = $(makePlaylistHTML(track.name, track.id));
 	$('#playList').append(newTrack);
-	for (let track of playlist) {
+	for (let track of playlistTracks) {
 		let newTrack = $(makePlaylistHTML(track.name, track.id));
 		$('#playList').append(newTrack);
 	}
@@ -26,34 +27,55 @@ const handleAdd = async (e) => {
 	const name = $track.data('name');
 	console.log('Track info:', name, id, spotId);
 
-	playlist.push({ name: name, id: id });
-	console.log(playlist);
+	playlistTracks.push({ name: name, id: id });
+	console.log(playlistTracks);
 	let newTrack = $(makePlaylistHTML(name, id));
 	$('#playList').append(newTrack);
-	// send new track to database
-	// res = axios.post(`${BASE_URL}/playlists/${playlist_id}/tracks`);
+
+	payload = { id: [ id ] };
+
+	if (currentPlaylist) {
+		// send new track to database
+		res = await axios.post(
+			`${BASE_URL}/playlists/${currentPlaylist}/tracks`,
+			payload
+		);
+	}
 };
 
 const createPlaylist = async (e) => {
 	e.preventDefault();
 	console.debug('createPlaylist');
+
 	const $form = $('#form');
 	const $username = $form.data('username');
 	console.log($username);
 	const name = $('#name').val();
 	const description = $('#description').val();
 	console.log('New Playlist', name, description);
-	const newPlaylist = { name, description };
 
-	const res = await axios.post(
-		`${BASE_URL}/users/${$username}/playlists`,
-		newPlaylist
-	);
-	$('#createPlaylist').html('Update Playlist');
-
-	console.log(res.data.name, res.data.description);
+	if (currentPlaylist) {
+		console.debug('Playlist exists');
+		playlist_payload = { name, description };
+		const res = await axios.put(
+			`${BASE_URL}/playlists/${currentPlaylist}`,
+			playlist_payload
+		);
+		console.debug(res.data.name, res.data.description, res.data.playlist_id);
+	} else {
+		console.debug('New Playlist');
+		const playlist_payload = { name, description, playlistTracks };
+		const res = await axios.post(
+			`${BASE_URL}/users/${$username}/playlists`,
+			playlist_payload
+		);
+		console.debug(res.data.name, res.data.description, res.data.playlist_id);
+		currentPlaylist = res.data.playlist_id;
+		$('#createPlaylist').html('Update Playlist');
+	}
 };
 // create playlist: POST /users/<username>/playlists
+// update playlist details: PUT /playlists/<playlist_id>
 // get playlist: GET /playlists/<playlist_id>
 // get playlist items: GET /playlists/<playlist_id>/tracks
 // add itmes to playlist: POST /playlists/<playlist_id>/tracks
