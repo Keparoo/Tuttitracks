@@ -18,7 +18,7 @@ def get_spotify_track_ids(items):
     return spot_track_ids
 
 
-def get_spotify_saved_tracks(limit=20):
+def get_spotify_saved_tracks(limit=25):
     """
     Return a list of user's saved Spotify track objects
     """
