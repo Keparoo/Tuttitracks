@@ -327,7 +327,7 @@ def search():
 def get_tracks():
     """Query Spotify for Users' saved tracks"""
 
-    tracks = get_spotify_saved_tracks(limit=25)
+    tracks = get_spotify_saved_tracks(limit=30)
 
     return render_template("display_tracks.html", tracks=tracks)
 
@@ -350,3 +350,18 @@ def resource_not_found(error):
 @app.errorhandler(500)
 def resource_not_found(error):
     return render_template('/errors/500.html'), 500
+
+#====================================================================================
+# Turn off all caching in Flask -- DEV only: comment out when in production
+# https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
+#====================================================================================
+
+@app.after_request
+def add_header(req):
+    """Add non-caching headers on every request."""
+
+    req.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    req.headers["Pragma"] = "no-cache"
+    req.headers["Expires"] = "0"
+    req.headers['Cache-Control'] = 'public, max-age=0'
+    return req
