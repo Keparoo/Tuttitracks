@@ -22,9 +22,25 @@
             <br>
         </div>
         <div class="col-6">
+            <form action="">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" name="name" id="" placeholder="Enter name of playlist"
+                        autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" name="description" id="description"
+                        placeholder="Enter playlist description">
+                </div>
+                <button class="btn btn-success">Create Playlist</button>
+            </form>
+            <br>
+            <h3>Current Tracks</h3>
             <div id="playList"></div>
         </div>
     </div>
+</div>
 </div>
 
 <script src="http://unpkg.com/jquery"></script>

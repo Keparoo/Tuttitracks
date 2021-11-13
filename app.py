@@ -332,6 +332,42 @@ def get_tracks():
     return render_template("display_tracks.html", tracks=tracks)
 
 #====================================================================================
+# Database api routes
+#====================================================================================
+
+# get user's playlists: GET /users/<user_id>/playlists   
+
+
+@app.post('/api/users/<user_id>/playlists')
+def create_playlist(user_id):
+    """Create a playlist locally"""
+
+@app.get('/api/me/playlists')
+def get_my_playlists(user_id):
+    """Get current users playlists"""
+
+@app.get('/api/playlists/<playlist_id>')
+def get_playlist(playlist_id):
+    """Get a playlist"""
+
+@app.get('/api/playlists/<playlist_id/tracks')
+def get_playlist_items(playlist_id):
+    """Get plylist tracks"""
+
+@app.post('/api/playlists/<playlist_id>/tracks')
+def add_tracks_to_playlist(playlist_id):
+    """Add tracks to playlist"""
+
+@app.put('/api/playlists/<playlist_id>/tracks')
+def update_playlist_tracks(playlist_id):
+    """Replace current tracks with new list of tracks"""
+
+@app.delete('/api/playlists/<playlist_id>/tracks')
+def delete_playlist(playlist_id):
+    """Delete a playlist"""
+
+
+#====================================================================================
 # error handlers
 #====================================================================================
 
