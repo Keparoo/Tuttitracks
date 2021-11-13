@@ -2,6 +2,7 @@
 
 import json
 from models import db, Track, Album, Artist, TrackArtist, Playlist, PlaylistTrack, Genre, TrackGenre
+from auth import refresh_token
 from flask import session, g
 import requests
 
@@ -21,11 +22,18 @@ def get_spotify_saved_tracks(limit=20):
     """
     Return a list of user's saved Spotify track objects
     """
+
     headers = {
         'Authorization': f'Bearer {g.token}'
     }
     
     r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
+
     process_track_search(r.json()['items'])
     return r.json()
 
@@ -124,6 +132,11 @@ def get_audio_features(track_ids):
     tracks = create_track_list(track_ids)
 
     r = requests.get(BASE_URL + '/audio-features?ids=' + tracks, headers=headers)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.get(BASE_URL + '/audio-features?ids=' + tracks, headers=headers)
 
     for track in r.json()['audio_features']:
         db_track = Track.query.filter(Track.spotify_track_id==track['id']).first()
@@ -268,6 +281,12 @@ def get_spotify_playlists(limit=20, offset=0):
     }
 
     r = requests.get(BASE_URL + f'/me/playlists?limit={limit}&offset={offset}', headers=headers)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.get(BASE_URL + f'/me/playlists?limit={limit}&offset={offset}', headers=headers)
+
     return r.json()
 
 def create_spotify_playlist(playlist_id):
@@ -286,6 +305,11 @@ def create_spotify_playlist(playlist_id):
         "collaborative": playlist.collaborative #Defaults to False, can only be true when public is False
     }
     r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
     
     #Update local playlist object with spotify_playlist_id and image if available
     playlist.spotify_playlist_id = r.json()['id']
@@ -317,6 +341,11 @@ def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], pos
     }
     r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
     Playlist.update()
@@ -343,6 +372,11 @@ def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
     }
     r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
     Playlist.update()
@@ -367,6 +401,11 @@ def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]
     }
 
     r = requests.delete(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.delete(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
 
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
@@ -393,6 +432,11 @@ def update_spotify_playlist_details(spotify_playlist_id, name, description, publ
     }
 
     r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}', headers=headers, data=json.dumps(data))
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}', headers=headers, data=json.dumps(data))
 
     return r.status_code
 

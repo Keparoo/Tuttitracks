@@ -104,9 +104,8 @@ def get_bearer_token(code):
 def refresh_token (refresh_token):
     """Request a refresh bearer token from Spotify
         Supply the original refresh token provided
-        Perhaps this token should be stored in User
-        Tokens are good for an hour. How to know when to refresh?
-        Refactor this code and get_bearer_token to dry them up.
+        Tokens are good for an hour. Set new token in session
+        Return header with new bearer token
     
     """
 
@@ -129,12 +128,17 @@ def refresh_token (refresh_token):
             "error_description": "Unable to get authorization token"
             }
     else:
-        return {
+        session['auth'] = {
             "access_token": r.json()['access_token'],
             "token_type": r.json()['token_type'],
             "scope": r.json()['scope'],
             "expires_in": r.json()['expires_in']
             }
+
+        new_bearer = r.json()['access_token']
+        return {
+            'Authorization': f'Bearer {new_bearer}'
+        }
 
 class Spotify_Auth:
     """Auth token class for Spotify"""

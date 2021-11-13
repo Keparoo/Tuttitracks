@@ -306,14 +306,9 @@ def search():
 
         r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
 
-        # Token has expired, request new token
+        # Token has expired: request refresh
         if r.status_code == 401:
-            auth = refresh_token(g.refresh)
-            session['auth'] = auth
-            new_bearer = auth['access_token']
-            headers = {
-                'Authorization': f'Bearer {new_bearer}'
-            }
+            headers = refresh_token(g.refresh)
             r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
 
         tracks = r.json()['tracks']['items']
