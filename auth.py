@@ -133,8 +133,7 @@ def refresh_token (refresh_token):
             "access_token": r.json()['access_token'],
             "token_type": r.json()['token_type'],
             "scope": r.json()['scope'],
-            "expires_in": r.json()['expires_in'],
-            "refresh_token": r.json()['refresh_token'],
+            "expires_in": r.json()['expires_in']
             }
 
 class Spotify_Auth:

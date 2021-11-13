@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
-from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, requires_auth, requires_signed_out
+from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, refresh_token, requires_auth, requires_signed_out
 from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track, move_playlist_track
 
 load_dotenv()
@@ -55,9 +55,12 @@ def add_user_to_g():
 
     if 'auth' in session:
         g.token = session['auth']['access_token']
-        g.refresh = session['auth']['refresh_token']
     else:
         g.token = None
+
+    if 'refresh' in session:
+        g.refresh = session['refresh']
+    else:
         g.refresh = None
 
 
@@ -72,6 +75,7 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+        del session['auth']
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -171,6 +175,7 @@ def get_auth_token():
         print('Error: ', auth['error'], auth['error_description'])
     else:
         session['auth'] = auth
+        session['refresh'] = auth['refresh_token']
   
     return redirect('/')
 
@@ -267,8 +272,8 @@ def search():
         # append_playlist_tracks(1, [9, 10])
         # delete_playlist_track(1, 25)
         # move_playlist_track(1, 8, 4)
-        playlist = Playlist.query.get(1)
-        Playlist.delete(playlist)
+        # playlist = Playlist.query.get(1)
+        # Playlist.delete(playlist)
         # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
         # print(new_playlist)
 
@@ -288,22 +293,36 @@ def search():
             # "hipster": form.hipster.data
         }
 
-        # artist = form.artist.data
-        # track = form.track.data
-        # album = form.album.data
-        # genre = form.genre.data
-        # year = form.year.data
+        artist = form.artist.data
+        track = form.track.data
+        album = form.album.data
+        genre = form.genre.data
+        year = form.year.data
 
-        # query_string = create_query(artist, track, album, genre, year)
-        # r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
+        if not artist and not track and not album and not genre and not year:
+            year = 2021
 
-        # tracks = r.json()['tracks']['items']
+        query_string = create_query(artist, track, album, genre, year)
+
+        r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
+
+        # Token has expired, request new token
+        if r.status_code == 401:
+            auth = refresh_token(g.refresh)
+            session['auth'] = auth
+            new_bearer = auth['access_token']
+            headers = {
+                'Authorization': f'Bearer {new_bearer}'
+            }
+            r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
+
+        tracks = r.json()['tracks']['items']
         # r = r.text
         # print(r)
         r=1
 
-        return render_template("/results.html", query=query, r=r)
-        # return render_template("results.html", query=query, r=r, tracks=tracks)
+        # return render_template("/results.html", query=query, r=r)
+        return render_template("results.html", query=query, r=r, tracks=tracks)
 
     else:
         return render_template('search.html', form=form)
