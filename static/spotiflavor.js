@@ -30,7 +30,7 @@ const handleAdd = async (e) => {
 	let newTrack = $(makePlaylistHTML(name, id));
 	$('#playList').append(newTrack);
 	// send new track to database
-	res = axios.post(`${BASE_URL}/playlist/${id}`);
+	// res = axios.post(`${BASE_URL}/playlist/${id}`);
 };
 
 // create playlist: POST /users/<user_id>/playlists
