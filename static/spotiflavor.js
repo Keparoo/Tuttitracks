@@ -22,24 +22,45 @@ const handleAdd = async (e) => {
 	console.debug('handleAdd');
 	const $track = $(e.target).closest('p');
 	const id = $track.data('id');
+	const spotId = $track.data('spotid');
 	const name = $track.data('name');
-	console.log('Track info:', name, id);
+	console.log('Track info:', name, id, spotId);
 
 	playlist.push({ name: name, id: id });
 	console.log(playlist);
 	let newTrack = $(makePlaylistHTML(name, id));
 	$('#playList').append(newTrack);
 	// send new track to database
-	// res = axios.post(`${BASE_URL}/playlist/${id}`);
+	// res = axios.post(`${BASE_URL}/playlists/${playlist_id}/tracks`);
 };
 
-// create playlist: POST /users/<user_id>/playlists
+const createPlaylist = async (e) => {
+	e.preventDefault();
+	console.debug('createPlaylist');
+	const $form = $('#form');
+	const $username = $form.data('username');
+	console.log($username);
+	const name = $('#name').val();
+	const description = $('#description').val();
+	console.log('New Playlist', name, description);
+	const newPlaylist = { name, description };
+
+	const res = await axios.post(
+		`${BASE_URL}/users/${$username}/playlists`,
+		newPlaylist
+	);
+	$('#createPlaylist').html('Update Playlist');
+
+	console.log(res.data.name, res.data.description);
+};
+// create playlist: POST /users/<username>/playlists
 // get playlist: GET /playlists/<playlist_id>
 // get playlist items: GET /playlists/<playlist_id>/tracks
 // add itmes to playlist: POST /playlists/<playlist_id>/tracks
 // update playlist items: PUT /playlists/<playlist_id>/tracks
 // remove playlist tracks: DELETE /playlists/<playlist_id>/tracks
 // get current user's playlists: GET /me/playlists
-// get user's playlists: GET /users/<user_id>/playlists
+// get user's playlists: GET /users/<username>/playlists
 
 $body.on('click', '.addToPlaylist', handleAdd);
+$body.on('click', '#createPlaylist', createPlaylist);

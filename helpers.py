@@ -34,8 +34,8 @@ def get_spotify_saved_tracks(limit=25):
         headers = refresh_token(g.refresh)
         r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
 
-    process_track_search(r.json()['items'])
-    return r.json()
+    track_tuples = process_track_search(r.json()['items'])
+    return (track_tuples, r.json())
 
 
 def process_track_search(found_tracks):
@@ -46,11 +46,13 @@ def process_track_search(found_tracks):
     """
 
     track_ids = []
+    track_tuples = []
     for track in found_tracks:
         #Check if in db
         track_exists = Track.query.filter(Track.spotify_track_id==track['track']['id']).first()
         #If yes, get id, append to track_ids[]
         if track_exists:
+            track_tuples.append((track_exists.name, track_exists.id, track_exists.spotify_track_id))
             track_ids.append(track_exists.id)
         #If no, populate db, append id to track_ids[]
         else:
@@ -77,6 +79,7 @@ def process_track_search(found_tracks):
                 Album.insert(new_album)
                 new_track.album_id = new_album.id
             Track.insert(new_track)
+            track_tuples.append((new_track.name, new_track.id, new_track.spotify_track_id))
             track_ids.append(new_track.id)
 
         if track_exists:
@@ -108,8 +111,9 @@ def process_track_search(found_tracks):
                 db.session.commit()
 
     get_audio_features(track_ids)
-            
-    return track_ids
+    
+    return track_tuples        
+
 
 
 def create_track_list(track_ids):

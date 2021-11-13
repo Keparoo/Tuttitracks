@@ -4,7 +4,7 @@ import os
 import json
 import base64
 import requests
-from flask import Flask, render_template, request, redirect, flash, session, g
+from flask import Flask, render_template, request, redirect, flash, session, g, jsonify
 from sqlalchemy.exc import IntegrityError
 # from flask_debugtoolbar import DebugToolbarExtension
 
@@ -327,9 +327,10 @@ def search():
 def get_tracks():
     """Query Spotify for Users' saved tracks"""
 
-    tracks = get_spotify_saved_tracks(limit=30)
+    track_tuples, tracks = get_spotify_saved_tracks(limit=30)
+    print(track_tuples)
 
-    return render_template("display_tracks.html", tracks=tracks)
+    return render_template("display_tracks.html", tracks=tracks, track_tuples=track_tuples)
 
 #====================================================================================
 # Database api routes
@@ -338,19 +339,29 @@ def get_tracks():
 # get user's playlists: GET /users/<user_id>/playlists   
 
 
-@app.post('/api/users/<user_id>/playlists')
-def create_playlist(user_id):
+@app.post('/api/users/<username>/playlists')
+def create_playlist(username):
     """Create a playlist locally"""
 
+    name = request.json['name']
+    description = request.json['description']
+    print('New Playlist: ', name, description)
+
+    return jsonify({
+        'success': True,
+        'name': name,
+        'description': description
+    }), 200
+
 @app.get('/api/me/playlists')
-def get_my_playlists(user_id):
+def get_my_playlists(username):
     """Get current users playlists"""
 
 @app.get('/api/playlists/<playlist_id>')
 def get_playlist(playlist_id):
     """Get a playlist"""
 
-@app.get('/api/playlists/<playlist_id/tracks')
+@app.get('/api/playlists/<playlist_id>/tracks')
 def get_playlist_items(playlist_id):
     """Get plylist tracks"""
 
