@@ -354,18 +354,31 @@ def create_playlist_route(username):
     tracks = request.json['playlistTracks']
     print('New Playlist & Tracks: ', name, description, tracks)
 
-    track_ids = get_track_ids(tracks)
-    print(track_ids)
+    try:
+        track_ids = get_track_ids(tracks)
+        # print(track_ids)
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to parse tracks"
+        }), 404
 
-    playlist = create_playlist(name, description, track_ids)
-    print('New Playlist id:', playlist.id)
+    try:
+        playlist = create_playlist(name, description, track_ids)
+        print('New Playlist id:', playlist.id)
 
-    return jsonify({
-        'success': True,
-        'name': name,
-        'description': description, 
-        'playlist_id': playlist.id
-    }), 200
+        return jsonify({
+            'success': True,
+            'name': name,
+            'description': description, 
+            'playlist_id': playlist.id
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to create playlist"
+        }), 404
 
 @app.put('/api/playlists/<int:playlist_id>')
 def update_playlist_details_route(playlist_id):
@@ -375,17 +388,24 @@ def update_playlist_details_route(playlist_id):
     description = request.json['description']
     print('New Playlist: ', name, description)
 
-    playlist = Playlist.query.get_or_404(playlist_id)
-    playlist.name = name
-    playlist.description = description
-    Playlist.update()
+    try:
+        playlist = Playlist.query.get_or_404(playlist_id)
+        playlist.name = name
+        playlist.description = description
+        Playlist.update()
 
-    return jsonify({
-        'success': True,
-        'name': playlist.name,
-        'description': playlist.description, 
-        'playlist_id': playlist_id
-    }), 200
+        return jsonify({
+            'success': True,
+            'name': playlist.name,
+            'description': playlist.description, 
+            'playlist_id': playlist_id
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to update playlist details",
+        }), 404
 
 @app.get('/api/me/playlists')
 def get_my_playlists(username):
@@ -404,13 +424,21 @@ def add_tracks_to_playlist(playlist_id):
     """Add tracks to playlist"""
 
     track_ids = request.json['id']
-    append_playlist_tracks(playlist_id, track_ids)
 
-    return jsonify({
-        'success': True,
-        'playlist': playlist_id,
-        'deleted': track_ids
-    })
+    try:
+        append_playlist_tracks(playlist_id, track_ids)
+
+        return jsonify({
+            'success': True,
+            'playlist': playlist_id,
+            'deleted': track_ids
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to add tracks"
+        }), 404
 
 @app.put('/api/playlists/<playlist_id>/tracks')
 def update_playlist_tracks(playlist_id):
@@ -421,17 +449,38 @@ def delete_playlist_track_route(playlist_id):
     """Delete a track from a playlist"""
 
     track_id = request.json['id'][0]
-    delete_playlist_track(playlist_id, track_id)
 
-    return jsonify({
-        'success': True,
-        'playlist': playlist_id,
-        'deleted': track_id
-    })
+    try:
+        delete_playlist_track(playlist_id, track_id)
+        return jsonify({
+             'success': True,
+            'playlist': playlist_id,
+            'deleted': track_id
+         }), 200
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to delete"
+         }), 404
+
 
 @app.delete('/api/playlists/<int:playlist_id>')
 def delete_playlist_route(playlist_id):
     """Delete a playlist"""
+
+    try:
+        playlist = Playlist.query.get_or_404(playlist_id)
+        Playlist.delete(playlist)
+
+        return jsonify({
+            'success': True,
+            'deleted': playlist_id,
+        }), 200
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Playlist not found or not available"
+        }), 404
 
 
 #====================================================================================
