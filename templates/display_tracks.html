@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <!-- {# <h1 class="display-3 text-center">Search Results</h1>
     <div class="row justify-content-center"> #} -->
-    <h1 class="display-3">Search Results</h1>
+    <h1 class="display-3">Track Results</h1>
     <div class="row">
         <div class="col-6">
             <a href="/search" class="btn btn-info">Search</a>
@@ -21,9 +21,14 @@
             {% endfor %} -->
 
             {% for item in track_tuples %}
-            <p data-name="{{ item[0] }}" data-id="{{ item[1] }}" data-spotid="{{ item[2] }}"><button
+            <!-- <p data-name="{{ item[0] }}" data-id="{{ item[1] }}" data-spotid="{{ item[2] }}"><button
                     class="btn btn-info btn-sm addToPlaylist">Add</button>
-                {{ item[0] }}</p>
+                {{ item[0] }}</p> -->
+            <p data-name="{{ item[0] }}" data-id="{{ item[1] }}" data-spotid="{{ item[2] }}">
+                <iframe src="https://open.spotify.com/embed/track/{{ item[2] }}" width="380" height="80" frameborder="0"
+                    allowtransparency="true" allow="encrypted-media"></iframe> <button
+                    class="btn btn-info btn-sm addToPlaylist">Add</button>
+            </p>
             {% endfor %}
 
 
