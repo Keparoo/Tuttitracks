@@ -408,15 +408,29 @@ def add_tracks_to_playlist(playlist_id):
 
     return jsonify({
         'success': True,
-        'playlist': playlist_id
+        'playlist': playlist_id,
+        'deleted': track_ids
     })
 
 @app.put('/api/playlists/<playlist_id>/tracks')
 def update_playlist_tracks(playlist_id):
     """Replace current tracks with new list of tracks"""
 
-@app.delete('/api/playlists/<playlist_id>/tracks')
-def delete_playlist(playlist_id):
+@app.patch('/api/playlists/<int:playlist_id>/tracks')
+def delete_playlist_track_route(playlist_id):
+    """Delete a track from a playlist"""
+
+    track_id = request.json['id'][0]
+    delete_playlist_track(playlist_id, track_id)
+
+    return jsonify({
+        'success': True,
+        'playlist': playlist_id,
+        'deleted': track_id
+    })
+
+@app.delete('/api/playlists/<int:playlist_id>')
+def delete_playlist_route(playlist_id):
     """Delete a playlist"""
 
 

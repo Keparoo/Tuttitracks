@@ -36,11 +36,31 @@ const handleAdd = async (e) => {
 
 	if (currentPlaylist) {
 		// send new track to database
-		res = await axios.post(
+		const res = await axios.post(
 			`${BASE_URL}/playlists/${currentPlaylist}/tracks`,
 			payload
 		);
+		console.log(res.data.playlist_id);
 	}
+};
+
+const deleteTrack = async (e) => {
+	e.preventDefault();
+	console.debug('deleteTrack');
+	const $track = $(e.target).closest('li');
+	const id = $track.data('id');
+	console.log('Track to delete: ', id);
+
+	payload = { id: [ id ] };
+
+	if (currentPlaylist) {
+		const res = await axios.patch(
+			`${BASE_URL}/playlists/${currentPlaylist}/tracks`,
+			payload
+		);
+		console.log(res.data.deleted);
+	}
+	$track.remove();
 };
 
 const createPlaylist = async (e) => {
@@ -78,7 +98,7 @@ const createPlaylist = async (e) => {
 // update playlist details: PUT /playlists/<playlist_id>
 // get playlist: GET /playlists/<playlist_id>
 // get playlist items: GET /playlists/<playlist_id>/tracks
-// add itmes to playlist: POST /playlists/<playlist_id>/tracks
+// add items to playlist: POST /playlists/<playlist_id>/tracks
 // update playlist items: PUT /playlists/<playlist_id>/tracks
 // remove playlist tracks: DELETE /playlists/<playlist_id>/tracks
 // get current user's playlists: GET /me/playlists
@@ -86,3 +106,4 @@ const createPlaylist = async (e) => {
 
 $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);
+$body.on('click', '.del-track', deleteTrack);
