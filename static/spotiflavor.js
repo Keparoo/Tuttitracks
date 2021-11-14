@@ -107,3 +107,13 @@ const createPlaylist = async (e) => {
 $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
+
+// $('ol.simple_with_drop').sortable({
+// 	group: 'no-drop',
+// 	handle: 'i.icon-move',
+// 	onDragStart: function($item, container, _super) {
+// 		// Duplicate items of the no drop area
+// 		if (!container.options.drop) $item.clone().insertAfter($item);
+// 		_super($item, container);
+// 	}
+// });
