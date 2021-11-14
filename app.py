@@ -411,13 +411,52 @@ def update_playlist_details_route(playlist_id):
 def get_my_playlists(username):
     """Get current users playlists"""
 
+    try:
+        playlists = Playlist.query.filter(Playlist.username==g.user.username)
+        return jsonify({
+            'success': True,
+            'playlists': playlists
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to get playlists"
+        }), 404
+
 @app.get('/api/playlists/<int:playlist_id>')
 def get_playlist(playlist_id):
     """Get a playlist"""
 
+    try:
+        playlist = Playlist.query.get_or_404(playlist_id)
+        return jsonify({
+            'success': True,
+            'playlist': playlist
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to get playlist"
+        }), 404 
+
 @app.get('/api/playlists/<int:playlist_id>/tracks')
 def get_playlist_items(playlist_id):
-    """Get playlist tracks"""
+    """Get playlist tracks return list of track uris"""
+
+    try:
+        tracks = Playlist.query.get_or_404(playlist_id)
+        return jsonify({
+            'success': True,
+            'tracks': tracks
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to get playlist tracks"
+        }), 404      
 
 @app.post('/api/playlists/<int:playlist_id>/tracks')
 def add_tracks_to_playlist(playlist_id):
@@ -443,6 +482,22 @@ def add_tracks_to_playlist(playlist_id):
 @app.put('/api/playlists/<playlist_id>/tracks')
 def update_playlist_tracks(playlist_id):
     """Replace current tracks with new list of tracks"""
+
+    tracks = request.json['tracks']
+
+    try:
+        playlist = Playlist.query.get_or_404(playlist_id)
+        replace_spotify_playlist_items(playlist.spotify_playlist_id, tracks)
+        return jsonify({
+            'success': True,
+            'playlist': playlist_id
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to replace tracks"
+        }), 404    
 
 @app.patch('/api/playlists/<int:playlist_id>/tracks')
 def delete_playlist_track_route(playlist_id):
