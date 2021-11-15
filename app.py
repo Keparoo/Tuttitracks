@@ -168,35 +168,6 @@ def logout():
 def homepage():
     """Display homepage"""
 
-    return render_template('homepage.html')
-
-#====================================================================================
-# Search Routes
-#====================================================================================
-
-def create_query(artist, track, album, genre, year):
-    """Create a query string from passed in query filters"""
-
-    query = ''
-    if artist:
-        query += f'artist:{artist}&'
-    if track:
-        query += f'track:{track}&'
-    if album:
-        query += f'album:{album}&'
-    if genre:
-        query += f'genre:{genre}&'
-    if year:
-        query += f'year{year}&'
-
-    return query
-    
-
-@app.route('/search', methods=['GET', 'POST'])
-@requires_signed_in
-def search():
-    """Display form to search and post on successful submit"""
-
     headers = {
         'Authorization': f'Bearer {g.token}'
     }
@@ -231,11 +202,51 @@ def search():
     # replace_spotify_playlist_items('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
     # delete_tracks_from_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
     # update_spotify_playlist_details('5gprcPiOPACeLyPB0y6MkE', 'Spotiflavor Playlist', 'This is a groovy new playlist brought to you by Spotiflavor', True, False)
+
+    # insert_playlist_track(1, 25, 2)
+    # append_playlist_tracks(1, [9, 10])
+    # delete_playlist_track(1, 25)
+    # move_playlist_track(1, 8, 4)
+    # playlist = Playlist.query.get(1)
+    # Playlist.delete(playlist)
+    # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
+    # print(new_playlist)
+
+    # tracks = r.json()['tracks']['items']
+    # r = r.text
+    # print(r)
+    # r=1
+
+    # return render_template("/results.html", query=query, r=r)
+
+    return render_template('homepage.html')
+
+#====================================================================================
+# Search Routes
+#====================================================================================
+
+def create_query(artist, track, album, genre, year):
+    """Create a query string from passed in query filters"""
+
+    query = ''
+    if artist:
+        query += f'artist:{artist}&'
+    if track:
+        query += f'track:{track}&'
+    if album:
+        query += f'album:{album}&'
+    if genre:
+        query += f'genre:{genre}&'
+    if year:
+        query += f'year{year}&'
+
+    return query
     
-  
 
-
-    # Search query for this route
+@app.route('/search', methods=['GET', 'POST'])
+@requires_signed_in
+def search():
+    """Display form to search and post on successful submit"""
 
     form = SearchTracksForm()
 

@@ -10,22 +10,6 @@
     <h1 class="display-4">Spotify Saved Tracks</h1>
     <div class="row">
         <div class="col-6">
-            <!-- {% for item in tracks['items'] %}
-            <p data-id="{{ item['track']['id'] }}" data-name="{{ item['track']['name'] }}"> <button
-                    class="btn btn-info btn-sm addToPlaylist">Add</button> {{
-                item['track']['name'] }}</p>
-            {% endfor %} -->
-
-            <!-- {% for item in track_tuples %} -->
-            <!-- <p data-name="{{ item[0] }}" data-id="{{ item[1] }}" data-spotid="{{ item[2] }}"><button
-                    class="btn btn-info btn-sm addToPlaylist">Add</button>
-                {{ item[0] }}</p> -->
-            <!-- <p data-name="{{ item[0] }}" data-id="{{ item[1] }}" data-spotid="{{ item[2] }}">
-                <iframe src="https://open.spotify.com/embed/track/{{ item[2] }}" width="380" height="80" frameborder="0"
-                    allowtransparency="true" allow="encrypted-media"></iframe> <button
-                    class="btn btn-info btn-sm addToPlaylist">Add</button>
-            </p>
-            {% endfor %} -->
 
             {% for item in track_dicts %}
             <p data-name="{{ item['name'] }}" data-id="{{ item['id'] }}" data-spotid="{{ item['spotify_track_id'] }}">
