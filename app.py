@@ -165,7 +165,7 @@ def logout():
 #====================================================================================
 
 @app.route('/')
-def homepage():
+def homepage(): 
     """Display homepage"""
 
     headers = {
@@ -319,9 +319,51 @@ def get_track_ids(tracks):
         track_ids.append(track['id'])
     return track_ids
 
-# get user's playlists: GET /users/<user_id>/playlists
-# update playlist details: PUT /playlists/<playlist_id>   
+def get_key_signature(key):
+    """Change number to readable key signature"""
 
+    keys = ['C', 'D-flat', 'D', 'E-flat', 'E', 'F', 'G-flat', 'G', 'A-flat', 'A', 'B-flat', 'B']
+    return keys[key]
+
+# get user's playlists: GET /users/<user_id>/playlists
+# update playlist details: PUT /playlists/<playlist_id>
+# get track features: GET /tracks/<track_id>
+
+@app.get('/api/tracks/<int:track_id>')  
+def get_audio_features_route(track_id):
+    """Get the audio features of a track from database"""
+
+    try:
+        track = Track.query.get_or_404(track_id)
+
+        key_signature = get_key_signature(track.key)
+        mode = "Major" if track.mode else "minor"
+
+        return jsonify({
+            'success': True,
+            'name': track.name,
+            'popularity': track.popularity,
+            'release_year': track.release_year,
+            'album': track.album,
+            'duration_ms': track.duration_ms,
+            'acousticness': track.acousticness,
+            'danceability': track.danceability,
+            'energy': track.energy,
+            'instrumentalness': track.instrumentalness,
+            'key': key_signature,
+            'liveness': track.liveness,
+            'loudness': track.loudness,
+            'mode': mode,
+            'speechiness': track.speechiness,
+            'time_signature': track.time_signature,
+            'valence': track.valence
+        })
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Track not found"
+        }), 404
+        
 
 @app.post('/api/users/<username>/playlists')
 def create_playlist_route(username):
