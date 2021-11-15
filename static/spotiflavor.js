@@ -4,6 +4,7 @@ BASE_URL = 'http://127.0.0.1:5000/api';
 
 const playlistTracks = [];
 let currentPlaylist;
+let curr_audio_features = [];
 
 const makePlaylistHTML = (name, id) => {
 	return `<li data-id=${id}> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
@@ -16,6 +17,37 @@ const updatePlaylist = () => {
 		let newTrack = $(makePlaylistHTML(track.name, track.id));
 		$('#playList').append(newTrack);
 	}
+};
+
+const makeFeaturesHTML = async (id) => {
+	console.debug('makeFeaturesHTML');
+	const features = await axios.get(`${BASE_URL}/tracks/${id}`);
+	console.log('Key is ', features.data.key);
+
+	return `
+    <div>
+    <h4>Audio Features</h4>
+    <p>Name: ${features.data.name}<br>
+    Album: ${features.data.album}<br>
+    Release Year: ${features.data.release_year}<br>
+    Duration: ${features.data.duration_ms} ms </p>
+
+    <p>Popularity: ${features.data.popularity}<br>
+    Acousticness: ${features.data.acousticness} (0-1)<br>
+    Speechiness: ${features.data.speechiness} (0-1)<br>
+    Instramentalness: ${features.data.instrumentalness} (0-1)<br>
+    Liveness: ${features.data.liveness} (0-1)</p>
+
+    <p>Danceability: ${features.data.danceability} (0-1)<br>
+    Energy: ${features.data.energy} (0-1)<br>
+    Loudness: ${features.data.loudness} avg db<br>
+    Valence: ${features.data.valence} (0-1)</p>
+    
+    <p>Key: ${features.data.key} ${features.data.mode}<br>
+    Beats per measure: ${features.data.time_signature}</p>
+    </div>
+    `;
+	// <p> Tempo: ${features.data.tempo} avg bpm</p>
 };
 
 const handleAdd = async (e) => {
@@ -31,6 +63,9 @@ const handleAdd = async (e) => {
 	console.log(playlistTracks);
 	let newTrack = $(makePlaylistHTML(name, id));
 	$('#playList').append(newTrack);
+
+	let features = await makeFeaturesHTML(id);
+	$('#audio-features').html(features);
 
 	payload = { id: [ id ] };
 
@@ -103,6 +138,7 @@ const createPlaylist = async (e) => {
 // remove playlist tracks: DELETE /playlists/<playlist_id>/tracks
 // get current user's playlists: GET /me/playlists
 // get user's playlists: GET /users/<username>/playlists
+// get track's audio features: GET /tracks/<track_id>
 
 $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);

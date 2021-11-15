@@ -323,6 +323,7 @@ def get_key_signature(key):
     """Change number to readable key signature"""
 
     keys = ['C', 'D-flat', 'D', 'E-flat', 'E', 'F', 'G-flat', 'G', 'A-flat', 'A', 'B-flat', 'B']
+ 
     return keys[key]
 
 # get user's playlists: GET /users/<user_id>/playlists
@@ -336,7 +337,8 @@ def get_audio_features_route(track_id):
     try:
         track = Track.query.get_or_404(track_id)
 
-        key_signature = get_key_signature(track.key)
+        key_signature = get_key_signature(int(track.key))
+        print(key_signature)
         mode = "Major" if track.mode else "minor"
 
         return jsonify({
@@ -344,7 +346,7 @@ def get_audio_features_route(track_id):
             'name': track.name,
             'popularity': track.popularity,
             'release_year': track.release_year,
-            'album': track.album,
+            'album': track.album.name,
             'duration_ms': track.duration_ms,
             'acousticness': track.acousticness,
             'danceability': track.danceability,
@@ -356,6 +358,7 @@ def get_audio_features_route(track_id):
             'mode': mode,
             'speechiness': track.speechiness,
             'time_signature': track.time_signature,
+            # 'tempo': track.tempo,
             'valence': track.valence
         })
     except:
@@ -363,7 +366,7 @@ def get_audio_features_route(track_id):
             'success': False,
             'message': "Track not found"
         }), 404
-        
+
 
 @app.post('/api/users/<username>/playlists')
 def create_playlist_route(username):
