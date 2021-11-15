@@ -37,7 +37,7 @@ def search_spotify(query_string, query_type, query_limit, offset):
     return (r.json()['tracks']['items'], r)
 
 
-def get_spotify_saved_tracks(limit=25):
+def get_spotify_saved_tracks(limit=15, offset=0):
     """
     Return a list of user's saved Spotify track objects
     """
@@ -46,7 +46,7 @@ def get_spotify_saved_tracks(limit=25):
         'Authorization': f'Bearer {g.token}'
     }
     
-    r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
+    r = requests.get(BASE_URL + f'/me/tracks?limit={limit}&offset={offset}', headers=headers)
 
     # Token has expired: request refresh
     if r.status_code == 401:

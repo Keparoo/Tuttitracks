@@ -5,6 +5,7 @@ BASE_URL = 'http://127.0.0.1:5000/api';
 const playlistTracks = [];
 let currentPlaylist;
 let curr_audio_features = [];
+let offset = 0;
 
 const makePlaylistHTML = (name, id) => {
 	return `<li data-id=${id}> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
@@ -140,6 +141,31 @@ const createPlaylist = async (e) => {
 		$('#createPlaylist').html('Update Playlist');
 	}
 };
+
+const makeTracksHTML = async (tracks) => {
+	html = '<p><button id="next" class="btn btn-info">Next Page</button></p>';
+	for (const track of tracks) {
+		html += `<p data-name="${track.name}" data-id="${track.id}" data-spotid="${track.spotify_track_id}">
+        <iframe src="https://open.spotify.com/embed/track/${track.spotify_track_id}" width="380"
+        height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><button
+        class="btn btn-info btn-sm addToPlaylist">Add</button>
+        </p>`;
+	}
+	return html;
+};
+
+const nextPage = async () => {
+	console.debug('nextPage');
+
+	offset += 10;
+
+	const res = await axios.get(`${BASE_URL}/me/tracks?offset=${offset}`);
+	const tracks = res.data.track_dicts;
+	console.log(tracks);
+	const html = await makeTracksHTML(tracks);
+	console.log('HTML', html);
+	$('#tracks').html(html);
+};
 // create playlist: POST /users/<username>/playlists
 // update playlist details: PUT /playlists/<playlist_id>
 // get playlist: GET /playlists/<playlist_id>
@@ -154,6 +180,7 @@ const createPlaylist = async (e) => {
 $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
+$body.on('click', '#next', nextPage);
 $('iframe').hover(showAudioFeatures);
 
 // $('ol.simple_with_drop').sortable({

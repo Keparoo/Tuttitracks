@@ -305,7 +305,7 @@ def search():
 def get_tracks():
     """Query Spotify for Users' saved tracks"""
 
-    track_dicts, tracks = get_spotify_saved_tracks(limit=30)
+    track_dicts, tracks = get_spotify_saved_tracks(limit=15, offset=0)
 
     return render_template("display_tracks.html", tracks=tracks, track_dicts=track_dicts)
 
@@ -320,7 +320,7 @@ def get_track_ids(tracks):
     return track_ids
 
 def get_key_signature(key):
-    """Change number to readable key signature"""
+    """Convert key_signature number to readable key signature"""
 
     keys = ['C', 'D-flat', 'D', 'E-flat', 'E', 'F', 'G-flat', 'G', 'A-flat', 'A', 'B-flat', 'B']
  
@@ -336,6 +336,27 @@ def convert_ms(m_seconds):
 # get user's playlists: GET /users/<user_id>/playlists
 # update playlist details: PUT /playlists/<playlist_id>
 # get track features: GET /tracks/<track_id>
+
+@app.get('/api/me/tracks')
+def get_saved_tracks_route():
+    """Get Spotify saved tracks for current user"""
+
+    offset = request.args.get('offset', 0)
+    print(offset)
+    try:
+        track_dicts, tracks = get_spotify_saved_tracks(offset=offset, limit=15)
+
+        return jsonify({
+            'success': True,
+            'track_dicts': track_dicts,
+            'tracks': tracks
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to fetch Spotify saved tracks"
+        }), 404
 
 @app.get('/api/tracks/<int:track_id>')  
 def get_audio_features_route(track_id):
