@@ -143,7 +143,8 @@ const createPlaylist = async (e) => {
 };
 
 const makeTracksHTML = async (tracks) => {
-	html = '<p><button id="next" class="btn btn-info">Next Page</button></p>';
+	html =
+		'<p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next" class="btn btn-info">Next Page</button></p>';
 	for (const track of tracks) {
 		html += `<p data-name="${track.name}" data-id="${track.id}" data-spotid="${track.spotify_track_id}">
         <iframe src="https://open.spotify.com/embed/track/${track.spotify_track_id}" width="380"
@@ -161,9 +162,19 @@ const nextPage = async () => {
 
 	const res = await axios.get(`${BASE_URL}/me/tracks?offset=${offset}`);
 	const tracks = res.data.track_dicts;
-	console.log(tracks);
 	const html = await makeTracksHTML(tracks);
-	console.log('HTML', html);
+	$('#tracks').html(html);
+};
+
+const prevPage = async () => {
+	console.debug('prevPage');
+
+	offset -= 10;
+	if (offset < 0) offset = 0;
+
+	const res = await axios.get(`${BASE_URL}/me/tracks?offset=${offset}`);
+	const tracks = res.data.track_dicts;
+	const html = await makeTracksHTML(tracks);
 	$('#tracks').html(html);
 };
 // create playlist: POST /users/<username>/playlists
@@ -181,6 +192,7 @@ $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
 $body.on('click', '#next', nextPage);
+$body.on('click', '#previous', prevPage);
 $('iframe').hover(showAudioFeatures);
 
 // $('ol.simple_with_drop').sortable({

@@ -8,8 +8,9 @@
     <h1 class="display-4">Spotify Saved Tracks</h1>
     <div class="row">
         <div id="tracks" class="col-6">
-            <!-- <a href="/api/me/tracks?offset=10" id="next" class="btn btn-info">Next Page</a> -->
-            <p><button id="next" class="btn btn-info">Next Page</button></p>
+
+            <p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next"
+                    class="btn btn-info">Next Page</button></p>
             {% for item in track_dicts %}
             <p data-name="{{ item['name'] }}" data-id="{{ item['id'] }}" data-spotid="{{ item['spotify_track_id'] }}">
                 <iframe src="https://open.spotify.com/embed/track/{{ item['spotify_track_id'] }}" width="380"
