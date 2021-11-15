@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Spotiflavor{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1 class="display-3">Playlists</h1>
+    <div class="row">
+        <div class="col-md-6">
+        <h3>Playlists</h3>
+
+        {# {% for track in tracks %}
+            <p> <strong>Track:</strong> {{ track['name'] }} <strong>Album:</strong> {{ track['album']['name'] }} <strong>Artist:</strong> {{ track['artists'][0]['name']}} <strong>URI:</strong>{{ track['uri'] }} </p>
+        {% endfor%} #}
+
+        {# {% for item in tracks %}
+            <p data-name="{{ item['name'] }}" data-id="" data-spotid="{{ item['id'] }}">
+                <iframe src="https://open.spotify.com/embed/track/{{ item['id'] }}" width="380"
+                    height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> <button
+                    class="btn btn-info btn-sm addToPlaylist">Add</button>
+            </p>
+        {% endfor %} #}
+
+        <br>
+        {# {{ r }} #}
+
+        </div>
+        <div class="col-6">
+            <div id="audio-features"></div>
+            <h3>Spotify Playlists</h3>
+            <div>
+                <ol class="sortable" id="playList"></ol>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- <script src="http://unpkg.com/jquery"></script> -->
+<script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
+
+<!-- <script src="/static/jquery-sortable-min.js"></script> -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script src="/static/spotiflavor.js"></script>
+<script>
+    $(function () {
+        $(".sortable").sortable();
+    });
+</script>
+
+    {# <iframe src="https://open.spotify.com/embed/track/2s25WcjhpjL7CC1n5aW9yx" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    <iframe src="https://open.spotify.com/embed/playlist/5gprcPiOPACeLyPB0y6MkE" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> #}
+
+{% endblock %}

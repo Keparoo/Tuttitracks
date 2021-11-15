@@ -300,7 +300,7 @@ def search():
     else:
         return render_template('search.html', form=form)
 
-@app.route('/tracks', methods=['GET'])
+@app.get('/tracks')
 @requires_signed_in
 def get_tracks():
     """Query Spotify for Users' saved tracks"""
@@ -308,6 +308,17 @@ def get_tracks():
     track_dicts, tracks = get_spotify_saved_tracks(limit=15, offset=0)
 
     return render_template("display_tracks.html", tracks=tracks, track_dicts=track_dicts)
+
+@app.get('/playlists')
+@requires_signed_in
+def playlist_management():
+    """Display local and Spotify playlists"""
+
+
+    playlists = ''
+    spot_playlists = ''
+    
+    return render_template("playlists.html", playlists=playlists, spot_playlists=spot_playlists)
 
 #====================================================================================
 # Database api routes
