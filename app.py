@@ -326,6 +326,13 @@ def get_key_signature(key):
  
     return keys[key]
 
+def convert_ms(m_seconds):
+    """Convert milliseconds to minutes and seconds"""
+
+    minutes = str(m_seconds//60000)
+    seconds = str(round(((m_seconds / 1000) % 60), 2))
+    return f'{minutes}m {seconds}s'
+
 # get user's playlists: GET /users/<user_id>/playlists
 # update playlist details: PUT /playlists/<playlist_id>
 # get track features: GET /tracks/<track_id>
@@ -340,6 +347,8 @@ def get_audio_features_route(track_id):
         key_signature = get_key_signature(int(track.key))
         print(key_signature)
         mode = "Major" if track.mode else "minor"
+        duration = convert_ms(int(track.duration_ms))
+        print(duration)
 
         return jsonify({
             'success': True,
@@ -347,7 +356,7 @@ def get_audio_features_route(track_id):
             'popularity': track.popularity,
             'release_year': track.release_year,
             'album': track.album.name,
-            'duration_ms': track.duration_ms,
+            'duration': duration,
             'acousticness': track.acousticness,
             'danceability': track.danceability,
             'energy': track.energy,

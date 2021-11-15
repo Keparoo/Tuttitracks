@@ -22,29 +22,35 @@ const updatePlaylist = () => {
 const makeFeaturesHTML = async (id) => {
 	console.debug('makeFeaturesHTML');
 	const features = await axios.get(`${BASE_URL}/tracks/${id}`);
-	console.log('Key is ', features.data.key);
 
 	return `
-    <div>
-    <h4>Audio Features</h4>
-    <p>Name: ${features.data.name}<br>
-    Album: ${features.data.album}<br>
-    Release Year: ${features.data.release_year}<br>
-    Duration: ${features.data.duration_ms} ms </p>
-
-    <p>Popularity: ${features.data.popularity}<br>
-    Acousticness: ${features.data.acousticness} (0-1)<br>
-    Speechiness: ${features.data.speechiness} (0-1)<br>
-    Instramentalness: ${features.data.instrumentalness} (0-1)<br>
-    Liveness: ${features.data.liveness} (0-1)</p>
-
-    <p>Danceability: ${features.data.danceability} (0-1)<br>
-    Energy: ${features.data.energy} (0-1)<br>
-    Loudness: ${features.data.loudness} avg db<br>
-    Valence: ${features.data.valence} (0-1)</p>
     
-    <p>Key: ${features.data.key} ${features.data.mode}<br>
-    Beats per measure: ${features.data.time_signature}</p>
+    <div class="row">
+      <div class="col-12">
+        <h4>Audio Features</h4>
+        <p>Name: ${features.data.name}<br>
+        Album: ${features.data.album}</p>
+      </div>
+    
+      <div class="col-6">
+        Release Year: ${features.data.release_year}<br>
+        Duration: ${features.data.duration}</p>
+
+        <p>Popularity: ${features.data.popularity}<br>
+        Acousticness: ${features.data.acousticness} (0-1)<br>
+        Speechiness: ${features.data.speechiness} (0-1)<br>
+        Instramentalness: ${features.data.instrumentalness} (0-1)<br>
+        Liveness: ${features.data.liveness} (0-1)</p>
+
+      </div>
+      <div class="col-6">
+        <p>Key: ${features.data.key} ${features.data.mode}<br>
+        Beats per measure: ${features.data.time_signature}</p>
+
+        <p>Danceability: ${features.data.danceability} (0-1)<br>
+        Energy: ${features.data.energy} (0-1)<br>
+        Loudness: ${features.data.loudness} avg db<br>
+        Valence: ${features.data.valence} (0-1)</p>
     </div>
     `;
 	// <p> Tempo: ${features.data.tempo} avg bpm</p>
