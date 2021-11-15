@@ -4,14 +4,10 @@
 
 {% block content %}
 
-<div class="container">
-    <h1 class="display-3 text-center">Search Results</h1>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-        <a href="/search" class="btn btn-info">Search</a>
-
-    <iframe src="https://open.spotify.com/embed/track/2s25WcjhpjL7CC1n5aW9yx" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    <iframe src="https://open.spotify.com/embed/playlist/5gprcPiOPACeLyPB0y6MkE" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+<div class="container-fluid">
+    <h1 class="display-3">Search Results</h1>
+    <div class="row">
+        <div class="col-md-6">
 
         <ul>
         {% for k, v in query.items() %}
@@ -20,21 +16,62 @@
         </ul>
         <br>
 
-        {% for item in r['items'] %}
-           <p> {{ item['track']['name'] }} {{ item['track']['id'] }} </p>
+        {# {% for track in tracks %}
+            <p> <strong>Track:</strong> {{ track['name'] }} <strong>Album:</strong> {{ track['album']['name'] }} <strong>Artist:</strong> {{ track['artists'][0]['name']}} <strong>URI:</strong>{{ track['uri'] }} </p>
+        {% endfor%} #}
+
+        {% for item in tracks %}
+            <p data-name="{{ item['name'] }}" data-id="" data-spotid="{{ item['id'] }}">
+                <iframe src="https://open.spotify.com/embed/track/{{ item['id'] }}" width="380"
+                    height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> <button
+                    class="btn btn-info btn-sm addToPlaylist">Add</button>
+            </p>
         {% endfor %}
 
-        {% for track in tracks %}
-            <p> <strong>Track:</strong> {{ track['name'] }} <strong>Album:</strong> {{ track['album']['name'] }} <strong>Artist:</strong> {{ track['artists'][0]['name']}} <strong>URI:</strong>{{ track['uri'] }} </p>
-        {% endfor%}
-
-
         <br>
-
         {# {{ r }} #}
 
         </div>
+        <div class="col-6">
+            <h2 class="display-4">Create Playlist</h2>
+            <form action="">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" name="name" id="name" placeholder="Enter name of playlist"
+                        autofocus>
+                </div>
+                <div data-username={{ g.user.username }} id="form" class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" name="description" id="description"
+                        placeholder="Enter playlist description">
+                </div>
+                <button class="btn btn-success" id="createPlaylist">Create Playlist</button>
+            </form>
+            <br>
+            <h3>Current Tracks</h3>
+            <div>
+                <ol class="sortable" id="playList"></ol>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<!-- <script src="http://unpkg.com/jquery"></script> -->
+<script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
+
+<!-- <script src="/static/jquery-sortable-min.js"></script> -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script src="/static/spotiflavor.js"></script>
+<script>
+    $(function () {
+        $(".sortable").sortable();
+    });
+</script>
+
+    {# <iframe src="https://open.spotify.com/embed/track/2s25WcjhpjL7CC1n5aW9yx" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    <iframe src="https://open.spotify.com/embed/playlist/5gprcPiOPACeLyPB0y6MkE" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> #}
 
 {% endblock %}

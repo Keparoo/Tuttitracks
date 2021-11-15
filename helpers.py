@@ -17,6 +17,25 @@ def get_spotify_track_ids(items):
         spot_track_ids.append(item['track']['id'])
     return spot_track_ids
 
+def search_spotify(query_string, query_type, query_limit, offset):
+    """Search Spotify and return"""
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={query_type}&limit={query_limit}&offset={offset}', headers=headers)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={query_type}&limit={query_limit}&offset={offset}', headers=headers)
+
+    # track_dicts = process_track_search(r.json()['tracks']['items'])
+    # return (track_dicts, r.json())
+
+    return (r.json()['tracks']['items'], r)
+
 
 def get_spotify_saved_tracks(limit=25):
     """
@@ -34,8 +53,8 @@ def get_spotify_saved_tracks(limit=25):
         headers = refresh_token(g.refresh)
         r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
 
-    track_tuples = process_track_search(r.json()['items'])
-    return (track_tuples, r.json())
+    track_dicts = process_track_search(r.json()['items'])
+    return (track_dicts, r.json())
 
 
 def process_track_search(found_tracks):
@@ -46,13 +65,13 @@ def process_track_search(found_tracks):
     """
 
     track_ids = []
-    track_tuples = []
+    track_dicts = []
     for track in found_tracks:
         #Check if in db
         track_exists = Track.query.filter(Track.spotify_track_id==track['track']['id']).first()
         #If yes, get id, append to track_ids[]
         if track_exists:
-            track_tuples.append((track_exists.name, track_exists.id, track_exists.spotify_track_id))
+            track_dicts.append({"name": track_exists.name, "id": track_exists.id, "spotify_track_id": track_exists.spotify_track_id})
             track_ids.append(track_exists.id)
         #If no, populate db, append id to track_ids[]
         else:
@@ -79,7 +98,8 @@ def process_track_search(found_tracks):
                 Album.insert(new_album)
                 new_track.album_id = new_album.id
             Track.insert(new_track)
-            track_tuples.append((new_track.name, new_track.id, new_track.spotify_track_id))
+
+            track_dicts.append({"name": new_track.name, "id": new_track.id, "spotify_track_id": new_track.spotify_track_id})
             track_ids.append(new_track.id)
 
         if track_exists:
@@ -112,8 +132,7 @@ def process_track_search(found_tracks):
 
     get_audio_features(track_ids)
 
-    return track_tuples        
-
+    return track_dicts     
 
 
 def create_track_list(track_ids):

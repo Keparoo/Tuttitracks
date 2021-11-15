@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, refresh_token, requires_auth, requires_signed_out
-from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track, move_playlist_track
+from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track, move_playlist_track, search_spotify
 
 load_dotenv()
 
@@ -139,37 +139,9 @@ def get_auth_token():
 
     # Get Spotify user code from redirected request get_spotify_user_code()
     code = request.args.get('code')
+    # User code to obtain bearer token
     auth = get_bearer_token(code)
 
-    # message = f"{CLIENT_ID}:{CLIENT_SECRET}"
-    # messageBytes = message.encode('ascii')
-    # base64Bytes = base64.b64encode(messageBytes)
-    # base64Message = base64Bytes.decode('ascii')
-
-    # headers = {
-    #     "Content-Type": "application/x-www-form-urlencoded",
-    #     "Authorization": f"Basic {base64Message}"
-    # }
-
-    # data = {
-    #     "code": code,
-    #     "redirect_uri": REDIRECT_URI,
-    #     "grant_type": "authorization_code"
-    # }
-    
-    # r = requests.post(TOKEN_URL, headers=headers, data=data)
-
-    # if 'error' in r.json():
-    #     flash(f"Auth Error: {r.json()['error']} {r.json()['error_description']}", "danger")
-    #     print('Auth Error: ', r.json()['error'], r.json()['error_description'])
-    # else:
-    #     auth = {
-    #         "access_token": r.json()['access_token'],
-    #         "token_type": r.json()['token_type'],
-    #         "scope": r.json()['scope'],
-    #         "expires_in": r.json()['expires_in'],
-    #         "refresh_token": r.json()['refresh_token'],
-    #         }
     if 'error' in auth:
         flash(f"Error: {auth['error']} {auth['error_description']}", "danger")
         print('Error: ', auth['error'], auth['error_description'])
@@ -198,8 +170,12 @@ def homepage():
 
     return render_template('homepage.html')
 
+#====================================================================================
+# Search Routes
+#====================================================================================
+
 def create_query(artist, track, album, genre, year):
-    "Create a query string from passed in query filters"
+    """Create a query string from passed in query filters"""
 
     query = ''
     if artist:
@@ -215,9 +191,6 @@ def create_query(artist, track, album, genre, year):
 
     return query
     
-#====================================================================================
-# Search Routes
-#====================================================================================
 
 @app.route('/search', methods=['GET', 'POST'])
 @requires_signed_in
@@ -277,9 +250,8 @@ def search():
         # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
         # print(new_playlist)
 
-        QUERY_LIMIT = 25
+        QUERY_LIMIT = 10
         QUERY_TYPE = 'track'
-
         OFFSET = 0
 
         query = {
@@ -299,25 +271,20 @@ def search():
         genre = form.genre.data
         year = form.year.data
 
+        # Empty search form
         if not artist and not track and not album and not genre and not year:
             year = 2021
 
         query_string = create_query(artist, track, album, genre, year)
+        tracks, r = search_spotify(query_string, QUERY_TYPE, QUERY_LIMIT, OFFSET)
 
-        r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
-
-        # Token has expired: request refresh
-        if r.status_code == 401:
-            headers = refresh_token(g.refresh)
-            r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={QUERY_TYPE}&limit={QUERY_LIMIT}&offset={OFFSET}', headers=headers)
-
-        tracks = r.json()['tracks']['items']
+        # tracks = r.json()['tracks']['items']
         # r = r.text
         # print(r)
-        r=1
+        # r=1
 
         # return render_template("/results.html", query=query, r=r)
-        return render_template("results.html", query=query, r=r, tracks=tracks)
+        return render_template("results.html", query=query, tracks=tracks, r=r)
 
     else:
         return render_template('search.html', form=form)
@@ -327,9 +294,9 @@ def search():
 def get_tracks():
     """Query Spotify for Users' saved tracks"""
 
-    track_tuples, tracks = get_spotify_saved_tracks(limit=30)
+    track_dicts, tracks = get_spotify_saved_tracks(limit=30)
 
-    return render_template("display_tracks.html", tracks=tracks, track_tuples=track_tuples)
+    return render_template("display_tracks.html", tracks=tracks, track_dicts=track_dicts)
 
 #====================================================================================
 # Database api routes
