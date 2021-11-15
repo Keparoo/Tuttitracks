@@ -39,7 +39,7 @@ const makeFeaturesHTML = async (id) => {
         <p>Popularity: ${features.data.popularity}<br>
         Acousticness: ${features.data.acousticness} (0-1)<br>
         Speechiness: ${features.data.speechiness} (0-1)<br>
-        Instramentalness: ${features.data.instrumentalness} (0-1)<br>
+        Instrumentalness: ${features.data.instrumentalness} (0-1)<br>
         Liveness: ${features.data.liveness} (0-1)</p>
 
       </div>
@@ -56,6 +56,14 @@ const makeFeaturesHTML = async (id) => {
 	// <p> Tempo: ${features.data.tempo} avg bpm</p>
 };
 
+const showAudioFeatures = async (e) => {
+	console.debug('showAudioFeatures');
+	const $p = $(e.target).closest('p');
+	const id = $p.data('id');
+	let features = await makeFeaturesHTML(id);
+	$('#audio-features').html(features);
+};
+
 const handleAdd = async (e) => {
 	e.preventDefault();
 	console.debug('handleAdd');
@@ -69,9 +77,6 @@ const handleAdd = async (e) => {
 	console.log(playlistTracks);
 	let newTrack = $(makePlaylistHTML(name, id));
 	$('#playList').append(newTrack);
-
-	let features = await makeFeaturesHTML(id);
-	$('#audio-features').html(features);
 
 	payload = { id: [ id ] };
 
@@ -149,6 +154,7 @@ const createPlaylist = async (e) => {
 $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
+$('iframe').hover(showAudioFeatures);
 
 // $('ol.simple_with_drop').sortable({
 // 	group: 'no-drop',
