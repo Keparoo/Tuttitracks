@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
 from forms import SignupForm, LoginForm, SearchTracksForm
 from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, refresh_token, requires_auth, requires_signed_out
-from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track, move_playlist_track, search_spotify
+from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track, move_playlist_track, search_spotify, get_playlist_item_info
 
 load_dotenv()
 
@@ -316,12 +316,16 @@ def playlist_management():
 
     # Get local playlists
     playlists = Playlist.query.filter(Playlist.username==g.user.username).all()
-    print(playlists)
+
     # Get spotify playlists
+    LIMIT = 20
+    OFFSET = 0
+    spot_playlists = get_spotify_playlists(LIMIT, OFFSET)
+    total_spot_playlists = spot_playlists['total']
+    parsed_playlists = get_playlist_item_info(spot_playlists['items'])
+    print('*************', total_spot_playlists, parsed_playlists)
 
-    spot_playlists = ''
-
-    return render_template("playlists.html", playlists=playlists, spot_playlists=spot_playlists)
+    return render_template("playlists.html", playlists=playlists, parsed_playlists=parsed_playlists, total_spot_playlists=total_spot_playlists)
 
 #====================================================================================
 # Database api routes
@@ -348,15 +352,13 @@ def convert_ms(m_seconds):
     return f'{minutes}m {seconds}s'
 
 # get user's playlists: GET /users/<user_id>/playlists
-# update playlist details: PUT /playlists/<playlist_id>
-# get track features: GET /tracks/<track_id>
 
 @app.get('/api/me/tracks')
 def get_saved_tracks_route():
     """Get Spotify saved tracks for current user"""
 
     offset = request.args.get('offset', 0)
-    print(offset)
+
     try:
         track_dicts, tracks = get_spotify_saved_tracks(offset=offset, limit=15)
 
@@ -372,6 +374,7 @@ def get_saved_tracks_route():
             'message': "Unable to fetch Spotify saved tracks"
         }), 404
 
+
 @app.get('/api/tracks/<int:track_id>')  
 def get_audio_features_route(track_id):
     """Get the audio features of a track from database"""
@@ -380,10 +383,8 @@ def get_audio_features_route(track_id):
         track = Track.query.get_or_404(track_id)
 
         key_signature = get_key_signature(int(track.key))
-        print(key_signature)
         mode = "Major" if track.mode else "minor"
         duration = convert_ms(int(track.duration_ms))
-        print(duration)
 
         return jsonify({
             'success': True,
@@ -447,6 +448,7 @@ def create_playlist_route(username):
             'message': "Unable to create playlist"
         }), 404
 
+
 @app.put('/api/playlists/<int:playlist_id>')
 def update_playlist_details_route(playlist_id):
     """Update playlist name or description"""
@@ -474,6 +476,7 @@ def update_playlist_details_route(playlist_id):
             'message': "Unable to update playlist details",
         }), 404
 
+
 @app.get('/api/me/playlists')
 def get_my_playlists(username):
     """Get current users playlists"""
@@ -490,6 +493,7 @@ def get_my_playlists(username):
             'success': False,
             'message': "Unable to get playlists"
         }), 404
+
 
 @app.get('/api/playlists/<int:playlist_id>')
 def get_playlist(playlist_id):
@@ -508,6 +512,7 @@ def get_playlist(playlist_id):
             'message': "Unable to get playlist"
         }), 404 
 
+
 @app.get('/api/playlists/<int:playlist_id>/tracks')
 def get_playlist_items(playlist_id):
     """Get playlist tracks return list of track uris"""
@@ -524,6 +529,7 @@ def get_playlist_items(playlist_id):
             'success': False,
             'message': "Unable to get playlist tracks"
         }), 404      
+
 
 @app.post('/api/playlists/<int:playlist_id>/tracks')
 def add_tracks_to_playlist(playlist_id):
@@ -546,6 +552,7 @@ def add_tracks_to_playlist(playlist_id):
             'message': "Unable to add tracks"
         }), 404
 
+
 @app.put('/api/playlists/<playlist_id>/tracks')
 def update_playlist_tracks(playlist_id):
     """Replace current tracks with new list of tracks"""
@@ -565,6 +572,7 @@ def update_playlist_tracks(playlist_id):
             'success': False,
             'message': "Unable to replace tracks"
         }), 404    
+
 
 @app.patch('/api/playlists/<int:playlist_id>/tracks')
 def delete_playlist_track_route(playlist_id):
@@ -604,6 +612,7 @@ def delete_playlist_route(playlist_id):
             'message': "Playlist not found or not available"
         }), 404
 
+
 @app.post('/api/spotify/<int:id>/playlists')
 def update_playlist_to_spotify(id):
     """Create new playlist on Spotify from local playlist
@@ -636,6 +645,28 @@ def update_playlist_to_spotify(id):
         }), 404
 
 
+@app.get('/api/spotify/playlists')
+def get_spotify_playlists_route():
+    """Get current user's spotify playlists"""
+
+    limit = request.args.get('limit', 20)
+    offset = request.args.get('offset', 0)
+
+    try:
+        playlists = get_spotify_playlists(limit, offset)
+
+        return jsonify({
+            "success": True,
+            "spot_playlists": playlists
+        }), 200
+
+    except:
+        return jsonify({
+            "success": False,
+            "message": "Unable to retrieve playlists"
+        }), 404
+
+
 #====================================================================================
 # error handlers
 #====================================================================================
@@ -644,13 +675,16 @@ def update_playlist_to_spotify(id):
 def resource_not_found(error):
     return render_template('/errors/404.html'), 404
 
+
 @app.errorhandler(401)
 def resource_not_found(error):
     return render_template('/errors/401.html'), 401
 
+
 @app.errorhandler(403)
 def resource_not_found(error):
     return render_template('/errors/403.html'), 403
+
 
 @app.errorhandler(500)
 def resource_not_found(error):

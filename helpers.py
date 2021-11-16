@@ -178,9 +178,6 @@ def get_audio_features(track_ids):
         db_track.time_signature = track['time_signature']
         Track.update()
 
-def get_spotify_playlists(limit=25, offset=0):
-    """Return a list of current user's spotify playlists"""
-
 
 #====================================================================================
 # api CRUD methods
@@ -299,6 +296,23 @@ def delete_playlist_track(playlist_id, track_id):
         track.index -= 1
     PlaylistTrack.update()
 
+def get_playlist_item_info(playlists):
+    """Parse playlist item info, return list of dicts"""
+
+    playlist_info = []
+    for playlist in playlists:
+        name = playlist['name']
+        description = playlist['description']
+        spotify_playlist_id = playlist['id']
+        snapshot_id = playlist['snapshot_id']
+        num_tracks = playlist['tracks']['total']
+        public = playlist['public']
+        collaborative = playlist['collaborative']
+        owner = playlist['owner']['display_name']
+
+        playlist_info.append({"name": name, "description": description, "spotify_playlist_id": spotify_playlist_id, "snapshot_id": snapshot_id, "num_tracks": num_tracks, "public": public, "collborative": collaborative, "owner": owner})
+
+    return playlist_info
 
 #==================================================================================================
 # Spotify Playlist Crud Methods
@@ -318,6 +332,7 @@ def get_spotify_playlists(limit=20, offset=0):
         headers = refresh_token(g.refresh)
         r = requests.get(BASE_URL + f'/me/playlists?limit={limit}&offset={offset}', headers=headers)
 
+    # print(r.text)
     return r.json()
 
 
