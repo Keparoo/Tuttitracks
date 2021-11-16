@@ -285,14 +285,14 @@ def search():
             year = 2021
 
         query_string = create_query(artist, track, album, genre, year)
-        tracks, r = search_spotify(query_string, QUERY_TYPE, QUERY_LIMIT, OFFSET)
+        tracks = search_spotify(query_string, QUERY_TYPE, QUERY_LIMIT, OFFSET)
 
         # Display nothing rather than None in query results
         if not query['year']:
             query['year'] = ""
 
         # return render_template("/results.html", query=query, r=r)
-        return render_template("results.html", query=query, tracks=tracks, r=r)
+        return render_template("results.html", query=query, tracks=tracks)
 
     else:
         return render_template('search.html', form=form)
@@ -305,9 +305,9 @@ def get_tracks():
     LIMIT = 25
     OFFSET = 0
 
-    track_dicts, tracks = get_spotify_saved_tracks(limit=LIMIT, offset=OFFSET)
+    tracks = get_spotify_saved_tracks(limit=LIMIT, offset=OFFSET)
 
-    return render_template("display_tracks.html", tracks=tracks, track_dicts=track_dicts)
+    return render_template("display_tracks.html", tracks=tracks)
 
 @app.get('/playlists')
 @requires_signed_in
