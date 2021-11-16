@@ -9,12 +9,12 @@
     <div class="row">
         <div class="col-md-3">
         <h3>Spotify Playlists {{ total_spot_playlists }}</h3>
-        <ol>
+        <ul class="list-group">
             {% for playlist in parsed_playlists %}
-                <li data-id="{{ playlist['id'] }}" data-spot-id="{{ playlist['spotify_playlist_id'] }}">{{ playlist['name'] }} 
-                <button class="btn btn-info btn-sm showSpotPlaylist">Show</button>
+                <li class="list-group-item" data-id="{{ playlist['id'] }}" data-spot-id="{{ playlist['spotify_playlist_id'] }}">{{ playlist['name'] }} 
+                <button class="btn btn-info btn-sm showSpotPlaylist float-right">Show</button>
             {% endfor %}
-        </ol>
+        </ul>
         
         {# {% for track in tracks %}
             <p> <strong>Track:</strong> {{ track['name'] }} <strong>Album:</strong> {{ track['album']['name'] }} <strong>Artist:</strong> {{ track['artists'][0]['name']}} <strong>URI:</strong>{{ track['uri'] }} </p>
@@ -40,16 +40,16 @@
 
         <div class="col-3">
             <h3>Playlists</h3>
-                <ol>
+                <ul class="list-group">
                     {% for playlist in playlists%}
-                        <li data-id="{{ playlist.id }}" data-spotId="{{ playlist.spotify_playlist_id }}">{{ playlist['name'] }} 
+                        <li class="list-group-item" data-id="{{ playlist.id }}" data-spotId="{{ playlist.spotify_playlist_id }}">{{ playlist['name'] }} 
                         {% if not playlist.spotify_playlist_id%}
-                        <button class="btn btn-info btn-sm spotSync">Sync</button>
+                        <button class="btn btn-success btn-sm spotSync float-right mx-2">Sync</button>
                         {% endif %}
-                        <button class="btn btn-info btn-sm showList">Show</button>
+                        <button class="btn btn-info btn-sm showList float-right">Show</button>
                         </li>
                     {% endfor %}
-                </ol>
+                </ul>
         </div>
         <div class="col-3">
         <h3>Tracks</h3>
