@@ -218,11 +218,25 @@ def get_playlist_tracks(playlist_id):
 
     spotify_uris = []
     for item in playlist_tracks:
-        track=Track.query.get_or_404(item.track_id)
+        track = Track.query.get_or_404(item.track_id)
         spotify_uris.append(track.spotify_track_uri)
 
     return spotify_uris
 
+
+def get_playlist_track_ids(playlist_id):
+    """Get the current tracks from a local playlist
+    Return a list of spotify ids in index order
+    """
+
+    playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).order_by(PlaylistTrack.index).all()
+
+    spotify_ids = []
+    for item in playlist_tracks:
+        track = Track.query.get_or_404(item.track_id)
+        spotify_ids.append(track.spotify_track_id)
+
+    return spotify_ids
 
 def append_playlist_tracks(playlist_id, track_ids):
     """Append a list of track ids to existing playlist"""

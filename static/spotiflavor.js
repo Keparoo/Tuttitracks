@@ -181,15 +181,42 @@ const prevPage = async () => {
 const spotSync = async (e) => {
 	console.debug('spotSync');
 
-	const $track = $(e.target).closest('li');
-	const id = $track.data('id');
-	const playlistId = $track.data('spotId');
+	const $playlist = $(e.target).closest('li');
+	const id = $playlist.data('id');
+	const playlistId = $playlist.data('spotId');
 
 	const res = await axios.post(`${BASE_URL}/spotify/${id}/playlists`);
 	if (res.error) {
 		console.log(res.message);
 	}
 	// console.log(res.data.playlist.spotify_track_id);
+};
+
+const showSpotPlaylist = async (e) => {
+	console.debug('showSpotPlaylist');
+	const $playlist = $(e.target).closest('li');
+	const id = $playlist.data('spot-id');
+	html = `
+    <iframe src="https://open.spotify.com/embed/playlist/${id}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    `;
+	$('#spotPlaylist').html(html);
+};
+
+const showPlaylist = async (e) => {
+	console.debug('showPlaylist');
+	const $playlist = $(e.target).closest('li');
+	const id = $playlist.data('id');
+
+	tracks = await axios.get(`${BASE_URL}/playlists/${id}/tracks`);
+	console.log(tracks.data.tracks);
+
+	playlist_tracks = '';
+	for (let track of tracks.data.tracks) {
+		playlist_tracks += `<p>
+        <iframe src="https://open.spotify.com/embed/track/${track}" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        </p>`;
+	}
+	$('#playlistTracks').html(playlist_tracks);
 };
 // create playlist: POST /users/<username>/playlists
 // update playlist details: PUT /playlists/<playlist_id>
@@ -209,6 +236,8 @@ $body.on('click', '.del-track', deleteTrack);
 $body.on('click', '#next', nextPage);
 $body.on('click', '#previous', prevPage);
 $body.on('click', '.spotSync', spotSync);
+$body.on('click', '.showSpotPlaylist', showSpotPlaylist);
+$body.on('click', '.showList', showPlaylist);
 $('iframe').hover(showAudioFeatures);
 
 // $('ol.simple_with_drop').sortable({
