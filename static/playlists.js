@@ -142,40 +142,62 @@ const createPlaylist = async (e) => {
 	}
 };
 
-const makeTracksHTML = async (tracks) => {
-	html =
-		'<p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next" class="btn btn-info">Next Page</button></p>';
-	for (const track of tracks) {
-		html += `<p data-name="${track.name}" data-id="${track.id}" data-spotid="${track.spotify_track_id}">
-        <iframe src="https://open.spotify.com/embed/track/${track.spotify_track_id}" width="380"
-        height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><button
-        class="btn btn-info btn-sm addToPlaylist">Add</button>
-        </p>`;
+// const makeTracksHTML = async (tracks) => {
+// 	html = `<h3>Spotify Playlists ${playlist.total_spot_playlists}</h3>
+//         <p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next" class="btn btn-info">Next Page</button></p>`;
+// 	for (const track of tracks) {
+// 		html += `<p data-name="${track.name}" data-id="${track.id}" data-spotid="${track.spotify_track_id}">
+//         <iframe src="https://open.spotify.com/embed/track/${track.spotify_track_id}" width="380"
+//         height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><button
+//         class="btn btn-info btn-sm addToPlaylist">Add</button>
+//         </p>`;
+// 	}
+// 	return html;
+// };
+
+makeSpotPlaylists = async (playlists, total_spot_playlists) => {
+	console.debug('makeSpotPlaylists');
+	html = `<h3>Spotify Playlists ${total_spot_playlists}</h3>
+    <p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next" class="btn btn-info">Next Page</button></p><ul>`;
+
+	for (const playlist of playlists) {
+		html += `<li class="list-group-item" data-id="${playlist.id}" data-spot-id="${playlist.spotify_playlist_id}">${playlist.name} 
+        <button class="btn btn-info btn-sm showSpotPlaylist float-right">Show</button></li>`;
 	}
+	html += '</ul>';
 	return html;
 };
 
 const nextPage = async () => {
 	console.debug('nextPage');
 
+	LIMIT = 20;
 	offset += 10;
 
-	const res = await axios.get(`${BASE_URL}/me/tracks?offset=${offset}`);
-	const tracks = res.data.track_dicts;
-	const html = await makeTracksHTML(tracks);
-	$('#tracks').html(html);
+	const res = await axios.get(
+		`${BASE_URL}/spotify/playlists?limit=${LIMIT}&offset=${offset}`
+	);
+
+	const playlists = res.data.spot_playlists;
+	const total_spot_playlists = res.data.total_spot_playlists;
+	const html = await makeSpotPlaylists(playlists, total_spot_playlists);
+	$('#spotPlaylists').html(html);
 };
 
 const prevPage = async () => {
 	console.debug('prevPage');
 
+	LIMIT = 20;
 	offset -= 10;
 	if (offset < 0) offset = 0;
 
-	const res = await axios.get(`${BASE_URL}/me/tracks?offset=${offset}`);
-	const tracks = res.data.track_dicts;
-	const html = await makeTracksHTML(tracks);
-	$('#tracks').html(html);
+	const res = await axios.get(
+		`${BASE_URL}/spotify/playlists?limit=${LIMIT}&offset=${offset}`
+	);
+	const playlists = res.data.spot_playlists;
+	const total_spot_playlists = res.data.total_spot_playlists;
+	const html = await makeSpotPlaylists(playlists, total_spot_playlists);
+	$('#spotPlaylists').html(html);
 };
 
 const spotSync = async (e) => {

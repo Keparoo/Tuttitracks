@@ -7,29 +7,16 @@
 <div class="container-fluid">
     <h1 class="display-3">Playlists</h1>
     <div class="row">
-        <div class="col-md-3">
-        <h3>Spotify Playlists {{ total_spot_playlists }}</h3>
-        <ul class="list-group">
-            {% for playlist in parsed_playlists %}
-                <li class="list-group-item" data-id="{{ playlist['id'] }}" data-spot-id="{{ playlist['spotify_playlist_id'] }}">{{ playlist['name'] }} 
-                <button class="btn btn-info btn-sm showSpotPlaylist float-right">Show</button>
-            {% endfor %}
-        </ul>
-        
-        {# {% for track in tracks %}
-            <p> <strong>Track:</strong> {{ track['name'] }} <strong>Album:</strong> {{ track['album']['name'] }} <strong>Artist:</strong> {{ track['artists'][0]['name']}} <strong>URI:</strong>{{ track['uri'] }} </p>
-        {% endfor%} #}
-
-        {# {% for item in tracks %}
-            <p data-name="{{ item['name'] }}" data-id="" data-spotid="{{ item['id'] }}">
-                <iframe src="https://open.spotify.com/embed/track/{{ item['id'] }}" width="380"
-                    height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> <button
-                    class="btn btn-info btn-sm addToPlaylist">Add</button>
-            </p>
-        {% endfor %} #}
-
-        <br>
-        {# {{ r }} #}
+        <div id="spotPlaylists" class="col-md-3">
+            <h3>Spotify Playlists {{ total_spot_playlists }}</h3>
+            <p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next"
+                    class="btn btn-info">Next Page</button></p>
+            <ul class="list-group">
+                {% for playlist in spot_playlists %}
+                    <li class="list-group-item" data-id="{{ playlist['id'] }}" data-spot-id="{{ playlist['spotify_playlist_id'] }}">{{ playlist['name'] }} 
+                    <button class="btn btn-info btn-sm showSpotPlaylist float-right">Show</button>
+                {% endfor %}
+            </ul>
 
         </div>
 
@@ -65,7 +52,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
-<script src="/static/spotiflavor.js"></script>
+<script src="/static/playlists.js"></script>
 
 {# JQuery sortable  #}
 <script>

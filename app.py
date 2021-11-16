@@ -218,7 +218,7 @@ def homepage():
     # r=1
 
     # return render_template("/results.html", query=query, r=r)
-
+ 
     return render_template('homepage.html')
 
 #====================================================================================
@@ -323,9 +323,8 @@ def playlist_management():
     spot_playlists = get_spotify_playlists(LIMIT, OFFSET)
     total_spot_playlists = spot_playlists['total']
     parsed_playlists = get_playlist_item_info(spot_playlists['items'])
-    # print('*************', total_spot_playlists, parsed_playlists)
 
-    return render_template("playlists.html", playlists=playlists, parsed_playlists=parsed_playlists, total_spot_playlists=total_spot_playlists)
+    return render_template("playlists.html", playlists=playlists, spot_playlists=parsed_playlists, total_spot_playlists=total_spot_playlists)
 
 #====================================================================================
 # Database api routes
@@ -478,7 +477,7 @@ def update_playlist_details_route(playlist_id):
 
 
 @app.get('/api/me/playlists')
-def get_my_playlists(username):
+def get_my_playlists():
     """Get current users playlists"""
 
     try:
@@ -655,10 +654,13 @@ def get_spotify_playlists_route():
 
     try:
         playlists = get_spotify_playlists(limit, offset)
+        total_spot_playlists = playlists['total']
+        parsed_playlists = get_playlist_item_info(playlists['items'])
 
         return jsonify({
             "success": True,
-            "spot_playlists": playlists
+            "spot_playlists": parsed_playlists,
+            "total_spot_playlists": total_spot_playlists
         }), 200
 
     except:
