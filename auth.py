@@ -19,7 +19,6 @@ CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
 
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
-# BASE_URL = 'https://api.spotify.com/v1'
 
 REDIRECT_URI = os.environ.get('REDIRECT_URI')
 SCOPE = "user-library-read playlist-read-private playlist-modify-private playlist-modify-public user-top-read"
@@ -91,8 +90,6 @@ def get_bearer_token(code):
     else:
         get_user_id(r.json()['access_token'])
 
-        # g.user.refresh_token = r.json()['refresh_token']
-        # User.update()
         return {
             "access_token": r.json()['access_token'],
             "token_type": r.json()['token_type'],
@@ -106,7 +103,6 @@ def refresh_token (refresh_token):
         Supply the original refresh token provided
         Tokens are good for an hour. Set new token in session
         Return header with new bearer token
-    
     """
 
     data = {
@@ -152,6 +148,7 @@ class Spotify_Auth:
     
     def __repr__(self):
         """Return readable representation"""
+
         return f'<Spotify_Auth {self.access_token} {self.scope} {self.expires_in} {self.refresh_token}>'
 
 #====================================================================================
@@ -180,29 +177,6 @@ def requires_auth(username=''):
 
       return wrapper
   return requires_auth_decorator
-
-
-# def requires_feedback_auth(feedback_id=None):
-#   '''Takes feedback_id from URL and checks that it belongs to current logged in user'''
-
-#   def requires_feedback_auth_decorator(f):
-#       @wraps(f)
-#       def wrapper(feedback_id, *args, **kwargs):
-        
-#         username = Feedback.query.get_or_404(feedback_id).user.username
-#         current_user = session.get('username', None)
-
-#         if username != current_user:
-#             if current_user:
-#                 flash('A user can only modify their own content!', category='danger')
-#                 abort(401)
-#             flash('You must be logged in to view or edit your feedback', category='danger')
-#             abort(401)
-
-#         return f(feedback_id, *args, **kwargs)
-
-#       return wrapper
-#   return requires_feedback_auth_decorator
 
 
 def requires_signed_in(f):
