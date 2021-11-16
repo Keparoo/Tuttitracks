@@ -261,7 +261,7 @@ def search():
         # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
         # print(new_playlist)
 
-        QUERY_LIMIT = 10
+        QUERY_LIMIT = 2
         QUERY_TYPE = 'track'
         OFFSET = 0
 
@@ -289,10 +289,9 @@ def search():
         query_string = create_query(artist, track, album, genre, year)
         tracks, r = search_spotify(query_string, QUERY_TYPE, QUERY_LIMIT, OFFSET)
 
-        # tracks = r.json()['tracks']['items']
-        # r = r.text
-        # print(r)
-        # r=1
+        # Display nothing rather than None in query results
+        if not query['year']:
+            query['year'] = ""
 
         # return render_template("/results.html", query=query, r=r)
         return render_template("results.html", query=query, tracks=tracks, r=r)
@@ -305,7 +304,7 @@ def search():
 def get_tracks():
     """Query Spotify for Users' saved tracks"""
 
-    track_dicts, tracks = get_spotify_saved_tracks(limit=15, offset=0)
+    track_dicts, tracks = get_spotify_saved_tracks(limit=2, offset=0)
 
     return render_template("display_tracks.html", tracks=tracks, track_dicts=track_dicts)
 
