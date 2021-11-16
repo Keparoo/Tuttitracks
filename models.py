@@ -53,6 +53,7 @@ class User(db.Model):
 
         return f"<User {self.username} {self.email} {self.spotify_user_id} {self.spotify_display_name} {self.is_admin}>"
 
+
     def serialize(self):
         """Turn object into dictionary"""
 
@@ -66,6 +67,7 @@ class User(db.Model):
             "is_admin": self.is_admin
         }
 
+
     @classmethod
     def signup(cls, username, password, email, user_image):
         """Register user with hashed password & return user"""
@@ -76,6 +78,7 @@ class User(db.Model):
 
         # return instance of user w/username and hashed pwd
         return cls(username=username, password=hashed_utf8, email=email, user_image=user_image)
+
 
     @classmethod
     def authenticate(cls, username, password):
@@ -92,6 +95,7 @@ class User(db.Model):
         else:
             return False    
 
+
     @staticmethod
     def insert(user):
         """Insert user record into database"""
@@ -99,11 +103,13 @@ class User(db.Model):
         db.session.add(user)
         db.session.commit()
 
+
     @staticmethod
     def update():
         """Update user record in database"""
 
         db.session.commit()
+
 
     @staticmethod
     def delete(user):
@@ -152,6 +158,7 @@ class Track(db.Model):
 
         return f"<Track {self.id} {self.name} {self.spotify_track_id} {self.spotify_track_uri}>"
 
+
     @staticmethod
     def insert(track):
         """Insert track record into database"""
@@ -159,11 +166,13 @@ class Track(db.Model):
         db.session.add(track)
         db.session.commit()
 
+
     @staticmethod
     def update():
         """Update track record in database"""
 
         db.session.commit()
+
 
     @staticmethod
     def delete(track):
@@ -195,10 +204,12 @@ class Playlist(db.Model):
     user = db.relationship('User', backref='playlists', cascade='delete, merge, save-update')
     tracks = db.relationship('Track', secondary="playlists_tracks", backref='playlist', cascade='all, delete')
 
+
     def __repr__(self):
         """Show info about a Playlist"""
 
         return f"<Playlist {self.id} {self.username} {self.name} {self.description} {self.spotify_playlist_id} {self.spotify_snapshot_id}>"
+
 
     @staticmethod
     def insert(playlist):
@@ -207,11 +218,13 @@ class Playlist(db.Model):
         db.session.add(playlist)
         db.session.commit()
 
+
     @staticmethod
     def update():
         """Update playlist record in database"""
 
         db.session.commit()
+
 
     @staticmethod
     def delete(playlist):
@@ -219,6 +232,7 @@ class Playlist(db.Model):
 
         db.session.delete(playlist)
         db.session.commit()
+
 
     def serialize(self):
         """Turn object into dictionary"""
@@ -235,6 +249,7 @@ class Playlist(db.Model):
             "description": self.description
         }
 
+
 class PlaylistTrack(db.Model):
     """Model joins playlists to tracks"""
 
@@ -247,10 +262,12 @@ class PlaylistTrack(db.Model):
     # Playlists need an order
     index = db.Column(db.Integer, nullable=False)
 
+
     def __repr__(self):
         """Show info about playlist-track relationship"""
 
         return f"<PlaylistTrack {self.id} {self.playlist_id} {self.track_id} {self.index}>"
+
 
     @staticmethod
     def insert(track):
@@ -259,11 +276,13 @@ class PlaylistTrack(db.Model):
         db.session.add(track)
         db.session.commit()
 
+
     @staticmethod
     def update():
         """Update track in playlist"""
 
         db.session.commit()
+
 
     @staticmethod
     def delete(track):
@@ -273,7 +292,7 @@ class PlaylistTrack(db.Model):
         db.session.commit()
 
 #==================================================================================================
-# Album, Artist, Genre Models
+# Album Models
 #==================================================================================================
 
 class Album(db.Model):
@@ -288,10 +307,12 @@ class Album(db.Model):
 
     # tracks = db.relationship('Track', back_populates='album', cascade='delete-orphan')
 
+
     def __repr__(self):
         """Show info about album"""
 
         return f"<Album {self.id} {self.name} {self.spotify_album_id}>"
+
 
     @staticmethod
     def insert(album):
@@ -300,11 +321,13 @@ class Album(db.Model):
         db.session.add(album)
         db.session.commit()
 
+
     @staticmethod
     def update():
         """Update album record in database"""
 
         db.session.commit()
+
 
     @staticmethod
     def delete(album):
@@ -313,6 +336,9 @@ class Album(db.Model):
         db.session.delete(album)
         db.session.commit()
 
+#==================================================================================================
+# Artist Models
+#==================================================================================================
 class Artist(db.Model):
     """Model of music artists"""
 
@@ -324,10 +350,12 @@ class Artist(db.Model):
 
     tracks = db.relationship('Track', secondary='tracks_artists', backref='artists')
 
+
     def __repr__(self):
         """Show info about Artist"""
 
         return f"<Artist {self.id} {self.name} {self.spotify_artist_id}>"
+
 
     @staticmethod
     def insert(artist):
@@ -336,11 +364,13 @@ class Artist(db.Model):
         db.session.add(artist)
         db.session.commit()
 
+
     @staticmethod
     def update():
         """Update artist record in database"""
 
         db.session.commit()
+
 
     @staticmethod
     def delete(artist):
@@ -348,6 +378,7 @@ class Artist(db.Model):
 
         db.session.delete(artist)
         db.session.commit()
+
 
 class TrackArtist(db.Model):
     """Model joins tracks to artists"""
@@ -357,11 +388,15 @@ class TrackArtist(db.Model):
     track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
     artist_id = db.Column(db.Integer, db.ForeignKey("artists.id"), primary_key=True)
 
+
     def __repr__(self):
         """Show info about track-artist relationship"""
 
         return f"<TrackArtist {self.track_id} {self.artist_id}>"
 
+#==================================================================================================
+# Genre Models
+#==================================================================================================
 class Genre(db.Model):
     """Model of music genres"""
 
@@ -372,10 +407,12 @@ class Genre(db.Model):
 
     tracks = db.relationship('Track', secondary='tracks_genres', backref='genres')
 
+
     def __repr__(self):
         """Show info about Genre"""
 
         return f"<Genre {self.id} {self.name}>"
+
 
     @staticmethod
     def insert(genre):
@@ -384,11 +421,13 @@ class Genre(db.Model):
         db.session.add(genre)
         db.session.commit()
 
+
     @staticmethod
     def update():
         """Update genre record in database"""
 
         db.session.commit()
+
 
     @staticmethod
     def delete(genre):
@@ -397,6 +436,7 @@ class Genre(db.Model):
         db.session.delete(genre)
         db.session.commit()
 
+
 class TrackGenre(db.Model):
     """Model joins tracks to genres"""
 
@@ -404,6 +444,7 @@ class TrackGenre(db.Model):
 
     track_id = db.Column(db.Integer, db.ForeignKey("tracks.id"), primary_key=True)
     genre_id = db.Column(db.Integer, db.ForeignKey("genres.id"), primary_key=True)
+
 
     def __repr__(self):
         """Show info about track-genre relationship"""
