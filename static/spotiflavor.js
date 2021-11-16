@@ -50,6 +50,7 @@ const makeFeaturesHTML = async (id) => {
 
         <p>Danceability: ${features.data.danceability} (0-1)<br>
         Energy: ${features.data.energy} (0-1)<br>
+        Avg Tempo: ${features.data.tempo}<br>
         Loudness: ${features.data.loudness} avg db<br>
         Valence: ${features.data.valence} (0-1)</p>
     </div>

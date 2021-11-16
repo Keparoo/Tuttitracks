@@ -85,7 +85,6 @@ def process_track_search(found_tracks):
                 popularity=track['track']['popularity'],
                 spotify_track_url=track['track']['external_urls']['spotify'],
                 spotify_track_uri=track['track']['uri'],
-                preview_url=track['track']['preview_url'],
                 release_year=track['track']['album']['release_date'][:4],
                 duration_ms=track['track']['duration_ms'])
             
@@ -164,7 +163,6 @@ def process_search(found_tracks):
                 popularity=track['popularity'],
                 spotify_track_url=track['external_urls']['spotify'],
                 spotify_track_uri=track['uri'],
-                preview_url=track['preview_url'],
                 release_year=track['album']['release_date'][:4],
                 duration_ms=track['duration_ms'])
             
@@ -247,6 +245,7 @@ def get_audio_features(track_ids):
         db_track = Track.query.filter(Track.spotify_track_id==track['id']).first()
         db_track.danceability = track['danceability']
         db_track.energy = track['energy']
+        db_track.tempo = track['tempo']
         db_track.key = track['key']
         db_track.loudness = track['loudness']
         db_track.mode = track['mode']

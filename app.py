@@ -394,6 +394,7 @@ def get_audio_features_route(track_id):
             'acousticness': track.acousticness,
             'danceability': track.danceability,
             'energy': track.energy,
+            'tempo': track.tempo,
             'instrumentalness': track.instrumentalness,
             'key': key_signature,
             'liveness': track.liveness,
@@ -401,7 +402,6 @@ def get_audio_features_route(track_id):
             'mode': mode,
             'speechiness': track.speechiness,
             'time_signature': track.time_signature,
-            # 'tempo': track.tempo,
             'valence': track.valence
         })
     except:
