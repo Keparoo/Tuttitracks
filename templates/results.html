@@ -34,6 +34,7 @@
             <h2 class="display-4">Create Playlist</h2>
             <h6>Click Create playlist to name playlist and save it locally</h6>
             <h6>To send playlist to Spotify, go to the playlists page</h6>
+
             <form action="">
                 <div class="form-group">
                     <label for="name">Name</label>
@@ -48,6 +49,7 @@
                 <button class="btn btn-success" id="createPlaylist">Create Playlist</button>
             </form>
             <br>
+            
             <h3>Current Tracks</h3>
             <div>
                 <ol class="sortable" id="playList"></ol>
@@ -57,21 +59,16 @@
     </div>
 </div>
 
-<!-- <script src="http://unpkg.com/jquery"></script> -->
 <script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
-
-<!-- <script src="/static/jquery-sortable-min.js"></script> -->
-
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script src="/static/spotiflavor.js"></script>
+
+{# JQuery sortable for possible future features #}
 <script>
     $(function () {
         $(".sortable").sortable();
     });
 </script>
-
-    {# <iframe src="https://open.spotify.com/embed/track/2s25WcjhpjL7CC1n5aW9yx" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    <iframe src="https://open.spotify.com/embed/playlist/5gprcPiOPACeLyPB0y6MkE" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> #}
 
 {% endblock %}
