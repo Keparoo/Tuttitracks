@@ -261,7 +261,7 @@ def search():
         # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
         # print(new_playlist)
 
-        QUERY_LIMIT = 2
+        QUERY_LIMIT = 15
         QUERY_TYPE = 'track'
         OFFSET = 0
 
@@ -304,7 +304,10 @@ def search():
 def get_tracks():
     """Query Spotify for Users' saved tracks"""
 
-    track_dicts, tracks = get_spotify_saved_tracks(limit=2, offset=0)
+    LIMIT = 25
+    OFFSET = 0
+
+    track_dicts, tracks = get_spotify_saved_tracks(limit=LIMIT, offset=OFFSET)
 
     return render_template("display_tracks.html", tracks=tracks, track_dicts=track_dicts)
 
