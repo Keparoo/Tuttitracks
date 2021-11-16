@@ -10,10 +10,10 @@ from sqlalchemy.exc import IntegrityError
 
 from dotenv import load_dotenv
 
-from models import db, connect_db, User, Track, Playlist, Album, Artist, Genre
+from models import db, connect_db, User, Track, Playlist
 from forms import SignupForm, LoginForm, SearchTracksForm
-from auth import get_spotify_user_code, get_bearer_token, requires_signed_in, refresh_token, requires_auth, requires_signed_out
-from helpers import create_playlist, create_spotify_playlist, get_spotify_track_ids, process_track_search, parse_search, add_tracks_to_spotify_playlist,delete_tracks_from_spotify_playlist,replace_spotify_playlist_items,update_spotify_playlist_details, get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, insert_playlist_track, append_playlist_tracks, delete_playlist_track, move_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids
+from auth import get_spotify_user_code, get_bearer_token, requires_signed_in
+from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids
 
 load_dotenv()
 
