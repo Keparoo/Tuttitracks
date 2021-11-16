@@ -83,7 +83,6 @@ def process_track_search(found_tracks):
                 spotify_track_id=track['track']['id'],
                 name=track['track']['name'],
                 popularity=track['track']['popularity'],
-                spotify_track_url=track['track']['external_urls']['spotify'],
                 spotify_track_uri=track['track']['uri'],
                 release_year=track['track']['album']['release_date'][:4],
                 duration_ms=track['track']['duration_ms'])
@@ -161,7 +160,6 @@ def process_search(found_tracks):
                 spotify_track_id=track['id'],
                 name=track['name'],
                 popularity=track['popularity'],
-                spotify_track_url=track['external_urls']['spotify'],
                 spotify_track_uri=track['uri'],
                 release_year=track['album']['release_date'][:4],
                 duration_ms=track['duration_ms'])

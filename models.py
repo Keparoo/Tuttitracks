@@ -124,7 +124,6 @@ class Track(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     spotify_track_id = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text, nullable=False)
-    spotify_track_url = db.Column(db.Text, nullable=False)
     spotify_track_uri = db.Column(db.Text, nullable=False)
     release_year = db.Column(db.Integer, nullable=False)
     popularity = db.Column(db.Integer) # (0-100)
