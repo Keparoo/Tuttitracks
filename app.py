@@ -314,10 +314,13 @@ def get_tracks():
 def playlist_management():
     """Display local and Spotify playlists"""
 
+    # Get local playlists
+    playlists = Playlist.query.filter(Playlist.username==g.user.username).all()
+    print(playlists)
+    # Get spotify playlists
 
-    playlists = ''
     spot_playlists = ''
-    
+
     return render_template("playlists.html", playlists=playlists, spot_playlists=spot_playlists)
 
 #====================================================================================
@@ -599,6 +602,37 @@ def delete_playlist_route(playlist_id):
         return jsonify({
             'success': False,
             'message': "Playlist not found or not available"
+        }), 404
+
+@app.post('/api/spotify/<int:id>/playlists')
+def update_playlist_to_spotify(id):
+    """Create new playlist on Spotify from local playlist
+        If playlist already exists, replace existing tracks on Spotify with current tracks from database
+    """
+
+    try:
+        playlist =  Playlist.query.get_or_404(id)
+        tracks = get_playlist_tracks(id)
+
+        # Create Spotify playlist and add tracks
+        if not playlist.spotify_playlist_id:
+            print('New Playlist')
+            new_playlist = create_spotify_playlist(id)
+            replace_spotify_playlist_items(new_playlist.spotify_playlist_id, tracks)
+        else:
+            # Playlist alread exists on Spotify, update tracks only
+            print('Playlist exists')
+            replace_spotify_playlist_items(playlist.spotify_playlist_id, tracks)
+
+        return jsonify({
+            'success': True,
+            'playlist': playlist.serialize()
+        }), 200
+
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to create spotify playlist"
         }), 404
 
 

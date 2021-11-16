@@ -221,6 +221,21 @@ class Playlist(db.Model):
         db.session.delete(playlist)
         db.session.commit()
 
+    def serialize(self):
+        """Turn object into dictionary"""
+
+        return {
+            "id": self.id,
+            "username": self.username,
+            "spotify_playlist_id": self.spotify_playlist_id,
+            "spotify_snapshot_id": self.spotify_snapshot_id,
+            "image": self.image,
+            "public": self.public,
+            "collaborative": self.collaborative,
+            "name": self.name,
+            "description": self.description
+        }
+
 class PlaylistTrack(db.Model):
     """Model joins playlists to tracks"""
 

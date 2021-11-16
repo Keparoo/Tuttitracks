@@ -17,6 +17,7 @@ def get_spotify_track_ids(items):
         spot_track_ids.append(item['track']['id'])
     return spot_track_ids
 
+
 def search_spotify(query_string, query_type, query_limit, offset):
     """Search Spotify and return"""
 
@@ -177,6 +178,10 @@ def get_audio_features(track_ids):
         db_track.time_signature = track['time_signature']
         Track.update()
 
+def get_spotify_playlists(limit=25, offset=0):
+    """Return a list of current user's spotify playlists"""
+
+
 #====================================================================================
 # api CRUD methods
 #====================================================================================
@@ -216,7 +221,7 @@ def get_playlist_tracks(playlist_id):
 
     spotify_uris = []
     for item in playlist_tracks:
-        track=Track.query.get(item.track_id)
+        track=Track.query.get_or_404(item.track_id)
         spotify_uris.append(track.spotify_track_uri)
 
     return spotify_uris
@@ -315,6 +320,7 @@ def get_spotify_playlists(limit=20, offset=0):
 
     return r.json()
 
+
 def create_spotify_playlist(playlist_id):
     """Create a new playlist on Spotify server from local playlist id"""
 
@@ -322,7 +328,7 @@ def create_spotify_playlist(playlist_id):
         'Authorization': f'Bearer {g.token}'
     }
 
-    playlist = Playlist.query.get(playlist_id)
+    playlist = Playlist.query.get_or_404(playlist_id)
 
     data = {
         "name": playlist.name,
@@ -345,6 +351,7 @@ def create_spotify_playlist(playlist_id):
     Playlist.update()
 
     return playlist
+
 
 def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], position=None):
     """
@@ -378,6 +385,7 @@ def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], pos
 
     return playlist
 
+
 def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
     """
     Replace all current tracks with new tracks, same tracks in new order, both or an empty playlist
@@ -409,6 +417,7 @@ def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
 
     return playlist
 
+
 def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]):
     """
     Delete tracks from a spotify playlist
@@ -438,7 +447,6 @@ def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]
     Playlist.update()
 
     return playlist
-
 
 
 def update_spotify_playlist_details(spotify_playlist_id, name, description, public, collaborative):

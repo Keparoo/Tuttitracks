@@ -177,6 +177,20 @@ const prevPage = async () => {
 	const html = await makeTracksHTML(tracks);
 	$('#tracks').html(html);
 };
+
+const spotSync = async (e) => {
+	console.debug('spotSync');
+
+	const $track = $(e.target).closest('li');
+	const id = $track.data('id');
+	const playlistId = $track.data('spotId');
+
+	const res = await axios.post(`${BASE_URL}/spotify/${id}/playlists`);
+	if (res.error) {
+		console.log(res.message);
+	}
+	// console.log(res.data.playlist.spotify_track_id);
+};
 // create playlist: POST /users/<username>/playlists
 // update playlist details: PUT /playlists/<playlist_id>
 // get playlist: GET /playlists/<playlist_id>
@@ -187,12 +201,14 @@ const prevPage = async () => {
 // get current user's playlists: GET /me/playlists
 // get user's playlists: GET /users/<username>/playlists
 // get track's audio features: GET /tracks/<track_id>
+// create new spotify playlist: POST /spotify/<int:id>/playlists
 
 $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
 $body.on('click', '#next', nextPage);
 $body.on('click', '#previous', prevPage);
+$body.on('click', '.spotSync', spotSync);
 $('iframe').hover(showAudioFeatures);
 
 // $('ol.simple_with_drop').sortable({
