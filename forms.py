@@ -32,7 +32,8 @@ class SearchTracksForm(FlaskForm):
     track = StringField("Name of track")
     album = StringField("Name of album")
     genre = StringField("Name of Genre")
-    # playlist = StringField("Name of playlist")
     year = IntegerField("Year", validators=[Optional()])
+    # Possible search types for future features
+    # playlist = StringField("Name of playlist")
     # new = BooleanField("Tag: New")
     # hipster = BooleanField("Tag: Hipster")

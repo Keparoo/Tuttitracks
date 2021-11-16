@@ -50,6 +50,7 @@ def get_spotify_user_code():
 
     return r.url
 
+
 def get_user_id(token):
     """Query Spotify, and update user record with Spotify user id, Spotify display name, and Spotify user image"""
 
@@ -98,6 +99,7 @@ def get_bearer_token(code):
             "refresh_token": r.json()['refresh_token'],
             }
 
+
 def refresh_token (refresh_token):
     """Request a refresh bearer token from Spotify
         Supply the original refresh token provided
@@ -136,6 +138,7 @@ def refresh_token (refresh_token):
             'Authorization': f'Bearer {new_bearer}'
         }
 
+
 class Spotify_Auth:
     """Auth token class for Spotify"""
 
@@ -145,6 +148,7 @@ class Spotify_Auth:
         self.scope = scope
         self.expires_in = expires_in
         self.refresh_token = refresh_token
+    
     
     def __repr__(self):
         """Return readable representation"""
