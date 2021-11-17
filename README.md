@@ -51,11 +51,11 @@ Clicking the Sync button will sync any track changes to the playlist with the Sp
 There is a testing suite with this app. To run tests:
 
 ```bash
-sh setup_test.sh
+source setup_test.sh
 ```
 
 ## To return to development mode
 
 ```bash
-sh setup.sh
+source setup.sh
 ```

@@ -433,6 +433,7 @@ def get_my_playlists():
         }), 200
     
     except:
+        print(g.user.username)
         return jsonify({
             'success': False,
             'message': "Unable to get playlists"

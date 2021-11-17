@@ -2,7 +2,7 @@
 
 from unittest import TestCase
 
-from app import app
+from app import app, CURR_USER_KEY
 from models import db, User, Track, Album, Artist, Playlist, Genre, PlaylistTrack, TrackArtist, TrackGenre
 from flask import Flask, session, g
 from sqlalchemy import exc
@@ -18,7 +18,7 @@ app.config['WTF_CSRF_ENABLED'] = False
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
 
-CURR_USER_KEY = 'curr_user'
+# CURR_USER_KEY = 'curr_user'
 
 BASE_URL = 'http://127.0.0.1:5000/api'
 
@@ -298,6 +298,7 @@ class DB_API_TestCase(TestCase):
         db.session.add(test_user)
         db.session.commit()
         self.test_username = "testuser"
+        self.test_user = test_user
 
 
         test_playlist = Playlist(
@@ -364,7 +365,7 @@ class DB_API_TestCase(TestCase):
 
         with self.client as c:
             with c.session_transaction() as sess:
-                sess[CURR_USER_KEY] = self.test_username
+                sess[CURR_USER_KEY] = self.test_user
 
             res = requests.post(BASE_URL + f'/users/{self.test_username}/playlists', data=payload)
 
