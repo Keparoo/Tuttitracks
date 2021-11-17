@@ -45,7 +45,7 @@ TEST_ALBUM_1 = {
 }
 
 class TrackModelTestCase(TestCase):
-    """Tests for user model"""
+    """Tests for track model"""
 
     def setUp(self): 
         """Create test client, add sample data."""
