@@ -13,10 +13,10 @@ app.config['SQLALCHEMY_ECHO'] = False
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
 
-TEST_USER_1 = {
-    "username": "testuser1",
-    "password": "testpassword1",
-    "email": "testemail1@test.com",
+TEST_USER = {
+    "username": "testuser",
+    "password": "testpassword",
+    "email": "testemail@test.com",
     "spotify_user_id": "TestSpotifyUid",
     "spotify_display_name": "TestUserDisplayName",
     "user_image": "http://www.test.com",
@@ -41,13 +41,13 @@ class UserModelTestCase(TestCase):
         db.create_all()
 
         testuser = User(
-            username="testuser",
-            password="testpassword",
-            email="testemail@test.com",
-            spotify_user_id="TestSpotifyUid",
-            spotify_display_name="TestUserDisplayName",
-            user_image="http://www.test.com",
-            is_admin=True
+            username=TEST_USER['username'],
+            password=TEST_USER['password'],
+            email=TEST_USER['email'],
+            spotify_user_id=TEST_USER['spotify_user_id'],
+            spotify_display_name=TEST_USER['spotify_display_name'],
+            user_image=TEST_USER['user_image'],
+            is_admin=TEST_USER['is_admin']
         )
         db.session.add(testuser)
         db.session.commit()
@@ -142,14 +142,14 @@ class UserModelTestCase(TestCase):
     def test_authenticate(self):
         """Test authentication of user"""
 
-        user = User.authenticate(self.u1.username, "testpassword1")
+        user = User.authenticate(self.u1.username, U1['username'])
         self.assertIsNotNone(user)
         self.assertEqual(self.u1.username, self.u1.username)
 
     def test_invalid_username(self):
         """Test invalid username"""
 
-        self.assertFalse(User.authenticate("wrongusername", "testpassword1"))
+        self.assertFalse(User.authenticate("wrongusername", U1['password']))
 
     def test_invalid_password(self):
         """Test invalid password"""
