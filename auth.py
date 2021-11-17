@@ -136,20 +136,3 @@ def refresh_token (refresh_token):
         return {
             'Authorization': f'Bearer {new_bearer}'
         }
-
-
-# class Spotify_Auth:
-#     """Auth token class for Spotify"""
-
-#     def __init__(self, access_token, token_type, scope, expires_in, refresh_token):
-#         self.access_token = access_token
-#         self.token_type = token_type
-#         self.scope = scope
-#         self.expires_in = expires_in
-#         self.refresh_token = refresh_token
-    
-    
-#     def __repr__(self):
-#         """Return readable representation"""
-
-#         return f'<Spotify_Auth {self.access_token} {self.scope} {self.expires_in} {self.refresh_token}>'
