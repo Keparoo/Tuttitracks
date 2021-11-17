@@ -10,9 +10,13 @@ from sqlalchemy.exc import IntegrityError
 
 from dotenv import load_dotenv
 
+# Session key assigned to user object if user is logged in
+CURR_USER_KEY = 'curr_user'
+
 from models import db, connect_db, User, Track, Playlist
 from forms import SignupForm, LoginForm, SearchTracksForm
-from auth import get_spotify_user_code, get_bearer_token, requires_signed_in
+from auth import get_spotify_user_code, get_bearer_token
+from middleware import requires_signed_in
 from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids
 
 load_dotenv()
@@ -25,8 +29,7 @@ BASE_URL = 'https://api.spotify.com/v1'
 
 REDIRECT_URI = os.environ.get('REDIRECT_URI')
 
-# Session key assigned to user object if user is logged in
-CURR_USER_KEY = 'curr_user'
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
