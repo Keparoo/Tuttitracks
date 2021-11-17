@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from app import app
 from models import db, User, Track, Album, Artist, Playlist, Genre, PlaylistTrack, TrackArtist, TrackGenre
-from flask import Flask, session
+from flask import Flask, session, g
 from sqlalchemy import exc
 import requests
 
@@ -12,8 +12,13 @@ import requests
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///spotiflavor_test'
 app.config['SQLALCHEMY_ECHO'] = False
 
+# Don't have WTForms use CSRF at all, since it's a pain to test
+app.config['WTF_CSRF_ENABLED'] = False
+
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
+
+CURR_USER_KEY = 'curr_user'
 
 BASE_URL = 'http://127.0.0.1:5000/api'
 
@@ -151,6 +156,8 @@ class DB_API_TestCase(TestCase):
 
         db.drop_all()
         db.create_all()
+
+        self.client = app.test_client()
 
         test_album = Album(
             spotify_album_id=TEST_ALBUM_1['spotify_album_id'],
@@ -349,17 +356,27 @@ class DB_API_TestCase(TestCase):
 
         self.assertEqual(1,1)
 
-        # payload = {
-        #     "name": "New Test Playlist",
-        #     "description":"New Test Description",
-        #     "tracks": [1,2,3]
-        # }
+        payload = {
+            "name": "New Test Playlist",
+            "description":"New Test Description",
+            "tracks": [1,2,3]
+        }
 
-        # res = requests.post(BASE_URL + f'/users/{self.test_username}/playlists', data=payload)
+        res = requests.post(BASE_URL + f'/users/{self.test_username}/playlists', data=payload)
 
-        # # self.assertEqual(res.status_code, 200)
-        # self.assertTrue(res.json()['success'])
-        # # self.assertEqual(res.json()['name'], payload['name'])
-        # # self.assertEqual(res.json()['description'], payload['description'])
-        # # self.assertIsNotNone(res.json()['id'])
+        # self.assertEqual(res.status_code, 200)
+        self.assertTrue(res.json()['success'])
+        # self.assertEqual(res.json()['name'], payload['name'])
+        # self.assertEqual(res.json()['description'], payload['description'])
+        # self.assertIsNotNone(res.json()['id'])
+    
+    def test_get_users_playlists(self):
+        """Test successful get of users playlists"""
+
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.test_username
+            res = requests.get(BASE_URL + f'/me/playlists')
         
+        self.assertEqual(res.status_code, 200)
