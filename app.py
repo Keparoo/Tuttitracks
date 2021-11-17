@@ -426,11 +426,12 @@ def get_my_playlists():
 
     try:
         playlists = Playlist.query.filter(Playlist.username==g.user.username)
+        
         return jsonify({
             'success': True,
             'playlists': playlists
         }), 200
-
+    
     except:
         return jsonify({
             'success': False,

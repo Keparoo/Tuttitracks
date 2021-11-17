@@ -362,13 +362,17 @@ class DB_API_TestCase(TestCase):
             "tracks": [1,2,3]
         }
 
-        res = requests.post(BASE_URL + f'/users/{self.test_username}/playlists', data=payload)
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.test_username
 
-        # self.assertEqual(res.status_code, 200)
-        self.assertTrue(res.json()['success'])
-        # self.assertEqual(res.json()['name'], payload['name'])
-        # self.assertEqual(res.json()['description'], payload['description'])
-        # self.assertIsNotNone(res.json()['id'])
+            res = requests.post(BASE_URL + f'/users/{self.test_username}/playlists', data=payload)
+
+            self.assertEqual(res.status_code, 200)
+            # self.assertTrue(res.json()['success'])
+            # self.assertEqual(res.json()['name'], payload['name'])
+            # self.assertEqual(res.json()['description'], payload['description'])
+            # self.assertIsNotNone(res.json()['id'])
     
     def test_get_users_playlists(self):
         """Test successful get of users playlists"""
@@ -379,4 +383,4 @@ class DB_API_TestCase(TestCase):
                 sess[CURR_USER_KEY] = self.test_username
             res = requests.get(BASE_URL + f'/me/playlists')
         
-        self.assertEqual(res.status_code, 200)
+            self.assertEqual(res.status_code, 200)
