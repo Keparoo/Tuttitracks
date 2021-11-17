@@ -4,7 +4,6 @@ from unittest import TestCase
 
 from app import app
 from models import db, User
-from flask import Flask, session
 from sqlalchemy import exc
 
 # Use test database
