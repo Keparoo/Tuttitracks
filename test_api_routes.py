@@ -3,9 +3,10 @@
 from unittest import TestCase
 
 from app import app
-from models import db, User, Track, Album, Artist, Playlist, PlaylistTrack, TrackArtist, TrackGenre
+from models import db, User, Track, Album, Artist, Playlist, Genre, PlaylistTrack, TrackArtist, TrackGenre
 from flask import Flask, session
 from sqlalchemy import exc
+import requests
 
 # Use test database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///spotiflavor_test'
@@ -13,6 +14,8 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
+
+BASE_URL = 'http://127.0.0.1:5000/api'
 
 TEST_ALBUM_1 = {
     "spotify_album_id": "testspotifyalbumid1",
@@ -33,18 +36,72 @@ TEST_TRACK_1 = {
     "spotify_track_id": "testtrackid1",
     "name": "testname1",
     "spotify_track_uri": "testspotifytrackuri1",
-    "duration_ms": 1000,
     "release_year": 1985,
-    "album_id": 1
+
+    "duration_ms": 1000,
+    "album_id": 1,
+    "popularity": 50,
+    "acousticness": .5,
+    "danceability": .5,
+    "energy": .5,
+    "tempo": 50.1,
+    "instrumentalness": .5,
+    "liveness": .5,
+    "loudness": -20.5,
+    "speechiness": .5,
+    "valence": .5,
+    "mode": 0,
+    "key": 3,
+    "time_signature": 4,
+    "lyrics": "test lyrics 1"
 }
 
 TEST_TRACK_2 = {
     "spotify_track_id": "testtrackid2",
     "name": "testname2",
     "spotify_track_uri": "testspotifytrackuri2",
+    "release_year": 1990,
+
     "duration_ms": 2000,
-    "release_year": 1925,
-    "album_id": 1
+    "album_id": 1,
+    "popularity": 70,
+    "acousticness": .7,
+    "danceability": .7,
+    "energy": .7,
+    "tempo": 70.1,
+    "instrumentalness": .7,
+    "liveness": .7,
+    "loudness": 0.7,
+    "speechiness": .7,
+    "valence": .7,
+    "mode": 1,
+    "key": 6,
+    "time_signature": 6,
+    "lyrics": "test lyrics 2"
+}
+
+TEST_TRACK_3 = {
+    "spotify_track_id": "testtrackid3",
+    "name": "testname3",
+    "spotify_track_uri": "testspotifytrackuri3",
+    "release_year": 1995,
+
+    "duration_ms": 3000,
+    "album_id": 1,
+    "popularity": 90,
+    "acousticness": .9,
+    "danceability": .9,
+    "energy": .9,
+    "tempo": 90.1,
+    "instrumentalness": .9,
+    "liveness": .9,
+    "loudness": 90.5,
+    "speechiness": .9,
+    "valence": .9,
+    "mode": 0,
+    "key": 9,
+    "time_signature": 8,
+    "lyrics": "test lyrics 3"
 }
 
 TEST_USER = {
@@ -80,8 +137,14 @@ TEST_PLAYLIST_TRACK_2 = {
     "index": 2
 }
 
-class PlaylistModelTestCase(TestCase):
-    """Tests for playlist model"""
+TEST_PLAYLIST_TRACK_3 = {
+    "playlist_id": 1,
+    "track_id": 3,
+    "index": 3
+}
+
+class DB_API_TestCase(TestCase):
+    """Tests for database API"""
 
     def setUp(self): 
         """Create test client, add sample data."""
@@ -123,6 +186,21 @@ class PlaylistModelTestCase(TestCase):
             release_year=TEST_TRACK_1['release_year'],
             duration_ms=TEST_TRACK_1['duration_ms'],
             album_id=self.album_id,
+
+            popularity=TEST_TRACK_1['popularity'],
+            acousticness=TEST_TRACK_1['acousticness'],
+            danceability=TEST_TRACK_1['danceability'],
+            energy=TEST_TRACK_1['energy'],
+            tempo=TEST_TRACK_1['tempo'],
+            instrumentalness=TEST_TRACK_1['instrumentalness'],
+            liveness=TEST_TRACK_1['liveness'],
+            loudness=TEST_TRACK_1['loudness'],
+            speechiness=TEST_TRACK_1['speechiness'],
+            valence=TEST_TRACK_1['valence'],
+            mode=TEST_TRACK_1['mode'],
+            key=TEST_TRACK_1['key'],
+            time_signature=TEST_TRACK_1['time_signature'],
+            lyrics=TEST_TRACK_1['lyrics']
         )
         test_track_2 = Track(
             spotify_track_id=TEST_TRACK_2['spotify_track_id'],
@@ -131,14 +209,56 @@ class PlaylistModelTestCase(TestCase):
             release_year=TEST_TRACK_2['release_year'],
             duration_ms=TEST_TRACK_2['duration_ms'],
             album_id=self.album_id,
+
+            popularity=TEST_TRACK_2['popularity'],
+            acousticness=TEST_TRACK_2['acousticness'],
+            danceability=TEST_TRACK_2['danceability'],
+            energy=TEST_TRACK_2['energy'],
+            tempo=TEST_TRACK_2['tempo'],
+            instrumentalness=TEST_TRACK_2['instrumentalness'],
+            liveness=TEST_TRACK_2['liveness'],
+            loudness=TEST_TRACK_2['loudness'],
+            speechiness=TEST_TRACK_2['speechiness'],
+            valence=TEST_TRACK_2['valence'],
+            mode=TEST_TRACK_2['mode'],
+            key=TEST_TRACK_2['key'],
+            time_signature=TEST_TRACK_2['time_signature'],
+            lyrics=TEST_TRACK_2['lyrics']
+        )
+
+        test_track_3 = Track(
+            spotify_track_id=TEST_TRACK_3['spotify_track_id'],
+            name=TEST_TRACK_3['name'],
+            spotify_track_uri=TEST_TRACK_3['spotify_track_uri'],
+            release_year=TEST_TRACK_3['release_year'],
+            duration_ms=TEST_TRACK_3['duration_ms'],
+            album_id=self.album_id,
+
+            popularity=TEST_TRACK_3['popularity'],
+            acousticness=TEST_TRACK_3['acousticness'],
+            danceability=TEST_TRACK_3['danceability'],
+            energy=TEST_TRACK_3['energy'],
+            tempo=TEST_TRACK_3['tempo'],
+            instrumentalness=TEST_TRACK_3['instrumentalness'],
+            liveness=TEST_TRACK_3['liveness'],
+            loudness=TEST_TRACK_3['loudness'],
+            speechiness=TEST_TRACK_3['speechiness'],
+            valence=TEST_TRACK_3['valence'],
+            mode=TEST_TRACK_3['mode'],
+            key=TEST_TRACK_3['key'],
+            time_signature=TEST_TRACK_3['time_signature'],
+            lyrics=TEST_TRACK_3['lyrics']
         )
 
         db.session.add(test_track_1)
         db.session.commit()
         db.session.add(test_track_2)
         db.session.commit()
+        db.session.add(test_track_3)
+        db.session.commit()
         self.track_1_id = 1
         self.track_2_id = 2
+        self.track_3_id = 3
 
         test_track_artist = TrackArtist(
             track_id=self.track_1_id,
@@ -199,12 +319,20 @@ class PlaylistModelTestCase(TestCase):
             track_id=self.track_2_id,
             index=TEST_PLAYLIST_TRACK_2['index']
         )
+        test_playlist_track_3 = PlaylistTrack(
+            playlist_id=self.test_playlist_id,
+            track_id=self.track_3_id,
+            index=TEST_PLAYLIST_TRACK_3['index']
+        )
         db.session.add(test_playlist_track_1)
         db.session.commit()
         db.session.add(test_playlist_track_2)
         db.session.commit()
+        db.session.add(test_playlist_track_3)
+        db.session.commit()
         self.test_playlist_track_1_id = 1
         self.test_playlist_track_2_id = 2
+        self.test_playlist_track_3_id = 3
 
         
     def tearDown(self):
@@ -213,5 +341,26 @@ class PlaylistModelTestCase(TestCase):
         db.session.rollback()
 
     #=======================================================================================
-    # API Model Tests    
+    # Datatbase API CRUD Tests    
     #=======================================================================================
+
+    def test_create_playlist_route(self):
+        """Test successful creation of a playlist"""
+
+        self.assertEqual(1,1)
+
+
+        # payload = {
+        #     "name": "New Test Playlist",
+        #     "description":"New Test Description",
+        #     "tracks": [1,2,3]
+        # }
+
+        # res = requests.post(BASE_URL + f'/users/{self.test_username}/playlists', data=payload)
+
+        # # self.assertEqual(res.status_code, 200)
+        # self.assertTrue(res.json()['success'])
+        # # self.assertEqual(res.json()['name'], payload['name'])
+        # # self.assertEqual(res.json()['description'], payload['description'])
+        # # self.assertIsNotNone(res.json()['id'])
+        
