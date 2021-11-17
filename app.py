@@ -318,7 +318,7 @@ def playlist_management():
     playlists = Playlist.query.filter(Playlist.username==g.user.username).all()
 
     # Get spotify playlists
-    LIMIT = 20
+    LIMIT = 25
     OFFSET = 0
     spot_playlists = get_spotify_playlists(LIMIT, OFFSET)
     total_spot_playlists = spot_playlists['total']
@@ -359,15 +359,16 @@ def get_saved_tracks_route():
     offset = request.args.get('offset', 0)
 
     try:
-        track_dicts, tracks = get_spotify_saved_tracks(offset=offset, limit=15)
-
+        tracks = get_spotify_saved_tracks(offset=offset, limit=25)
+        print(tracks)
         return jsonify({
             'success': True,
-            'track_dicts': track_dicts,
+            'track_dicts': tracks,
             'tracks': tracks
         }), 200
 
     except:
+        
         return jsonify({
             'success': False,
             'message': "Unable to fetch Spotify saved tracks"

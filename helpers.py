@@ -3,7 +3,7 @@
 import json
 from models import db, Track, Album, Artist, TrackArtist, Playlist, PlaylistTrack
 from auth import refresh_token
-from flask import g
+from flask import session, g
 import requests
 
 BASE_URL = 'https://api.spotify.com/v1'
@@ -41,7 +41,7 @@ def search_spotify(query_string, query_type, query_limit, offset):
     return (tracks)
 
 
-def get_spotify_saved_tracks(limit=15, offset=0):
+def get_spotify_saved_tracks(limit=25, offset=0):
     """ 
     Return a list of user's saved Spotify track objects and save to db
     Called by /tracks
@@ -52,14 +52,14 @@ def get_spotify_saved_tracks(limit=15, offset=0):
     }
     
     r = requests.get(BASE_URL + f'/me/tracks?limit={limit}&offset={offset}', headers=headers)
-
+    
     # Token has expired: request refresh
     if r.status_code == 401:
         headers = refresh_token(g.refresh)
         r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
-
+    
     tracks = process_track_search(r.json()['items'])
-
+    
     return (tracks)
 
 
@@ -141,7 +141,7 @@ def process_track_search(found_tracks):
 
     # Query Spotify database for audio features and populate db
     get_audio_features(track_ids)
-
+    
     return track_dicts     
 
 
