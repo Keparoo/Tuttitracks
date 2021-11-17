@@ -39,7 +39,7 @@ connect_db(app)
 db.create_all()
 
 #====================================================================================
-# User signnup/login/logout
+# User signup/login/logout
 #====================================================================================
 
 @app.before_request
@@ -170,57 +170,10 @@ def homepage():
         'Authorization': f'Bearer {g.token}'
     }
 
-    # track1 = "6, 0wipEzrv6p17BPiVCKATIE, Gnossienne Nr. 1, spotify:track:0wipEzrv6p17BPiVCKATIE"
-    # track2 = '7, 2Amj13n8K8JRaSNXh2C10G, Pure Imagination (from "Charlie and the Chocolate Factory"), spotify:track:2Amj13n8K8JRaSNXh2C10G'
-    # track3 = '8, 7ma87nv4jgpXfjlwMFOvLn, Allez donc vous faire bronzer, spotify:track:7ma87nv4jgpXfjlwMFOvLn'
-    # track4 = '9, 4qqf1avpzRUnVowNQd1jFw, Zou bisou bisou, spotify:track:4qqf1avpzRUnVowNQd1jFw'
-
-    # track_id="2Amj13n8K8JRaSNXh2C10G"
-    # r = requests.get(BASE_URL + '/audio-features/' + track_id, headers=HEADERS)
-    # r = requests.get(BASE_URL + '/search' + f'?q={artist}&type=track&limit=25', headers=headers)
-    
-    # Get users saved tracks
-    # tracks = get_spotify_saved_tracks(limit=25)
-
-    # playlists = get_spotify_playlists(limit=20, offset=0)
-    # print(playlists)
-
-    #Create playlist
-    # playlist = create_spotify_playlist(1)
-    # print(playlist)
-
-    # To test:
-    # playlist = create_spotify_playlist(1)
-    # print(playlist)
-
-    # spotify_uri_list = get_playlist_tracks(1)
-    # spotify_uri_list = [{'uri':'spotify:track:3cTX97kSfqIs9U68fOjIEB'}]
-    # print(spotify_uri_list)
-    # add_tracks_to_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
-    # replace_spotify_playlist_items('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
-    # delete_tracks_from_spotify_playlist('5gprcPiOPACeLyPB0y6MkE', spotify_uri_list)
-    # update_spotify_playlist_details('5gprcPiOPACeLyPB0y6MkE', 'Spotiflavor Playlist', 'This is a groovy new playlist brought to you by Spotiflavor', True, False)
-
-    # insert_playlist_track(1, 25, 2)
-    # append_playlist_tracks(1, [9, 10])
-    # delete_playlist_track(1, 25)
-    # move_playlist_track(1, 8, 4)
-    # playlist = Playlist.query.get(1)
-    # Playlist.delete(playlist)
-    # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
-    # print(new_playlist)
-
-    # tracks = r.json()['tracks']['items']
-    # r = r.text
-    # print(r)
-    # r=1
-
-    # return render_template("/results.html", query=query, r=r)
- 
     return render_template('homepage.html')
 
 #====================================================================================
-# Search Routes
+# View Routes
 #====================================================================================
 
 def create_query(artist, track, album, genre, year):
@@ -249,15 +202,6 @@ def search():
     form = SearchTracksForm()
 
     if form.validate_on_submit():
-
-        # insert_playlist_track(1, 25, 2)
-        # append_playlist_tracks(1, [9, 10])
-        # delete_playlist_track(1, 25)
-        # move_playlist_track(1, 8, 4)
-        # playlist = Playlist.query.get(1)
-        # Playlist.delete(playlist)
-        # new_playlist = create_playlist("Spotiflavor Playlist", "This is a groovy new playlist brought to you by Spotiflavor", True, [7, 8, 9, 1])
-        # print(new_playlist)
 
         QUERY_LIMIT = 15
         QUERY_TYPE = 'track'
@@ -291,7 +235,6 @@ def search():
         if not query['year']:
             query['year'] = ""
 
-        # return render_template("/results.html", query=query, r=r)
         return render_template("results.html", query=query, tracks=tracks)
 
     else:
@@ -360,7 +303,7 @@ def get_saved_tracks_route():
 
     try:
         tracks = get_spotify_saved_tracks(offset=offset, limit=25)
-        print(tracks)
+        
         return jsonify({
             'success': True,
             'track_dicts': tracks,

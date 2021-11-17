@@ -3,7 +3,7 @@
 import json
 from models import db, Track, Album, Artist, TrackArtist, Playlist, PlaylistTrack
 from auth import refresh_token
-from flask import session, g
+from flask import g
 import requests
 
 BASE_URL = 'https://api.spotify.com/v1'
