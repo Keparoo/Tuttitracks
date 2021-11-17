@@ -1,6 +1,7 @@
 const $body = $('body');
 
 BASE_URL = 'http://127.0.0.1:5000/api';
+// URL below must be deployed to Heroku instead of above
 // BASE_URL = 'https://spotiflavor.herokuapp.com/api';
 
 let offset = 0;

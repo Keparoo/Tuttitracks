@@ -8,7 +8,8 @@ Note: in order to use this web app a Spotify account is required: either free or
 ## Features
 - Postgresql Database of users, tracks, features, playlists, artists, albums and genres
 - Implemented using Flask 2.0
-- The front end is using Ajax and JQuery
+- Implemented using Python 3.8.10
+- The front-end is implemented with Ajax and JQuery
 - RESTful API to interact with the database
 - The app handles authorization with Spotify
 - Unit-testing test suite
