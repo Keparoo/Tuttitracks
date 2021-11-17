@@ -7,9 +7,11 @@ Note: in order to use this web app a Spotify account is required: either free or
 
 ## Features
 - Postgresql Database of users, tracks, features, playlists, artists, albums and genres
+- Implemented using Flask 2.0
+- The front end is using Ajax and JQuery
 - RESTful API to interact with the database
-- This app manages
-- Unit testing test suite
+- The app handles authorization with Spotify
+- Unit-testing test suite
 - Deployed to Heroku
 
 ## Spotiflavor is deployed on Heroku
@@ -48,5 +50,11 @@ Clicking the Sync button will sync any track changes to the playlist with the Sp
 There is a testing suite with this app. To run tests:
 
 ```bash
-python -m unittest
+sh setup_test.sh
+```
+
+## To return to development mode
+
+```bash
+sh setup.sh
 ```
