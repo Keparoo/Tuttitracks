@@ -73,15 +73,14 @@ def process_track_search(found_tracks):
     """
 
     track_ids = []
-    track_dicts = []
+    tracks = []
     for track in found_tracks:
         #Check if in db
         track_exists = Track.query.filter(Track.spotify_track_id==track['track']['id']).first()
 
         #If yes, get id, append to track_ids[]
         if track_exists:
-            track_dicts.append({"name": track_exists.name, "id": track_exists.id, "spotify_track_id": track_exists.spotify_track_id})
-            track_ids.append(track_exists.id)
+            tracks.append({"name": track_exists.name, "id": track_exists.id, "spotify_track_id": track_exists.spotify_track_id})
 
         #If no, populate db, append id to track_ids[]
         else:
@@ -107,7 +106,7 @@ def process_track_search(found_tracks):
                 new_track.album_id = new_album.id
             Track.insert(new_track)
 
-            track_dicts.append({"name": new_track.name, "id": new_track.id, "spotify_track_id": new_track.spotify_track_id})
+            tracks.append({"name": new_track.name, "id": new_track.id, "spotify_track_id": new_track.spotify_track_id})
             track_ids.append(new_track.id)
 
         if track_exists:
@@ -139,10 +138,11 @@ def process_track_search(found_tracks):
                 db.session.add(new_track_artist)
                 db.session.commit()
 
-    # Query Spotify database for audio features and populate db
-    get_audio_features(track_ids)
+    # Query Spotify database for audio features and populate db if any tracks are new
+    if len(track_ids):
+        get_audio_features(track_ids)
     
-    return track_dicts     
+    return tracks     
 
 
 def process_search(found_tracks):
@@ -155,14 +155,13 @@ def process_search(found_tracks):
     """
 
     track_ids = []
-    track_dicts = []
+    tracks = []
     for track in found_tracks:
         #Check if in db
         track_exists = Track.query.filter(Track.spotify_track_id==track['id']).first()
         #If yes, get id, append to track_ids[]
         if track_exists:
-            track_dicts.append({"name": track_exists.name, "id": track_exists.id, "spotify_track_id": track_exists.spotify_track_id})
-            track_ids.append(track_exists.id)
+            tracks.append({"name": track_exists.name, "id": track_exists.id, "spotify_track_id": track_exists.spotify_track_id})
 
         #If no, populate db, append id to track_ids[]
         else:
@@ -188,7 +187,7 @@ def process_search(found_tracks):
                 new_track.album_id = new_album.id
             Track.insert(new_track)
 
-            track_dicts.append({"name": new_track.name, "id": new_track.id, "spotify_track_id": new_track.spotify_track_id})
+            tracks.append({"name": new_track.name, "id": new_track.id, "spotify_track_id": new_track.spotify_track_id})
             track_ids.append(new_track.id)
 
         if track_exists:
@@ -220,10 +219,11 @@ def process_search(found_tracks):
                 db.session.add(new_track_artist)
                 db.session.commit()
 
-    # Query Spotify database for audio features and populate db
-    get_audio_features(track_ids)
+    # Query Spotify database for audio features and populate db if any tracks are new
+    if len(track_ids):
+        get_audio_features(track_ids)
 
-    return track_dicts
+    return tracks
 
 
 def create_track_list(track_ids):
