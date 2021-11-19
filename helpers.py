@@ -19,7 +19,7 @@ def spotify_get_request(url):
 
     # Token has expired: request refresh
     if r.status_code == 401:
-        headers = refresh_token(g.refresh)
+        g.headers = refresh_token(g.refresh)
         r = requests.get(BASE_URL + url, headers=g.headers)
 
     return r
@@ -32,7 +32,7 @@ def spotify_post_request(url, data):
 
     # Token has expired: request refresh
     if r.status_code == 401:
-        headers = refresh_token(g.refresh)
+        g.headers = refresh_token(g.refresh)
         r = requests.post(BASE_URL + url, headers=g.headers, data=data)
 
     return r
@@ -45,7 +45,7 @@ def spotify_put_request(url, data):
 
     # Token has expired: request refresh
     if r.status_code == 401:
-        headers = refresh_token(g.refresh)
+        g.headers = refresh_token(g.refresh)
         r = requests.put(BASE_URL + url, headers=g.headers, data=data)
 
     return r
@@ -58,7 +58,7 @@ def spotify_delete_request(url, data):
 
     # Token has expired: request refresh
     if r.status_code == 401:
-        headers = refresh_token(g.refresh)
+        g.headers = refresh_token(g.refresh)
         r = requests.delete(BASE_URL + url, headers=g.headers, data=data)
 
     return r
