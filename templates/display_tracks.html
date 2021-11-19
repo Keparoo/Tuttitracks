@@ -18,7 +18,7 @@
             <p data-name="{{ item['name'] }}" data-id="{{ item['id'] }}" data-spotid="{{ item['spotify_track_id'] }}">
                 <iframe src="https://open.spotify.com/embed/track/{{ item['spotify_track_id'] }}" width="380"
                     height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> <button
-                    class="btn btn-success btn-sm addToPlaylist mx-2 mb-4">Add</button>
+                    class="btn btn-info btn-sm addToPlaylist mx-2 mb-4">Add</button>
             </p>
             {% endfor %}
 
@@ -42,7 +42,7 @@
                     <input type="text" class="form-control" name="description" id="description"
                         placeholder="Enter playlist description">
                 </div>
-                <button class="btn btn-success" id="createPlaylist">Create Playlist</button>
+                <button class="btn btn-info" id="createPlaylist">Create Playlist</button>
             </form>
             <br>
 
