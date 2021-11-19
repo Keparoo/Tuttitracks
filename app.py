@@ -5,6 +5,7 @@ import json
 import base64
 import requests
 from flask import Flask, render_template, request, redirect, flash, session, g, jsonify
+from sqlalchemy import exc
 from sqlalchemy.exc import IntegrityError
 # from flask_debugtoolbar import DebugToolbarExtension
 
@@ -14,7 +15,7 @@ from dotenv import load_dotenv
 CURR_USER_KEY = 'curr_user'
 
 from models import db, connect_db, User, Track, Playlist
-from forms import SignupForm, LoginForm, SearchTracksForm
+from forms import SignupForm, LoginForm, SearchTracksForm, ChangePasswordForm
 from auth import get_spotify_user_code, get_bearer_token
 from middleware import requires_signed_in
 from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids
@@ -183,6 +184,40 @@ def homepage():
 
     return render_template('homepage.html')
 
+
+@app.route('/users/<username>')
+@requires_signed_in
+def user_page(username):
+    """User info"""
+
+    if username != g.user.username:
+        flash(f"Unauthorized", "danger")
+        return redirect('/')
+
+    return render_template('users/user.html', username=username)
+
+@app.route('/users/<username>/password', methods=['GET', 'POST'])
+@requires_signed_in
+def change_password(username):
+    """Display form to change password. Post new password if credentials valid"""
+
+    form = ChangePasswordForm()
+
+    if form.validate_on_submit():
+        user = User.authenticate(g.user.username,
+                                 form.current_password.data)
+
+        if user:
+            new_password = form.new_password.data
+            user.update_password(new_password)
+
+            flash(f"{user.username}'s password successfully changed!", "success")
+            return redirect(f'/users/{user.username}')
+
+        flash("Password incorrect!", 'danger')
+
+    return render_template('users/password.html', form=form)
+
 #====================================================================================
 # View Routes
 #====================================================================================
@@ -251,6 +286,7 @@ def search():
     else:
         return render_template('search.html', form=form)
 
+
 @app.get('/tracks')
 @requires_signed_in
 def get_tracks():
@@ -262,6 +298,7 @@ def get_tracks():
     tracks = get_spotify_saved_tracks(limit=LIMIT, offset=OFFSET)
 
     return render_template("display_tracks.html", tracks=tracks)
+
 
 @app.get('/playlists')
 @requires_signed_in
@@ -290,12 +327,14 @@ def get_track_ids(tracks):
         track_ids.append(track['id'])
     return track_ids
 
+
 def get_key_signature(key):
     """Convert key_signature number to readable key signature"""
 
     keys = ['C', 'D-flat', 'D', 'E-flat', 'E', 'F', 'G-flat', 'G', 'A-flat', 'A', 'B-flat', 'B']
  
     return keys[key]
+
 
 def convert_ms(m_seconds):
     """Convert milliseconds to minutes and seconds"""

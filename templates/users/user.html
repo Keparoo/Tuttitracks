@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ g.user.username }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="display-3 text-center">{{ g.user.username }}</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h3>User: {{ g.user.username }}</h3>
+            <h3>Email: {{ g.user.email }}
+            <br>
+            <br>
+            <a href="/users/{{ g.user.username }}/password" class="btn btn-success btn-lg">Change Password</a>
+          
+        </div>
+    </div>
+</div>
+
+{% endblock %}

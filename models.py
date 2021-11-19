@@ -80,6 +80,16 @@ class User(db.Model):
         return cls(username=username, password=hashed_utf8, email=email, user_image=user_image)
 
 
+    def update_password(self, new_password):
+        """Update the password in the database"""
+
+        hashed = bcrypt.generate_password_hash(new_password)
+        # turn bytestring into normal (unicode utf8) string
+        hashed_utf8 = hashed.decode("utf8")
+        self.password = hashed_utf8
+        db.session.commit()
+
+
     @classmethod
     def authenticate(cls, username, password):
         """Validate that user exists & password is correct.
