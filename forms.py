@@ -28,7 +28,7 @@ class PlaylistForm(FlaskForm):
 class SearchTracksForm(FlaskForm):
     """Search Spotify database for tracks"""
 
-    artist = StringField("Name of artist")
+    artist = StringField("Name of artist", render_kw={'autofocus': True})
     track = StringField("Name of track")
     album = StringField("Name of album")
     genre = StringField("Name of Genre")
