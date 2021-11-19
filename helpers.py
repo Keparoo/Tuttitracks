@@ -8,6 +8,75 @@ import requests
 
 BASE_URL = 'https://api.spotify.com/v1'
 
+#==================================================================================================
+# Spotify Request Methods
+#==================================================================================================
+
+def spotify_get_request(url):
+    """Query spotify API and refresh bearer token if necessary"""
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    r = requests.get(BASE_URL + url, headers=headers)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.get(BASE_URL + url, headers=headers)
+
+    return r
+
+
+def spotify_post_request(url, data):
+    """Query spotify API and refresh bearer token if necessary"""
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    r = requests.post(BASE_URL + url, headers=headers, data=data)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.post(BASE_URL + url, headers=headers, data=data)
+
+    return r
+
+
+def spotify_put_request(url, data):
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    r = requests.put(BASE_URL + url, headers=headers, data=data)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.put(BASE_URL + url, headers=headers, data=data)
+
+    return r
+
+
+def spotify_delete_request(url, data):
+
+    headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
+
+    r = requests.delete(BASE_URL + url, headers=headers, data=data)
+
+    # Token has expired: request refresh
+    if r.status_code == 401:
+        headers = refresh_token(g.refresh)
+        r = requests.delete(BASE_URL + url, headers=headers, data=data)
+
+    return r
+
 
 def get_spotify_track_ids(items):
     """Create list of found track ids from Spotify
@@ -19,25 +88,20 @@ def get_spotify_track_ids(items):
         spot_track_ids.append(item['track']['id'])
     return spot_track_ids
 
+#==================================================================================================
+# Spotify Search & Process Methods
+#==================================================================================================
 
 def search_spotify(query_string, query_type, query_limit, offset):
     """Search Spotify, add matching tracks to db and return found tracks
     Called by /search
     """
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
-
-    r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={query_type}&limit={query_limit}&offset={offset}', headers=headers)
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={query_type}&limit={query_limit}&offset={offset}', headers=headers)
+    r = spotify_get_request(f'/search?q={query_string}type={query_type}&limit={query_limit}&offset={offset}')
 
     tracks = process_tracks(r.json()['tracks']['items'])
     return tracks
+
 
 def pre_process_tracks(found_tracks):
     """Pre-process json to remove leading ['track'] to prepare for process_search"""
@@ -54,19 +118,9 @@ def get_spotify_saved_tracks(limit=25, offset=0):
     Return a list of user's saved Spotify track objects and save to db
     Called by /tracks
     """
+    
+    r = spotify_get_request(f'/me/tracks?limit={limit}&offset={offset}')
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
-    
-    r = requests.get(BASE_URL + f'/me/tracks?limit={limit}&offset={offset}', headers=headers)
-    
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
-    
-    # Strip the ['track'] layer of json
     processed_tracks = pre_process_tracks(r.json()['items'])
     tracks = process_tracks(processed_tracks)
     
@@ -87,6 +141,7 @@ def process_tracks(found_tracks):
     for track in found_tracks:
         #Check if in db
         track_exists = Track.query.filter(Track.spotify_track_id==track['id']).first()
+
         #If yes, get id, append to track_ids[]
         if track_exists:
             tracks.append({"name": track_exists.name, "id": track_exists.id, "spotify_track_id": track_exists.spotify_track_id})
@@ -169,18 +224,9 @@ def create_track_list(track_ids):
 def get_audio_features(track_ids):
     """Take list of track_ids, query Spotify and populate db with audio features"""
 
-    headers = {
-    'Authorization': f'Bearer {g.token}'
-    }
-
     tracks = create_track_list(track_ids)
 
-    r = requests.get(BASE_URL + '/audio-features?ids=' + tracks, headers=headers)
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.get(BASE_URL + '/audio-features?ids=' + tracks, headers=headers)
+    r = spotify_get_request('/audio-features?ids=' + tracks)
 
     # Save audio features to db
     for track in r.json()['audio_features']:
@@ -360,27 +406,13 @@ def get_playlist_item_info(playlists):
 def get_spotify_playlists(limit=20, offset=0):
     """Retrieve current users' playlists"""
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
+    r = spotify_get_request(f'/me/playlists?limit={limit}&offset={offset}')
 
-    r = requests.get(BASE_URL + f'/me/playlists?limit={limit}&offset={offset}', headers=headers)
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.get(BASE_URL + f'/me/playlists?limit={limit}&offset={offset}', headers=headers)
-
-    # print(r.text)
     return r.json()
 
 
 def create_spotify_playlist(playlist_id):
     """Create a new playlist on Spotify server from local playlist id"""
-
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
 
     playlist = Playlist.query.get_or_404(playlist_id)
 
@@ -390,12 +422,7 @@ def create_spotify_playlist(playlist_id):
         "public": playlist.public, #Defaults to True
         "collaborative": playlist.collaborative #Defaults to False, can only be true when public is False
     }
-    r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.post(BASE_URL + f'/users/{g.user.spotify_user_id}/playlists', headers=headers, data=json.dumps(data))
+    r = spotify_post_request(f'/users/{g.user.spotify_user_id}/playlists', data=json.dumps(data))
     
     #Update local playlist object with spotify_playlist_id and image if available
     playlist.spotify_playlist_id = r.json()['id']
@@ -419,20 +446,12 @@ def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], pos
     Returns snapshot_id of playlist
     """
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
     data = {
         "uris": spotify_uri_list,
         "position": position #Optional, Defaults to append
     }
 
-    r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.post(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+    r = spotify_post_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
 
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
@@ -453,50 +472,11 @@ def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
     Returns the snapshot_id of the playlist
     """
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
     data = {
         "uris": spotify_uri_list
     }
 
-    r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
-
-    playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
-    playlist.spotify_snapshot_id = r.json()['snapshot_id']
-    Playlist.update()
-
-    return playlist
-
-
-def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]):
-    """
-    Delete tracks from a spotify playlist
-
-    Given a list of spotify_uris to remove in the following form. Max: 100 uris
-    [{"uri":"spotify:track:0wipEzrv6p17BPiVCKATIE"}, {"uri:"spotify:track:2Amj13n8K8JRaSNXh2C10G"}, ...]
-
-    Returns snapshot_id of playlist
-    """
-
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
-    data = {
-        "tracks": spotify_uri_list
-    }
-
-    r = requests.delete(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.delete(BASE_URL + f'/playlists/{spotify_playlist_id}/tracks', headers=headers, data=json.dumps(data))
+    r = spotify_put_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
 
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
@@ -511,9 +491,6 @@ def update_spotify_playlist_details(spotify_playlist_id, name, description, publ
     collborative can only be set to True on non-public playlists
     """
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
     data = {
         "name": name,
         "description": description,
@@ -521,12 +498,29 @@ def update_spotify_playlist_details(spotify_playlist_id, name, description, publ
         "collaborative": collaborative
     }
 
-    r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}', headers=headers, data=json.dumps(data))
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        headers = refresh_token(g.refresh)
-        r = requests.put(BASE_URL + f'/playlists/{spotify_playlist_id}', headers=headers, data=json.dumps(data))
+    r = spotify_put_request(f'/playlists/{spotify_playlist_id}', data=json.dumps(data))
 
     return r.status_code
 
+
+def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]):
+    """
+    Delete tracks from a spotify playlist
+
+    Given a list of spotify_uris to remove in the following form. Max: 100 uris
+    [{"uri":"spotify:track:0wipEzrv6p17BPiVCKATIE"}, {"uri:"spotify:track:2Amj13n8K8JRaSNXh2C10G"}, ...]
+
+    Returns snapshot_id of playlist
+    """
+
+    data = {
+        "tracks": spotify_uri_list
+    }
+
+    r = spotify_delete_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
+
+    playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
+    playlist.spotify_snapshot_id = r.json()['snapshot_id']
+    Playlist.update()
+
+    return playlist
