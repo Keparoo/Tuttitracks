@@ -3,7 +3,7 @@
 import json
 from models import db, Track, Album, Artist, TrackArtist, Playlist, PlaylistTrack
 from auth import refresh_token
-from flask import g
+from flask import flash, redirect, g
 import requests
 
 BASE_URL = 'https://api.spotify.com/v1'
@@ -19,12 +19,16 @@ def spotify_request(verb, url, data=None):
     For POST, PUT, PATCH and DELETE the optional data variable is used for body data
     """
 
-    r = requests.request(verb, url=BASE_URL+url, headers=g.headers, data=data)
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        g.headers = refresh_token(g.refresh)
+    try:
         r = requests.request(verb, url=BASE_URL+url, headers=g.headers, data=data)
+
+        # Token has expired: request refresh
+        if r.status_code == 401:
+            g.headers = refresh_token(g.refresh)
+            r = requests.request(verb, url=BASE_URL+url, headers=g.headers, data=data)
+    except:
+        flash("Unable to connect to Spotify. Please try again later.", 'danger')
+        return redirect ('/')
 
     return r
 
