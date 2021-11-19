@@ -12,56 +12,85 @@ BASE_URL = 'https://api.spotify.com/v1'
 # Spotify Request Methods
 #==================================================================================================
 
-def spotify_get_request(url):
-    """GET request to spotify API with proper auth: refresh bearer token if necessary"""
+def spotify_request(verb, url, data=None):
+    """Request to spotify API with proper auth: refresh bearer token if necessary
+    verb is the HTTP verb of the request: GET, POST, PUT, PATCH, DELETE
+    Security headers are set on the g.headers variable
+    For POST, PUT, PATCH and DELETE the optional data variable is used for body data
+    """
 
-    r = requests.get(BASE_URL + url, headers=g.headers)
-
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        g.headers = refresh_token(g.refresh)
-        r = requests.get(BASE_URL + url, headers=g.headers)
-
-    return r
-
-
-def spotify_post_request(url, data):
-    """POST request to spotify API with proper auth: refresh bearer token if necessary"""
-
-    r = requests.post(BASE_URL + url, headers=g.headers, data=data)
+    r = requests.request(verb, url=BASE_URL+url, headers=g.headers, data=data)
 
     # Token has expired: request refresh
     if r.status_code == 401:
         g.headers = refresh_token(g.refresh)
-        r = requests.post(BASE_URL + url, headers=g.headers, data=data)
+        r = requests.request(verb, url=BASE_URL+url, headers=g.headers, data=data)
 
     return r
 
+# def spotify_get_request(url):
+#     """GET request to spotify API with proper auth: refresh bearer token if necessary"""
 
-def spotify_put_request(url, data):
-    """PUT request to spotify API with proper auth: refresh bearer token if necessary"""
+#     r = requests.get(BASE_URL + url, headers=g.headers)
 
-    r = requests.put(BASE_URL + url, headers=g.headers, data=data)
+#     # Token has expired: request refresh
+#     if r.status_code == 401:
+#         g.headers = refresh_token(g.refresh)
+#         r = requests.get(BASE_URL + url, headers=g.headers)
 
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        g.headers = refresh_token(g.refresh)
-        r = requests.put(BASE_URL + url, headers=g.headers, data=data)
-
-    return r
+#     return r
 
 
-def spotify_delete_request(url, data):
-    """DELETE request to spotify API with proper auth: refresh bearer token if necessary"""
+# def spotify_post_request(url, data):
+#     """POST request to spotify API with proper auth: refresh bearer token if necessary"""
 
-    r = requests.delete(BASE_URL + url, headers=g.headers, data=data)
+#     r = requests.post(BASE_URL + url, headers=g.headers, data=data)
 
-    # Token has expired: request refresh
-    if r.status_code == 401:
-        g.headers = refresh_token(g.refresh)
-        r = requests.delete(BASE_URL + url, headers=g.headers, data=data)
+#     # Token has expired: request refresh
+#     if r.status_code == 401:
+#         g.headers = refresh_token(g.refresh)
+#         r = requests.post(BASE_URL + url, headers=g.headers, data=data)
 
-    return r
+#     return r
+
+
+# def spotify_put_request(url, data):
+#     """PUT request to spotify API with proper auth: refresh bearer token if necessary"""
+
+#     r = requests.put(BASE_URL + url, headers=g.headers, data=data)
+
+#     # Token has expired: request refresh
+#     if r.status_code == 401:
+#         g.headers = refresh_token(g.refresh)
+#         r = requests.put(BASE_URL + url, headers=g.headers, data=data)
+
+#     return r
+
+
+# def spotify_patch_request(url, data):
+#     """PATCH request to spotify API with proper auth: refresh bearer token if necessary"""
+
+#     r = requests.patch(BASE_URL + url, headers=g.headers, data=data)
+
+#     # Token has expired: request refresh
+#     if r.status_code == 401:
+#         g.headers = refresh_token(g.refresh)
+#         r = requests.patch(BASE_URL + url, headers=g.headers, data=data)
+
+#     return r
+
+
+# def spotify_delete_request(url, data):
+#     """DELETE request to spotify API with proper auth: refresh bearer token if necessary"""
+
+#     r = requests.delete(BASE_URL + url, headers=g.headers, data=data)
+
+#     # Token has expired: request refresh
+#     if r.status_code == 401:
+#         g.headers = refresh_token(g.refresh)
+#         r = requests.delete(BASE_URL + url, headers=g.headers, data=data)
+
+#     return r
 
 
 #==================================================================================================
@@ -84,7 +113,7 @@ def search_spotify(query_string, query_type, query_limit, offset):
     Called by /search
     """
 
-    r = spotify_get_request(f'/search?q={query_string}type={query_type}&limit={query_limit}&offset={offset}')
+    r = spotify_request('GET', f'/search?q={query_string}type={query_type}&limit={query_limit}&offset={offset}')
 
     tracks = process_tracks(r.json()['tracks']['items'])
     return tracks
@@ -106,7 +135,7 @@ def get_spotify_saved_tracks(limit=25, offset=0):
     Called by /tracks
     """
     
-    r = spotify_get_request(f'/me/tracks?limit={limit}&offset={offset}')
+    r = spotify_request('GET', f'/me/tracks?limit={limit}&offset={offset}')
 
     processed_tracks = pre_process_tracks(r.json()['items'])
     tracks = process_tracks(processed_tracks)
@@ -213,7 +242,7 @@ def get_audio_features(track_ids):
 
     tracks = create_track_list(track_ids)
 
-    r = spotify_get_request('/audio-features?ids=' + tracks)
+    r = spotify_request('GET', '/audio-features?ids=' + tracks)
 
     # Save audio features to db
     for track in r.json()['audio_features']:
@@ -393,7 +422,7 @@ def get_playlist_item_info(playlists):
 def get_spotify_playlists(limit=20, offset=0):
     """Retrieve current users' playlists"""
 
-    r = spotify_get_request(f'/me/playlists?limit={limit}&offset={offset}')
+    r = spotify_request('GET', f'/me/playlists?limit={limit}&offset={offset}')
 
     return r.json()
 
@@ -409,7 +438,8 @@ def create_spotify_playlist(playlist_id):
         "public": playlist.public, #Defaults to True
         "collaborative": playlist.collaborative #Defaults to False, can only be true when public is False
     }
-    r = spotify_post_request(f'/users/{g.user.spotify_user_id}/playlists', data=json.dumps(data))
+    # r = spotify_post_request(f'/users/{g.user.spotify_user_id}/playlists', data=json.dumps(data))
+    r = spotify_request('POST', f'/users/{g.user.spotify_user_id}/playlists', data=json.dumps(data))
     
     #Update local playlist object with spotify_playlist_id and image if available
     playlist.spotify_playlist_id = r.json()['id']
@@ -438,7 +468,8 @@ def add_tracks_to_spotify_playlist(spotify_playlist_id, spotify_uri_list=[], pos
         "position": position #Optional, Defaults to append
     }
 
-    r = spotify_post_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
+    # r = spotify_post_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
+    r = spotify_request('POST', f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
 
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
@@ -463,7 +494,8 @@ def replace_spotify_playlist_items(spotify_playlist_id, spotify_uri_list=[]):
         "uris": spotify_uri_list
     }
 
-    r = spotify_put_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
+    # r = spotify_put_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
+    r = spotify_request('PUT', f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
 
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
@@ -485,7 +517,8 @@ def update_spotify_playlist_details(spotify_playlist_id, name, description, publ
         "collaborative": collaborative
     }
 
-    r = spotify_put_request(f'/playlists/{spotify_playlist_id}', data=json.dumps(data))
+    # r = spotify_put_request(f'/playlists/{spotify_playlist_id}', data=json.dumps(data))
+    r = spotify_request('PUT', f'/playlists/{spotify_playlist_id}', data=json.dumps(data))
 
     return r.status_code
 
@@ -504,7 +537,8 @@ def delete_tracks_from_spotify_playlist(spotify_playlist_id, spotify_uri_list=[]
         "tracks": spotify_uri_list
     }
 
-    r = spotify_delete_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
+    # r = spotify_delete_request(f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
+    r = spotify_request('DELETE', f'/playlists/{spotify_playlist_id}/tracks', data=json.dumps(data))
 
     playlist = Playlist.query.filter(Playlist.spotify_playlist_id==spotify_playlist_id)
     playlist.spotify_snapshot_id = r.json()['snapshot_id']
