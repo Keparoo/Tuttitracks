@@ -56,8 +56,12 @@ def add_user_to_g():
 
     if 'auth' in session:
         g.token = session['auth']['access_token']
+        g.headers = {
+        'Authorization': f'Bearer {g.token}'
+    }
     else:
         g.token = None
+        g.headers = None
 
     if 'refresh' in session:
         g.refresh = session['refresh']
@@ -76,7 +80,10 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+    if 'auth' in session:
         del session['auth']
+    if 'refresh' in session:
+        del session['refresh']
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
@@ -109,6 +116,7 @@ def signup():
 
     else:
         return render_template('users/signup.html', form=form)
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():

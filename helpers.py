@@ -13,70 +13,60 @@ BASE_URL = 'https://api.spotify.com/v1'
 #==================================================================================================
 
 def spotify_get_request(url):
-    """Query spotify API and refresh bearer token if necessary"""
+    """GET request to spotify API with proper auth: refresh bearer token if necessary"""
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
-
-    r = requests.get(BASE_URL + url, headers=headers)
+    r = requests.get(BASE_URL + url, headers=g.headers)
 
     # Token has expired: request refresh
     if r.status_code == 401:
         headers = refresh_token(g.refresh)
-        r = requests.get(BASE_URL + url, headers=headers)
+        r = requests.get(BASE_URL + url, headers=g.headers)
 
     return r
 
 
 def spotify_post_request(url, data):
-    """Query spotify API and refresh bearer token if necessary"""
+    """POST request to spotify API with proper auth: refresh bearer token if necessary"""
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
-
-    r = requests.post(BASE_URL + url, headers=headers, data=data)
+    r = requests.post(BASE_URL + url, headers=g.headers, data=data)
 
     # Token has expired: request refresh
     if r.status_code == 401:
         headers = refresh_token(g.refresh)
-        r = requests.post(BASE_URL + url, headers=headers, data=data)
+        r = requests.post(BASE_URL + url, headers=g.headers, data=data)
 
     return r
 
 
 def spotify_put_request(url, data):
+    """PUT request to spotify API with proper auth: refresh bearer token if necessary"""
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
-
-    r = requests.put(BASE_URL + url, headers=headers, data=data)
+    r = requests.put(BASE_URL + url, headers=g.headers, data=data)
 
     # Token has expired: request refresh
     if r.status_code == 401:
         headers = refresh_token(g.refresh)
-        r = requests.put(BASE_URL + url, headers=headers, data=data)
+        r = requests.put(BASE_URL + url, headers=g.headers, data=data)
 
     return r
 
 
 def spotify_delete_request(url, data):
+    """DELETE request to spotify API with proper auth: refresh bearer token if necessary"""
 
-    headers = {
-        'Authorization': f'Bearer {g.token}'
-    }
-
-    r = requests.delete(BASE_URL + url, headers=headers, data=data)
+    r = requests.delete(BASE_URL + url, headers=g.headers, data=data)
 
     # Token has expired: request refresh
     if r.status_code == 401:
         headers = refresh_token(g.refresh)
-        r = requests.delete(BASE_URL + url, headers=headers, data=data)
+        r = requests.delete(BASE_URL + url, headers=g.headers, data=data)
 
     return r
 
+
+#==================================================================================================
+# Spotify Search & Process Methods
+#==================================================================================================
 
 def get_spotify_track_ids(items):
     """Create list of found track ids from Spotify
@@ -88,9 +78,6 @@ def get_spotify_track_ids(items):
         spot_track_ids.append(item['track']['id'])
     return spot_track_ids
 
-#==================================================================================================
-# Spotify Search & Process Methods
-#==================================================================================================
 
 def search_spotify(query_string, query_type, query_limit, offset):
     """Search Spotify, add matching tracks to db and return found tracks
@@ -248,7 +235,7 @@ def get_audio_features(track_ids):
 
 
 #====================================================================================
-# API CRUD methods
+# Database API CRUD methods
 #====================================================================================
 
 def create_playlist(name="New Playlist", description=None, tracks=[], public=True):
