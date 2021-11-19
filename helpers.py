@@ -14,7 +14,6 @@ def get_spotify_track_ids(items):
     Currently not used
     """
 
-
     spot_track_ids = []
     for item in items:
         spot_track_ids.append(item['track']['id'])
@@ -37,8 +36,17 @@ def search_spotify(query_string, query_type, query_limit, offset):
         headers = refresh_token(g.refresh)
         r = requests.get(BASE_URL + '/search' + f'?q={query_string}type={query_type}&limit={query_limit}&offset={offset}', headers=headers)
 
-    tracks = process_search(r.json()['tracks']['items'])
-    return (tracks)
+    tracks = process_tracks(r.json()['tracks']['items'])
+    return tracks
+
+def pre_process_tracks(found_tracks):
+    """Pre-process json to remove leading ['track'] to prepare for process_search"""
+
+    processed_tracks=[]
+    for track in found_tracks:
+        processed_tracks.append(track['track'])
+    
+    return processed_tracks
 
 
 def get_spotify_saved_tracks(limit=25, offset=0):
@@ -58,94 +66,14 @@ def get_spotify_saved_tracks(limit=25, offset=0):
         headers = refresh_token(g.refresh)
         r = requests.get(BASE_URL + f'/me/tracks?limit={limit}', headers=headers)
     
-    tracks = process_track_search(r.json()['items'])
+    # Strip the ['track'] layer of json
+    processed_tracks = pre_process_tracks(r.json()['items'])
+    tracks = process_tracks(processed_tracks)
     
-    return (tracks)
+    return tracks    
 
 
-def process_track_search(found_tracks):
-    """Check if db has each spotify track id
-        This is to process the /tracks route
-
-        if spotify_track_id not found, create entry return id
-        if spotify_track_id is found, return id
-        return a list of ids (both found and created) from search
-    """
-
-    track_ids = []
-    tracks = []
-    for track in found_tracks:
-        #Check if in db
-        track_exists = Track.query.filter(Track.spotify_track_id==track['track']['id']).first()
-
-        #If yes, get id, append to track_ids[]
-        if track_exists:
-            tracks.append({"name": track_exists.name, "id": track_exists.id, "spotify_track_id": track_exists.spotify_track_id})
-
-        #If no, populate db, append id to track_ids[]
-        else:
-            new_track = Track(
-                spotify_track_id=track['track']['id'],
-                name=track['track']['name'],
-                popularity=track['track']['popularity'],
-                spotify_track_uri=track['track']['uri'],
-                release_year=track['track']['album']['release_date'][:4],
-                duration_ms=track['track']['duration_ms'])
-            
-            # check if album in db, if so connect to track else create and connect
-            album = Album.query.filter(Album.spotify_album_id==track['track']['album']['id']).first()
-            if album:
-                new_track.album_id = album.id
-            else:
-                new_album = Album(
-                    spotify_album_id = track['track']['album']['id'],
-                    name = track['track']['album']['name'],
-                    image = track['track']['album']['images'][2]['url']
-                )
-                Album.insert(new_album)
-                new_track.album_id = new_album.id
-            Track.insert(new_track)
-
-            tracks.append({"name": new_track.name, "id": new_track.id, "spotify_track_id": new_track.spotify_track_id})
-            track_ids.append(new_track.id)
-
-        if track_exists:
-             track_id = track_exists.id
-        else:
-            track_id = new_track.id
-
-        #loop through artists
-        for artist in track['track']['artists']:
-            #Check if artist is in db
-            artist_exists = Artist.query.filter(Artist.spotify_artist_id==artist['id']).first()
-
-            #If artist is in db and track new
-            if artist_exists:
-                if not track_exists:
-                    #connect existing artist to new track
-                    new_track_artist = TrackArtist(track_id=track_id, artist_id=artist_exists.id)
-                    db.session.add(new_track_artist)
-                    db.session.commit()
-
-            #Artist not in db: create new artist and link to track
-            else:
-                new_artist = Artist(
-                    spotify_artist_id=artist['id'],
-                    name=artist['name']
-                )
-                Artist.insert(new_artist)
-                new_track_artist = TrackArtist(track_id=track_id, artist_id=new_artist.id)
-                db.session.add(new_track_artist)
-                db.session.commit()
-
-    # Query Spotify database for audio features and populate db if any tracks are new
-    if len(track_ids):
-        get_audio_features(track_ids)
-    
-    return tracks     
-
-
-def process_search(found_tracks):
+def process_tracks(found_tracks):
     """Check if db has each spotify track id
         This is to parse the /search route
 
