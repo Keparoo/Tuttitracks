@@ -68,7 +68,7 @@ def pre_process_tracks(found_tracks):
     return processed_tracks
 
 
-def get_spotify_saved_tracks(limit=25, offset=0):
+def get_spotify_liked_tracks(limit=25, offset=0):
     """ 
     Return a list of user's saved Spotify track objects and save to db
     Called by /tracks
@@ -79,8 +79,19 @@ def get_spotify_saved_tracks(limit=25, offset=0):
     processed_tracks = pre_process_tracks(r.json()['items'])
     tracks = process_tracks(processed_tracks)
     
-    return tracks    
+    return tracks
 
+def get_spotify_top_tracks(limit=25, offset=0, time_range='medium_term'):
+    """ 
+    Return a list of user's top Spotify track objects and save to db
+    Called by /top
+    """
+
+    r = spotify_request('GET', f'/me/top/tracks?limit={limit}&offset={offset}&time_range={time_range}')
+
+    tracks = process_tracks(r.json()['items'])
+    
+    return tracks
 
 def process_tracks(found_tracks):
     """Check if db has each spotify track id

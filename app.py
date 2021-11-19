@@ -1,9 +1,6 @@
 """Spotiflavor Springboard Capstone 1"""
 
 import os
-import json
-import base64
-import requests
 from flask import Flask, render_template, request, redirect, flash, session, g, jsonify
 from sqlalchemy import exc
 from sqlalchemy.exc import IntegrityError
@@ -18,7 +15,7 @@ from models import db, connect_db, User, Track, Playlist
 from forms import SignupForm, LoginForm, SearchTracksForm, ChangePasswordForm
 from auth import get_spotify_user_code, get_bearer_token
 from middleware import requires_signed_in
-from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_saved_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids
+from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_liked_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids, get_spotify_top_tracks
 
 load_dotenv()
 
@@ -289,15 +286,31 @@ def search():
 
 @app.get('/tracks')
 @requires_signed_in
-def get_tracks():
-    """Query Spotify for Users' saved tracks"""
+def get_liked_tracks():
+    """Query Spotify for user's liked tracks"""
 
     LIMIT = 25
     OFFSET = 0
 
-    tracks = get_spotify_saved_tracks(limit=LIMIT, offset=OFFSET)
+    tracks = get_spotify_liked_tracks(limit=LIMIT, offset=OFFSET)
 
-    return render_template("display_tracks.html", tracks=tracks)
+    return render_template("liked_tracks.html", tracks=tracks)
+
+
+@app.get('/top')
+@requires_signed_in
+def get_top_tracks():
+    """Query Spotify for user's top tracks"""
+
+    LIMIT = 25
+    OFFSET = 0
+    # time_range is the time frame top tracks are calculated:
+    # long_term=several years including new data as available, medium_term=approx 6 months (Spotify default), short_term=approx 4 weeks
+    TIME_RANGE = 'long_term'
+
+    tracks = get_spotify_top_tracks(limit=LIMIT, offset=OFFSET, time_range=TIME_RANGE)
+
+    return render_template("top_tracks.html", tracks=tracks)
 
 
 @app.get('/playlists')
@@ -352,7 +365,7 @@ def get_saved_tracks_route():
     offset = request.args.get('offset', 0)
 
     try:
-        tracks = get_spotify_saved_tracks(offset=offset, limit=25)
+        tracks = get_spotify_liked_tracks(offset=offset, limit=25)
         
         return jsonify({
             'success': True,
