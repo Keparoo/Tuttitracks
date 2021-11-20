@@ -15,7 +15,7 @@ from models import db, connect_db, User, Track, Playlist
 from forms import SignupForm, LoginForm, SearchTracksForm, ChangePasswordForm
 from auth import get_spotify_user_code, get_bearer_token
 from middleware import requires_signed_in
-from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_liked_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids, get_spotify_top_tracks
+from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_liked_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids, get_spotify_top_tracks, move_playlist_track
 
 load_dotenv()
 
@@ -563,6 +563,25 @@ def append_playlist_tracks_route(playlist_id):
         }), 404
 
 
+@app.patch('/api/playlists/<playlist_id>/track')
+def move_playlist_track_route(playlist_id):
+    """Move a playlist track to a new position"""
+
+    current_index = request.json['current_index']
+    new_index = request.json['new_index']
+
+    try:
+        move_playlist_track(playlist_id, current_index, new_index)
+        return jsonify({
+            'success': True,
+            'playlist': playlist_id
+        }), 200
+    except:
+        return jsonify({
+            'success': False,
+            'message': "Unable to move track"
+        }), 404        
+
 @app.put('/api/playlists/<playlist_id>/tracks')
 def update_playlist_tracks(playlist_id):
     """Replace current tracks with new list of tracks"""
@@ -586,7 +605,7 @@ def update_playlist_tracks(playlist_id):
 
 @app.patch('/api/playlists/<int:playlist_id>/tracks')
 def delete_playlist_track_route(playlist_id):
-    """Delete a track from a playlist"""
+    """Delete a track from a playlist in database"""
 
     track_id = request.json['id'][0]
 

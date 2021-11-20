@@ -49,6 +49,7 @@
             <h3>Current Tracks</h3>
             <div>
                 <ol class="sortable" id="playList"></ol>
+                <div id="listorder"></div>
             </div>
         </div>
     </div>
@@ -64,11 +65,34 @@
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script src="/static/spotiflavor.js"></script>
-<script>
-    $(function () {
-        $(".sortable").sortable();
+{# <script>
+    {# $(function () {
+        $(".sortable").sortable({);
+    }); #}
+
+    {# $(function() {
+    $('.sortable').sortable({
+        update: function(event, ui) {
+            const playlistOrder = $(this).sortable('toArray').toString();
+            $("#listorder").text (playlistOrder);
+        }
     });
-</script>
+    }); #}
+
+    let start;
+    let stop;
+
+    $('.sortable').sortable({
+        start: function (e,ui) {
+    //show the index
+    start =  ui.item.index();
+  },
+  stop: function(e, ui) {
+      stop = ui.item.index();
+      alert('start ' + start + 'stop ' + stop)
+  }
+});
+</script> #}
 
 {# <iframe src="https://open.spotify.com/embed/track/2s25WcjhpjL7CC1n5aW9yx" width="300" height="80" frameborder="0"
     allowtransparency="true" allow="encrypted-media"></iframe>

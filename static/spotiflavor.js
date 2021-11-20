@@ -6,6 +6,8 @@ const playlistTracks = [];
 let currentPlaylist;
 let curr_audio_features = [];
 let offset = 0;
+let track_start_index;
+let track_stop_index;
 
 // Create the HTML to display the playlist tracks
 const makePlaylistHTML = (name, id) => {
@@ -109,6 +111,7 @@ const deleteTrack = async (e) => {
 	payload = { id: [ id ] };
 
 	if (currentPlaylist) {
+		console.debug('Send patch to delete track');
 		const res = await axios.patch(
 			`${BASE_URL}/playlists/${currentPlaylist}/tracks`,
 			payload
@@ -191,6 +194,30 @@ const prevPage = async () => {
 	const html = await makeTracksHTML(tracks);
 	$('#tracks').html(html);
 };
+
+const moveTrack = async (track_start_index, track_stop_index) => {
+	payload = {
+		current_index: track_start_index,
+		new_index: track_stop_index
+	};
+	const res = await axios.patch(
+		`${BASE_URL}/playlists/${currentPlaylist}/track`,
+		payload
+	);
+};
+
+$('.sortable').sortable({
+	start: function(e, ui) {
+		track_start_index = ui.item.index();
+	},
+	stop: function(e, ui) {
+		track_stop_index = ui.item.index();
+		console.log('Start/Stop', track_start_index, track_stop_index);
+		if (currentPlaylist) {
+			moveTrack(track_start_index, track_stop_index);
+		}
+	}
+});
 
 // List of available endpoints
 // create playlist: POST /users/<username>/playlists
