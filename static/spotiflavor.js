@@ -206,6 +206,9 @@ const moveTrack = async (track_start_index, track_stop_index) => {
 	);
 };
 
+// Make playlist order drag and droppable
+// send start and stop index to db to update
+// Fix update when list not yet created!!!! use toArray?
 $('.sortable').sortable({
 	start: function(e, ui) {
 		track_start_index = ui.item.index();
