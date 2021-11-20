@@ -83,6 +83,7 @@ def do_logout():
     if 'refresh' in session:
         del session['refresh']
 
+
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
     """Handle user signup"""
@@ -306,7 +307,7 @@ def get_top_tracks():
     OFFSET = 0
     # time_range is the time frame top tracks are calculated:
     # long_term=several years including new data as available, medium_term=approx 6 months (Spotify default), short_term=approx 4 weeks
-    TIME_RANGE = 'long_term'
+    TIME_RANGE = 'short_term'
 
     tracks = get_spotify_top_tracks(limit=LIMIT, offset=OFFSET, time_range=TIME_RANGE)
 

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/static/app.css">
+    <link rel="stylesheet" href="/static/stylesheets/app.css">
     <link rel="shortcut icon" href="/static/favicon.ico"/>
 </head>
 
@@ -28,7 +28,7 @@
       <ul class="nav navbar-nav flex-row float-right">
         {% if g.user %}
         <li class="nav-item">
-          <a class="nav-link pr-3 text-light" href="/users/{{session['curr_user']}}">User: {{session['curr_user']}}</a>
+          <a class="nav-link pr-3 text-light" href="/users/{{session['curr_user']}}"><img id="user-image" src="{{ g.user.user_image }}" alt=""> User: {{session['curr_user']}}</a>
         </li>
         <li>
           <a class="nav-link pr-3 text-light" href="/logout">Logout</a>

@@ -159,8 +159,8 @@ const makeTracksHTML = async (tracks) => {
 	for (const track of tracks) {
 		html += `<p data-name="${track.name}" data-id="${track.id}" data-spotid="${track.spotify_track_id}">
         <iframe src="https://open.spotify.com/embed/track/${track.spotify_track_id}" width="380"
-        height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe><button
-        class="btn btn-info btn-sm addToPlaylist">Add</button>
+        height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>  <button
+        class="btn btn-info btn-sm addToPlaylist mx-2 mb-4">Add</button>
         </p>`;
 	}
 	return html;
