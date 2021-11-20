@@ -13,17 +13,17 @@ const makePlaylistHTML = (name, id) => {
 };
 
 // Update the playlist display
-const updatePlaylist = () => {
-	console.debug('updatePlaylist');
+// const updatePlaylist = () => {
+// 	console.debug('updatePlaylist');
 
-	let newTrack = $(makePlaylistHTML(track.name, track.id));
-	$('#playList').append(newTrack);
+// 	let newTrack = $(makePlaylistHTML(track.name, track.id));
+// 	$('#playList').append(newTrack);
 
-	for (let track of playlistTracks) {
-		let newTrack = $(makePlaylistHTML(track.name, track.id));
-		$('#playList').append(newTrack);
-	}
-};
+// 	for (let track of playlistTracks) {
+// 		let newTrack = $(makePlaylistHTML(track.name, track.id));
+// 		$('#playList').append(newTrack);
+// 	}
+// };
 
 // Create the HTML for displaying the audio features
 const makeFeaturesHTML = async (id) => {
@@ -99,7 +99,7 @@ const handleAdd = async (e) => {
 	}
 };
 
-// Delete track db and update display
+// Delete track in db and update display
 const deleteTrack = async (e) => {
 	console.debug('deleteTrack');
 
@@ -120,6 +120,7 @@ const deleteTrack = async (e) => {
 
 // Create playist if it doesn't exist or update playlist info if it does
 const createPlaylist = async (e) => {
+	e.preventDefault();
 	console.debug('createPlaylist');
 
 	const $form = $('#form');
@@ -178,7 +179,7 @@ const nextPage = async () => {
 	$('#tracks').html(html);
 };
 
-// Display the previous page of tracks
+// Display the previous page of Spotify tracks
 const prevPage = async () => {
 	console.debug('prevPage');
 
@@ -189,51 +190,6 @@ const prevPage = async () => {
 	const tracks = res.data.track_dicts;
 	const html = await makeTracksHTML(tracks);
 	$('#tracks').html(html);
-};
-
-// Sync the local playlist with Spotify (update any track changes)
-const spotSync = async (e) => {
-	console.debug('spotSync');
-
-	const $playlist = $(e.target).closest('li');
-	const id = $playlist.data('id');
-	const playlistId = $playlist.data('spotId');
-
-	const res = await axios.post(`${BASE_URL}/spotify/${id}/playlists`);
-	if (res.error) {
-		console.log(res.message);
-	}
-};
-
-// Display an iframe of the selected Spotify playlist
-const showSpotPlaylist = async (e) => {
-	console.debug('showSpotPlaylist');
-
-	const $playlist = $(e.target).closest('li');
-	const id = $playlist.data('spot-id');
-
-	html = `
-    <iframe src="https://open.spotify.com/embed/playlist/${id}" width="300" height="650" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    `;
-	$('#spotPlaylist').html(html);
-};
-
-// Display a list of iframes for the selected local playlist
-const showPlaylist = async (e) => {
-	console.debug('showPlaylist');
-
-	const $playlist = $(e.target).closest('li');
-	const id = $playlist.data('id');
-
-	tracks = await axios.get(`${BASE_URL}/playlists/${id}/tracks`);
-
-	playlist_tracks = '';
-	for (let track of tracks.data.tracks) {
-		playlist_tracks += `<p>
-        <iframe src="https://open.spotify.com/embed/track/${track}" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-        </p>`;
-	}
-	$('#playlistTracks').html(playlist_tracks);
 };
 
 // List of available endpoints
@@ -254,7 +210,7 @@ $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
 $body.on('click', '#next', nextPage);
 $body.on('click', '#previous', prevPage);
-$body.on('click', '.spotSync', spotSync);
-$body.on('click', '.showSpotPlaylist', showSpotPlaylist);
-$body.on('click', '.showList', showPlaylist);
+// $body.on('click', '.spotSync', spotSync);
+// $body.on('click', '.showSpotPlaylist', showSpotPlaylist);
+// $body.on('click', '.showList', showPlaylist);
 $('iframe').hover(showAudioFeatures);

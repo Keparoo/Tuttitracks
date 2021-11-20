@@ -486,7 +486,7 @@ def update_playlist_details_route(playlist_id):
 
 @app.get('/api/me/playlists')
 def get_my_playlists():
-    """Get current users playlists"""
+    """Get current users playlists: return list of playlist objects"""
 
     try:
         playlists = Playlist.query.filter(Playlist.username==g.user.username)
@@ -506,7 +506,7 @@ def get_my_playlists():
 
 @app.get('/api/playlists/<int:playlist_id>')
 def get_playlist(playlist_id):
-    """Get a playlist"""
+    """Get and return a playlist object"""
 
     try:
         playlist = Playlist.query.get_or_404(playlist_id)
@@ -523,8 +523,8 @@ def get_playlist(playlist_id):
 
 
 @app.get('/api/playlists/<int:playlist_id>/tracks')
-def get_playlist_items(playlist_id):
-    """Get playlist tracks return list of track uris"""
+def get_playlist_track_ids_route(playlist_id):
+    """Get playlist tracks: return list of spotify track ids"""
 
     try:
         tracks = get_playlist_track_ids(playlist_id)
@@ -542,8 +542,8 @@ def get_playlist_items(playlist_id):
 
 
 @app.post('/api/playlists/<int:playlist_id>/tracks')
-def add_tracks_to_playlist(playlist_id):
-    """Add tracks to playlist"""
+def append_playlist_tracks_route(playlist_id):
+    """Append tracks to playlist in db"""
 
     track_ids = request.json['id']
 
