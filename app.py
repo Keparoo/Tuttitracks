@@ -8,6 +8,8 @@ from sqlalchemy.exc import IntegrityError
 
 from dotenv import load_dotenv
 
+BASE_URL = 'https://api.spotify.com/v1'
+
 # Session key assigned to user object if user is logged in
 CURR_USER_KEY = 'curr_user'
 
@@ -15,7 +17,9 @@ from models import db, connect_db, User, Track, Playlist
 from forms import SignupForm, LoginForm, SearchTracksForm, ChangePasswordForm
 from auth import get_spotify_user_code, get_bearer_token
 from middleware import requires_signed_in
-from helpers import create_playlist, create_spotify_playlist, replace_spotify_playlist_items,get_spotify_liked_tracks, get_spotify_playlists, get_playlist_tracks, append_playlist_tracks, delete_playlist_track, search_spotify, get_playlist_item_info, get_playlist_track_ids, get_spotify_top_tracks, move_playlist_track
+from db_api_methods import create_playlist, get_playlist_tracks, get_playlist_track_ids, append_playlist_tracks, insert_playlist_track, move_playlist_track, delete_playlist_track, get_playlist_item_info
+from spotify_playlist import get_spotify_playlists, create_spotify_playlist, add_tracks_to_spotify_playlist, replace_spotify_playlist_items, update_spotify_playlist_details, delete_tracks_from_spotify_playlist
+from spotify_query_parse import get_spotify_liked_tracks, search_spotify, get_spotify_top_tracks
 
 load_dotenv()
 
