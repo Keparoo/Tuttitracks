@@ -62,6 +62,7 @@ def get_user_id(token):
     g.user.spotify_user_id = r.json()['id']
     g.user.spotify_display_name = r.json()['display_name']
     g.user.user_image = r.json()['images'][0]['url']
+    print(r.text)
     User.update()
     
 

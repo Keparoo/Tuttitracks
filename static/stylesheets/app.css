@@ -11,3 +11,7 @@ body {
 	height: 100px;
 	border-radius: 50%;
 }
+
+#user-page-logo {
+	height: 50px;
+}
