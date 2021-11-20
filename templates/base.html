@@ -28,7 +28,7 @@
       <ul class="nav navbar-nav flex-row float-right">
         {% if g.user %}
         <li class="nav-item">
-          <a class="nav-link pr-3 text-light" href="/users/{{session['curr_user']}}"><img id="user-image" src="{{ g.user.user_image }}" alt=""> User: {{session['curr_user']}}</a>
+          <a class="nav-link pr-3 text-light" href="/users/{{session['curr_user']}}"><img id="user-image" src="{{ g.user.user_image }}" alt="/static/images/default-pic.png"> User: {{session['curr_user']}}</a>
         </li>
         <li>
           <a class="nav-link pr-3 text-light" href="/logout">Logout</a>
