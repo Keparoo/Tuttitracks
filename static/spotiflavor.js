@@ -2,16 +2,16 @@ const $body = $('body');
 
 BASE_URL = '/api';
 
-const playlistTracks = [];
-let currentPlaylist;
-let curr_audio_features = [];
-let offset = 0;
-let track_start_index;
-let track_stop_index;
+let playlistTracks = []; // ordered list of dicts: { track name,  track id }
+let currentPlaylist; // id of current playlist
+// let curr_audio_features = [];
+let offset = 0; // current search page offset
+let track_start_index; // for reordering of tracks: track start index
+let track_stop_index; // for reordering of tracks: track finish index
 
 // Create the HTML to display the playlist tracks
 const makePlaylistHTML = (name, id) => {
-	return `<li data-id=${id}> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
+	return `<li data-id=${id} data-name=${name}> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
 };
 
 // Update the playlist display
@@ -206,18 +206,29 @@ const moveTrack = async (track_start_index, track_stop_index) => {
 	);
 };
 
-// Make playlist order drag and droppable
-// send start and stop index to db to update
-// Fix update when list not yet created!!!! use toArray?
+// Handle drag and drop of playlist tracks
 $('.sortable').sortable({
 	start: function(e, ui) {
+		// Returns index of item being moved
 		track_start_index = ui.item.index();
 	},
 	stop: function(e, ui) {
+		// Returns index where item is dropped
 		track_stop_index = ui.item.index();
-		console.log('Start/Stop', track_start_index, track_stop_index);
+
+		// Playlist already created and in database, update db
 		if (currentPlaylist) {
 			moveTrack(track_start_index, track_stop_index);
+		} else {
+			// Playlist not sent to db yet
+			// Clear list and create track list in new order
+			playlistTracks = [];
+			$('#playList > li').each(function(index) {
+				playlistTracks.push({
+					name: $(this).data('name'),
+					id: $(this).data('id')
+				});
+			});
 		}
 	}
 });
@@ -240,7 +251,7 @@ $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
 $body.on('click', '#next', nextPage);
 $body.on('click', '#previous', prevPage);
+$('iframe').hover(showAudioFeatures);
 // $body.on('click', '.spotSync', spotSync);
 // $body.on('click', '.showSpotPlaylist', showSpotPlaylist);
 // $body.on('click', '.showList', showPlaylist);
-$('iframe').hover(showAudioFeatures);
