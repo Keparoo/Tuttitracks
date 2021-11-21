@@ -2,7 +2,7 @@ const $body = $('body');
 
 BASE_URL = '/api';
 
-let offset = 0;
+let offset = 0; // current search page offset
 
 // Create the HTML for the list of Spotify playlists
 makeSpotPlaylists = async (playlists, total_spot_playlists) => {

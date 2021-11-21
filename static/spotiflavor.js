@@ -4,14 +4,13 @@ BASE_URL = '/api';
 
 let playlistTracks = []; // ordered list of dicts: { track name,  track id }
 let currentPlaylist; // id of current playlist
-// let curr_audio_features = [];
 let offset = 0; // current search page offset
 let track_start_index; // for reordering of tracks: track start index
 let track_stop_index; // for reordering of tracks: track finish index
 
 // Create the HTML to display the playlist tracks
 const makePlaylistHTML = (name, id) => {
-	return `<li data-id=${id} data-name=${name}> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
+	return `<li data-id=${id} data-name=${name} class="ui-state-default"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
 };
 
 // Update the playlist display
@@ -252,6 +251,3 @@ $body.on('click', '.del-track', deleteTrack);
 $body.on('click', '#next', nextPage);
 $body.on('click', '#previous', prevPage);
 $('iframe').hover(showAudioFeatures);
-// $body.on('click', '.spotSync', spotSync);
-// $body.on('click', '.showSpotPlaylist', showSpotPlaylist);
-// $body.on('click', '.showList', showPlaylist);
