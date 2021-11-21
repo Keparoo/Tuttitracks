@@ -530,6 +530,7 @@ def get_playlist(playlist_id):
 def get_playlist_track_ids_route(playlist_id):
     """Get playlist tracks: return list of spotify track ids"""
 
+    print('get_playlist_track_ids')
     try:
         tracks = get_playlist_track_ids(playlist_id)
         print(tracks)

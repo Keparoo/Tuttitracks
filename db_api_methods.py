@@ -1,6 +1,6 @@
 """Database API CRUD methods"""
 
-from models import Track, Playlist, PlaylistTrack
+from models import db, Track, Playlist, PlaylistTrack
 from flask import g
 
 #====================================================================================
@@ -20,14 +20,17 @@ def create_playlist(name="New Playlist", description=None, tracks=[], public=Tru
     Playlist.insert(new_playlist)
 
     index = 0
+    playlist_tracks = []
     for track in tracks:
         new_playlist_track = PlaylistTrack(
             playlist_id = new_playlist.id,
             track_id = track,
             index = index
         )
-        PlaylistTrack.insert(new_playlist_track)
+        playlist_tracks.append(new_playlist_track)
         index += 1
+    db.session.add_all(playlist_tracks)
+    db.session.commit()
 
     return new_playlist
 
@@ -40,10 +43,9 @@ def get_playlist_tracks(playlist_id):
 
     playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).order_by(PlaylistTrack.index).all()
 
-    spotify_uris = []
-    for item in playlist_tracks:
-        track = Track.query.get_or_404(item.track_id)
-        spotify_uris.append(track.spotify_track_uri)
+    track_ids = [item.track_id for item in playlist_tracks]
+    tracks = Track.query.filter(Track.id.in_(track_ids)).all()
+    spotify_uris = [item.spotify_track_uri for item in tracks]
 
     return spotify_uris
 
@@ -55,10 +57,9 @@ def get_playlist_track_ids(playlist_id):
 
     playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).order_by(PlaylistTrack.index).all()
 
-    spotify_ids = []
-    for item in playlist_tracks:
-        track = Track.query.get_or_404(item.track_id)
-        spotify_ids.append(track.spotify_track_id)
+    track_ids = [item.track_id for item in playlist_tracks]
+    tracks = Track.query.filter(Track.id.in_(track_ids)).all()
+    spotify_ids = [item.spotify_track_id for item in tracks]
 
     return spotify_ids
 
