@@ -229,7 +229,8 @@ $('.sortable').sortable({
 				});
 			});
 		}
-	}
+	},
+	placeholder: 'ui-state-highlight'
 });
 
 // List of available endpoints
