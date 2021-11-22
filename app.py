@@ -386,6 +386,31 @@ def get_saved_tracks_route():
         }), 404
 
 
+@app.get('/api/me/top/tracks')
+def get_top_tracks_route():
+    """Get Spotify top tracks for current user"""
+
+    offset = request.args.get('offset', 0)
+    limit = request.args.get('offset', 25)
+    time_range = request.args.get('time_range', 'medium-term')
+
+    get_spotify_top_tracks(limit=25, offset=0, time_range='medium_term')
+
+    try:
+        tracks = get_spotify_top_tracks(limit=limit, offset=offset, time_range=time_range)
+        
+        return jsonify({
+            'success': True,
+            'tracks': tracks
+        }), 200
+
+    except:
+        
+        return jsonify({
+            'success': False,
+            'message': "Unable to fetch Spotify top tracks"
+        }), 404
+
 @app.get('/api/tracks/<int:track_id>')  
 def get_audio_features_route(track_id):
     """Get the audio features of a track from database"""
