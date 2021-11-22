@@ -2,6 +2,7 @@ const $body = $('body');
 
 BASE_URL = '/api';
 
+const LIMIT = 20;
 let offset = 0; // current search page offset
 
 // Create the HTML for the list of Spotify playlists
@@ -19,13 +20,8 @@ makeSpotPlaylists = async (playlists, total_spot_playlists) => {
 	return html;
 };
 
-// Display the next page of Spotify playlists
-const nextPage = async () => {
-	console.debug('nextPage');
-
-	LIMIT = 20;
-	offset += 10;
-
+// Page request
+const pageRequest = async (offset) => {
 	const res = await axios.get(
 		`${BASE_URL}/spotify/playlists?limit=${LIMIT}&offset=${offset}`
 	);
@@ -36,22 +32,23 @@ const nextPage = async () => {
 	$('#spotPlaylists').html(html);
 };
 
+// Display the next page of Spotify playlists
+const nextPage = async () => {
+	console.debug('nextPage');
+
+	offset += 10;
+
+	pageRequest(offset);
+};
+
 // Display the previous page of Spotify playlists
 const prevPage = async () => {
 	console.debug('prevPage');
 
-	LIMIT = 20;
 	offset -= 10;
 	if (offset < 0) offset = 0;
 
-	const res = await axios.get(
-		`${BASE_URL}/spotify/playlists?limit=${LIMIT}&offset=${offset}`
-	);
-
-	const playlists = res.data.spot_playlists;
-	const total_spot_playlists = res.data.total_spot_playlists;
-	const html = await makeSpotPlaylists(playlists, total_spot_playlists);
-	$('#spotPlaylists').html(html);
+	pageRequest(offset);
 };
 
 // Sync the local playlist with Spotify (update any track changes)
