@@ -1,9 +1,9 @@
 // AJAX file for /top route (top tracks)
 
-LIMIT = 25; // Number of tracks per page
+const LIMIT = 25; // Number of tracks per page
 // time_range is the time frame top tracks are calculated:
 // long_term=several years including new data as available, medium_term=approx 6 months (Spotify default), short_term=approx 4 weeks
-TIME_RANGE = 'medium_term';
+const TIME_RANGE = 'medium_term';
 let offset = 0; // current search page offset
 
 // Page request
