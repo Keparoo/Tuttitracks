@@ -6,12 +6,8 @@ LIMIT = 25; // Number of tracks per page
 TIME_RANGE = 'medium_term';
 let offset = 0; // current search page offset
 
-// Display the next page of Spotify tracks
-const nextPage = async () => {
-	console.debug('nextPage');
-
-	offset += 10;
-
+// Page request
+const pageRequest = async (offset) => {
 	const res = await axios.get(
 		`${BASE_URL}/me/top/tracks?limit=${LIMIT}&offset=${offset}&time_range=${TIME_RANGE}`
 	);
@@ -20,19 +16,23 @@ const nextPage = async () => {
 	$('#tracks').html(html);
 };
 
-// Display the previous page of Spotify tracks
+// Display the next page of top tracks
+const nextPage = async () => {
+	console.debug('nextPage');
+
+	offset += 10;
+
+	pageRequest(offset);
+};
+
+// Display the previous page of top tracks
 const prevPage = async () => {
 	console.debug('prevPage');
 
 	offset -= 10;
 	if (offset < 0) offset = 0;
 
-	const res = await axios.get(
-		`${BASE_URL}/me/top/tracks?limit=${LIMIT}&offset=${offset}&time_range=${TIME_RANGE}`
-	);
-	const tracks = res.data.tracks;
-	const html = await makeTracksHTML(tracks);
-	$('#tracks').html(html);
+	pageRequest(offset);
 };
 
 // List of available endpoints
@@ -49,5 +49,6 @@ const prevPage = async () => {
 // create new spotify playlist: POST /spotify/<int:id>/playlists
 
 //=====================DOM Listeners=============================
+
 $body.on('click', '#next', nextPage);
 $body.on('click', '#previous', prevPage);

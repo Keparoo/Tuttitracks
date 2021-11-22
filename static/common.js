@@ -4,7 +4,6 @@ BASE_URL = '/api';
 
 let playlistTracks = []; // ordered list of dicts: { track name,  track id }
 let currentPlaylist; // id of current playlist
-// let offset = 0; // current search page offset
 let track_start_index; // for reordering of tracks: track start index
 let track_stop_index; // for reordering of tracks: track finish index
 
@@ -213,6 +212,4 @@ $('.sortable').sortable({
 $body.on('click', '.addToPlaylist', handleAdd);
 $body.on('click', '#createPlaylist', createPlaylist);
 $body.on('click', '.del-track', deleteTrack);
-// $body.on('click', '#next', nextPage);
-// $body.on('click', '#previous', prevPage);
 $('iframe').hover(showAudioFeatures);
