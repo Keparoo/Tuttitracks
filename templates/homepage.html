@@ -5,23 +5,24 @@
 {% block content %}
 
 <div class="container">
-    <h1 class="display-3">Tuttitracks</h1>
-    
-    <div class="row">
-        <div class="col-md-10">
-          <h2>Welcome to Tuttitracks, powered by Spotify</h2>
-          <h3>To create Spotify playlists: <br>You will be prompted to log into your Spotify account to allow access.</h3>
-          <p>Click on Search to search by artist, genre, track-name, album-name or year.</p>
-          <p>Click on Liked Tracks to download your liked tracks from Spotify to put them into playlists.</p>
-          <p>Click on Top Tracks to see all the tracks of an album and choose some for playlists</p>
-          <p>Click on Playlists to manage your Spotify and Spotiflavor playlists.</p>
-        </div>
-    </div>
+    <div class="jumbotron">
+        <h1 class="display-3">Tuttitracks</h1>
+        <p class="lead">A tool powered by Spotify that allows you to create and edit playlists and upload them to your
+            Spotify account. Find out additional audio features about your tracks including key, tempo, danceability and
+            more!<br>
+            Tuttitracks is not owned by Spotify, it is a tool you can use to enhance your Spotify experience.
+        </p>
+        <hr class="my-4">
+        <p>Click on Search to search by artist, genre, track-name, album-name or year.</p>
+        <p>Click on Liked Tracks to download your liked tracks from Spotify to put them into playlists.</p>
+        <p>Click on Top Tracks to see all the tracks of an album and choose some for playlists.</p>
+        <p>Click on Playlists to manage your Spotify and Spotiflavor playlists.</p>
+        <hr class="my-4">
+        <p>A Spotify account is needed to use Tuttitracks.</p>
 
-    <div>
-        <h3>Create a Spotify account: </h3>
-        <a href="https://open.spotify.com/" target="_blank" class='btn btn-success'>Create account</a>
+        <p class="lead">
+            <a href="https://open.spotify.com/" class="btn btn-success btn-lg" target="_blank" role="button">Create
+                account</a>
+        </p>
     </div>
-</div>
-
-{% endblock %}
+    {% endblock %}
