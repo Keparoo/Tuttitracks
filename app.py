@@ -307,11 +307,11 @@ def get_liked_tracks():
 def get_top_tracks():
     """Query Spotify for user's top tracks"""
 
-    LIMIT = 25
+    LIMIT = 20
     OFFSET = 0
     # time_range is the time frame top tracks are calculated:
     # long_term=several years including new data as available, medium_term=approx 6 months (Spotify default), short_term=approx 4 weeks
-    TIME_RANGE = 'short_term'
+    TIME_RANGE = 'medium_term'
 
     tracks = get_spotify_top_tracks(limit=LIMIT, offset=OFFSET, time_range=TIME_RANGE)
 
@@ -391,7 +391,7 @@ def get_top_tracks_route():
     """Get Spotify top tracks for current user"""
 
     offset = request.args.get('offset', 0)
-    limit = request.args.get('offset', 25)
+    limit = request.args.get('offset', 20)
     time_range = request.args.get('time_range', 'medium-term')
 
     get_spotify_top_tracks(limit=25, offset=0, time_range='medium_term')

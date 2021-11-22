@@ -20,7 +20,7 @@ const pageRequest = async (offset) => {
 const nextPage = async () => {
 	console.debug('nextPage');
 
-	offset += 10;
+	offset += 20;
 
 	pageRequest(offset);
 };
@@ -29,7 +29,7 @@ const nextPage = async () => {
 const prevPage = async () => {
 	console.debug('prevPage');
 
-	offset -= 10;
+	offset -= 20;
 	if (offset < 0) offset = 0;
 
 	pageRequest(offset);
