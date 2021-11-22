@@ -9,7 +9,7 @@ let track_stop_index; // for reordering of tracks: track finish index
 
 // Create the HTML to display the playlist tracks
 const makePlaylistHTML = (name, id) => {
-	return `<li data-id=${id} data-name=${name} class="ui-state-default"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span> ${name} <button class="del-track btn btn-warning btn-sm">X</button></li>`;
+	return `<li data-id=${id} data-name=${name} class="ui-state-default"> <span class="ui-icon ui-icon-arrowthick-2-n-s"></span> ${name} <button class="del-track btn btn-danger btn-sm "><i class="fa fa-trash" aria-hidden="true"></i></button></li>`;
 };
 
 // Create the HTML for displaying the audio features
