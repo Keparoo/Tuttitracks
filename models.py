@@ -1,4 +1,4 @@
-"""Models for Spotiflavor"""
+"""Models for Tuttitracks"""
 
 import os
 from flask_sqlalchemy import SQLAlchemy

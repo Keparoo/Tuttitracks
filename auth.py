@@ -1,4 +1,4 @@
-"""Authentication tools for Spotiflavor"""
+"""Authentication tools for Tuttitracks"""
 
 import os
 import base64

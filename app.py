@@ -1,4 +1,4 @@
-"""Spotiflavor Springboard Capstone 1"""
+"""Tuttitracks Springboard Capstone 1"""
 
 import os
 from flask import Flask, render_template, request, redirect, flash, session, g, jsonify
