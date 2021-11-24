@@ -57,9 +57,17 @@ def get_playlist_track_ids(playlist_id):
 
     playlist_tracks = PlaylistTrack.query.filter(PlaylistTrack.playlist_id==playlist_id).order_by(PlaylistTrack.index).all()
 
-    track_ids = [item.track_id for item in playlist_tracks]
-    tracks = Track.query.filter(Track.id.in_(track_ids)).all()
-    spotify_ids = [item.spotify_track_id for item in tracks]
+    # track_ids = [item.track_id for item in playlist_tracks]
+    # # track_ids are in index order
+    # # The following line returns the tracks no longer in order by index
+    # tracks = Track.query.filter(Track.id.in_(track_ids)).all()
+    # spotify_ids = [item.spotify_track_id for item in tracks]
+
+    # Old way
+    spotify_ids = []
+    for item in playlist_tracks:
+        track = Track.query.get_or_404(item.track_id)
+        spotify_ids.append(track.spotify_track_id)
 
     return spotify_ids
 
