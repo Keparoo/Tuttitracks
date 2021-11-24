@@ -63,6 +63,14 @@ const spotSync = async (e) => {
 	if (res.error) {
 		console.log(res.message);
 	}
+	// Toggle button color and change text from Send to Sync
+	$playlist
+		.children('.spotSync')
+		.text('Sync')
+		.removeClass('btn-success')
+		.addClass('btn-light');
+	// Refresh the list of Spotify Playlists
+	pageRequest(offset);
 };
 
 // Display an iframe of the selected Spotify playlist
