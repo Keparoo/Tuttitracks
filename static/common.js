@@ -156,6 +156,7 @@ const makeTracksHTML = async (tracks) => {
 };
 
 const moveTrack = async (track_start_index, track_stop_index) => {
+	console.debug('moveTrack');
 	payload = {
 		current_index: track_start_index,
 		new_index: track_stop_index

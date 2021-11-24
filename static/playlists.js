@@ -4,6 +4,9 @@ BASE_URL = '/api';
 
 const LIMIT = 20;
 let offset = 0; // current search page offset
+let currentPlaylist; // id of current playlist
+let track_start_index; // for reordering of tracks: track start index
+let track_stop_index; // for reordering of tracks: track finish index
 
 // Create the HTML for the list of Spotify playlists
 makeSpotPlaylists = async (playlists, total_spot_playlists) => {
@@ -92,16 +95,29 @@ const showPlaylist = async (e) => {
 
 	const $playlist = $(e.target).closest('li');
 	const id = $playlist.data('id');
+	currentPlaylist = id;
 
 	tracks = await axios.get(`${BASE_URL}/playlists/${id}/tracks`);
 
 	playlist_tracks = '';
 	for (let track of tracks.data.tracks) {
-		playlist_tracks += `<p>
+		playlist_tracks += `<li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
         <iframe src="https://open.spotify.com/embed/track/${track}" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-        </p>`;
+        </li>`;
 	}
 	$('#playlistTracks').html(playlist_tracks);
+};
+
+const moveTrack = async (track_start_index, track_stop_index) => {
+	console.debug('moveTrack');
+	payload = {
+		current_index: track_start_index,
+		new_index: track_stop_index
+	};
+	const res = await axios.patch(
+		`${BASE_URL}/playlists/${currentPlaylist}/track`,
+		payload
+	);
 };
 
 // List of available endpoints
@@ -116,6 +132,22 @@ const showPlaylist = async (e) => {
 // get user's playlists: GET /users/<username>/playlists
 // get track's audio features: GET /tracks/<track_id>
 // create new spotify playlist: POST /spotify/<int:id>/playlists
+
+$('.sortable').sortable({
+	start: function(e, ui) {
+		// Returns index of item being moved
+		track_start_index = ui.item.index();
+	},
+	stop: function(e, ui) {
+		// Returns index where item is dropped
+		track_stop_index = ui.item.index();
+
+		// Playlist already created and in database, update db
+
+		moveTrack(track_start_index, track_stop_index);
+	},
+	placeholder: 'ui-state-highlight'
+});
 
 $body.on('click', '#next', nextPage);
 $body.on('click', '#previous', prevPage);

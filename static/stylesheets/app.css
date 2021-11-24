@@ -42,7 +42,13 @@ body {
 } */
 
 /* put arrows to left of box */
-/* .sortable li span {
+.playlistTracks li span {
 	position: absolute;
 	margin-left: -1.3em;
-} */
+}
+
+#playlistTracks li {
+	list-style-type: none;
+	height: 100%;
+	width: 323px;
+}
