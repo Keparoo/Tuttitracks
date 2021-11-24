@@ -17,9 +17,10 @@
 
             <ul class="list-group">
                 {% for playlist in spot_playlists %}
-                    <li class="list-group-item" data-id="{{ playlist['id'] }}" data-spot-id="{{ playlist['spotify_playlist_id'] }}">{{ playlist['name'] }} 
+                <li class="list-group-item" data-id="{{ playlist['id'] }}"
+                    data-spot-id="{{ playlist['spotify_playlist_id'] }}">{{ playlist['name'] }}
                     <button class="btn btn-info btn-sm showSpotPlaylist float-right">Show</button>
-                {% endfor %}
+                    {% endfor %}
             </ul>
 
         </div>
@@ -35,38 +36,39 @@
             <h6>Sync to update playlist tracks to Spotify</h6>
             <h6>Show to show current playlist tracks</h6>
 
-                <ul class="list-group">
-                    {% for playlist in playlists%}
-                        <li class="list-group-item" data-id="{{ playlist.id }}" data-spotId="{{ playlist.spotify_playlist_id }}">{{ playlist['name'] }} 
-                        {% if not playlist.spotify_playlist_id%}
-                        <button class="btn btn-success btn-sm spotSync float-right mx-2">Send</button>
-                        {% else %}
-                        {# If playlist already sent to Spotify, Change button to Sync track changes#}
-                        <button class="btn btn-light btn-sm spotSync float-right mx-2">Sync</button>
-                        {% endif %}
-                        <button class="btn btn-info btn-sm showList float-right">Show</button>
-                        </li>
-                    {% endfor %}
-                </ul>
+            <ul class="list-group">
+                {% for playlist in playlists%}
+                <li class="list-group-item" data-id="{{ playlist.id }}"
+                    data-spotId="{{ playlist.spotify_playlist_id }}">{{ playlist['name'] }}
+                    {% if not playlist.spotify_playlist_id%}
+                    <button class="btn btn-success btn-sm spotSync float-right mx-2">Send</button>
+                    {% else %}
+                    {# If playlist already sent to Spotify, Change button to Sync track changes#}
+                    <button class="btn btn-light btn-sm spotSync float-right mx-2">Sync</button>
+                    {% endif %}
+                    <button class="btn btn-info btn-sm showList float-right">Show</button>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
 
         <div class="col-3">
-        <h3>Tracks</h3>
-        <div id="playlistTracks"></div>
+            <h3>Tracks</h3>
+            <div id="playlistTracks"></div>
 
+        </div>
     </div>
-</div>
 
-<script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
-<script src="/static/playlists.js"></script>
+    <script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+    <script src="/static/playlists.js"></script>
 
-{# JQuery sortable for future features#}
-<script>
-    $(function () {
-        $(".sortable").sortable();
-    });
-</script>
+    {# JQuery sortable for future features#}
+    <script>
+        $(function () {
+            $(".sortable").sortable();
+        });
+    </script>
 
-{% endblock %}
+    {% endblock %}
