@@ -27,16 +27,27 @@ The search page will allow you to enter artist, track name, album name genre or 
 The search will redirect you to a page that will show you the search criteria you entered and display a list of matching tracks.  
 30 second clips of the tracks can be played
 Mousing over the tracks will display the audio features for the track  
-Each track has an add button that will add the track to playlist  
+Each track has an add button that will add the track to playlist
+Playlist tracks may be dragged and dropped to change their order  
 The playlist can be named and given a description  
 
-### Saved Tracks
+### Liked Tracks
 The saved tracks page will display the saved or "liked" tracks that a user has in their Spotify account.  
 The tracks are displayed in pages of 25 and can be browsed with the Previous and Next Page buttons  
 30 second clips of the tracks can be played  
 Mousing over the tracks will display the audio features for the track 
-Each track has an add button that will add the track to playlist  
-The playlist can be named and given a description  
+Each track has an add button that will add the track to playlist
+Playlist tracks may be dragged and dropped to change their order  
+The playlist can be named and given a description 
+
+### Top Tracks
+The saved tracks page will display the tracks that a user has played most in the past from their Spotify account.  
+The tracks are displayed in pages of 25 and can be browsed with the Previous and Next Page buttons  
+30 second clips of the tracks can be played  
+Mousing over the tracks will display the audio features for the track 
+Each track has an add button that will add the track to playlist
+Playlist tracks may be dragged and dropped to change their order  
+The playlist can be named and given a description 
 
 ### Playlists
 The playlist page displays a list of all Spotify playlists displayed in pages of 25 that can be paged through  
