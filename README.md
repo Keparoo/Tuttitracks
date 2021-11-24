@@ -115,6 +115,8 @@ createdb <database_name>
 
 - Set the `DATABASE_URL` and `TEST_DATABASE_URL` in `.env` file to match the names of your development and testing databases.
 
+The schema for the database can be viewed visually in the tuttitracks-schema-design-3.4.pdf file
+
 ## Running the Server
 Switch to the project directory and ensure that the virtual environment is running.
 
@@ -133,6 +135,8 @@ In order to create a Spotify web app, visit [Spotify developer page](https://dev
 From the developers dashboard, any redirect urls used in the auth.py file must be entered into the Spotify app created on the dashboard.  
 
 ## Testing
+
+A seed.py file is included that will drop and create tables in the database and seed it with test data in order to become familiar with the database schema. This data may also be used for unit testing.
 
 For testing locally, stop the development server and reset the database.
 The following resets the database and runs the test suite:
