@@ -20,9 +20,12 @@ https://spotiflavor.herokuapp.com/
 
 ## Usage
 In order to user the app, the user must sign up for a Spotify account. Any account, free or premium will work.  
+Currently the app access to Spotify's backend is in development mode. Users of the app must be added by myself to the approved list of email addresses (with a Spotify account) to be able to query Spotify's database. Until Spotify grants general usage access to this app, anyone wanting to use the web app must contact me with the email address that is connected to a user's Spotify account so that I can manually add them. This will hopefully be resolved to general use soon.  
+
+### User Interface
 There are 4 main pages:
 
-### Search
+#### Search
 The search page will allow you to enter artist, track name, album name genre or year or any combination to search for tracks  
 The search will redirect you to a page that will show you the search criteria you entered and display a list of matching tracks.  
 30 second clips of the tracks can be played
@@ -31,7 +34,7 @@ Each track has an add button that will add the track to playlist
 Playlist tracks may be dragged and dropped to change their order  
 The playlist can be named and given a description  
 
-### Liked Tracks
+#### Liked Tracks
 The saved tracks page will display the saved or "liked" tracks that a user has in their Spotify account.  
 The tracks are displayed in pages of 25 and can be browsed with the Previous and Next Page buttons  
 30 second clips of the tracks can be played  
@@ -40,7 +43,7 @@ Each track has an add button that will add the track to playlist
 Playlist tracks may be dragged and dropped to change their order  
 The playlist can be named and given a description 
 
-### Top Tracks
+#### Top Tracks
 The saved tracks page will display the tracks that a user has played most in the past from their Spotify account.  
 The tracks are displayed in pages of 25 and can be browsed with the Previous and Next Page buttons  
 30 second clips of the tracks can be played  
@@ -49,7 +52,7 @@ Each track has an add button that will add the track to playlist
 Playlist tracks may be dragged and dropped to change their order  
 The playlist can be named and given a description 
 
-### Playlists
+#### Playlists
 The playlist page displays a list of all Spotify playlists displayed in pages of 25 that can be paged through  
 Clicking the show button next to each Spotify playlist will display the tracks of the playlist in a playable iframe  
 A list of the playlists created using this app are also displayed
@@ -57,6 +60,7 @@ Clicking Show will display a list of tracks from which 30 second clips can be pl
 Clicking the Send button will upload the playlist to Spotify  
 Clicking the Sync button will sync any track changes to the playlist with the Spotify server
 
+---
 ## Getting Stared  
 
 Clone the repo by running
@@ -123,7 +127,11 @@ flask run
 --- 
 
 ## Environment Variables  
-Create a `.env` file matching the template provided in the `.env.example` file. All environmental variables must be populated with the appropriate `auth0` constants and `PostgreSQL` database URLs in order for the application to function. 
+Create a `.env` file matching the template provided in the `.env.example` file. All environmental variables must be populated with the appropriate `auth0` constants and `PostgreSQL` database URLs in order for the application to function.
+
+In order to create a Spotify web app, visit [Spotify developer page](https://developer.spotify.com/). Log in and from the dashboard create a new app. Once this is done, the dashboard will provide you with a Client Id and Client Secret. These are necessary to run this code and must be placed in the .env file.  
+From the developers dashboard, any redirect urls used in the auth.py file must be entered into the Spotify app created on the dashboard.  
+
 ## Testing
 
 For testing locally, stop the development server and reset the database.
