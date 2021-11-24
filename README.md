@@ -15,7 +15,7 @@ Note: in order to use this web app a Spotify account is required: either free or
 - Unit-testing test suite
 - Deployed to Heroku
 
-## Spotiflavor is deployed on Heroku
+## Tuttitracks is deployed on Heroku
 https://spotiflavor.herokuapp.com/
 
 ## Usage
