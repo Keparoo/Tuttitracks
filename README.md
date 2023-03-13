@@ -19,7 +19,7 @@ Note: in order to use this web app a Spotify account is required: either free or
 
 ## Tuttitracks is deployed on Heroku
 
-https://spotiflavor.herokuapp.com/
+https://tuttitracks.herokuapp.com/
 
 ## Usage
 
@@ -76,7 +76,7 @@ Clicking the Sync button will sync any track changes to the playlist with the Sp
 Clone the repo by running
 
 ```bash
-git clone https://github.com/Keparoo/Spotiflavor.git
+git clone https://github.com/Keparoo/Tuttitracks.git
 ```
 
 ### Key Dependencies
