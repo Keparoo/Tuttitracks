@@ -19,7 +19,7 @@ Note: in order to use this web app a Spotify account is required: either free or
 
 ## Tuttitracks is deployed on Heroku
 
-https://tuttitracks.herokuapp.com/
+[https://tuttitracks.herokuapp.com](Tuttitracks App)
 
 ## Usage
 
@@ -144,7 +144,7 @@ createdb <database_name>
 
 - The schema for the database can be viewed visually in the tuttitracks-schema-design-3.4.pdf file
 
-### The Postgres service must be running in order for the app to function:
+### The Postgres service must be running in order for the app to function
 
 - To run the Postgres service on Linux:
 
@@ -202,7 +202,7 @@ source setup.sh
 This project is deployed to [Heroku](https://heroku.com). To Deploy your own version:
 
 - You must have Git installed and your project must be tracked in a repository
-- Install Heroku locally: https://devcenter.heroku.com/articles/heroku-cli
+- Install Heroku locally: [https://devcenter.heroku.com/articles/heroku-cli](Heroku Dev Center)
 - Create your heroku app:
 
 ```bash
