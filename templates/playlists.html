@@ -1,75 +1,75 @@
 {% extends 'base.html' %}
 
-{% block title %}Spotiflavor{% endblock %}
+{% block title %}Tuttitracks{% endblock %}
 
 {% block content %}
 
 <div class="container-fluid">
-    <h1 class="display-3">Playlists</h1>
-    <div class="row">
-        <div id="spotPlaylists" class="col-md-3">
-            <h3>Spotify Playlists: {{ total_spot_playlists }}</h3>
-            <h6>Click Next/Previous to see pages of playlists</h6>
-            <h6>Click Show to display playlist tracks</h6>
+  <h1 class="display-3">Playlists</h1>
+  <div class="row">
+    <div id="spotPlaylists" class="col-md-3">
+      <h3>Spotify Playlists: {{ total_spot_playlists }}</h3>
+      <h6>Click Next/Previous to see pages of playlists</h6>
+      <h6>Click Show to display playlist tracks</h6>
 
-            <p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next"
-                    class="btn btn-info">Next Page</button></p>
+      <p><button id="previous" class="btn btn-info">Previous Page</button> <button id="next" class="btn btn-info">Next
+          Page</button></p>
 
-            <ul class="list-group">
-                {% for playlist in spot_playlists %}
-                <li class="list-group-item" data-id="{{ playlist['id'] }}"
-                    data-spot-id="{{ playlist['spotify_playlist_id'] }}">{{ playlist['name'] }}
-                    <button class="btn btn-info btn-sm showSpotPlaylist float-right">Show</button>
-                    {% endfor %}
-            </ul>
+      <ul class="list-group">
+        {% for playlist in spot_playlists %}
+        <li class="list-group-item" data-id="{{ playlist['id'] }}" data-spot-id="{{ playlist['spotify_playlist_id'] }}">
+          {{ playlist['name'] }}
+          <button class="btn btn-info btn-sm showSpotPlaylist float-right">Show</button>
+          {% endfor %}
+      </ul>
 
-        </div>
-
-        <div class="col-md-3">
-            <h3>Current Spotify Playlist</h3>
-            <div id="spotPlaylist"></div>
-        </div>
-
-        <div class="col-3">
-            <h3>Playlists</h3>
-            <h6>Send to send playlist to Spotify</h6>
-            <h6>Sync to update playlist tracks to Spotify</h6>
-            <h6>Show to show current playlist tracks</h6>
-
-            <ul class="list-group">
-                {% for playlist in playlists%}
-                <li class="list-group-item" data-id="{{ playlist.id }}"
-                    data-spotId="{{ playlist.spotify_playlist_id }}">{{ playlist['name'] }}
-                    {% if not playlist.spotify_playlist_id%}
-                    <button class="btn btn-success btn-sm spotSync float-right mx-2">Send</button>
-                    {% else %}
-                    {# If playlist already sent to Spotify, Change button to Sync track changes#}
-                    <button class="btn btn-light btn-sm spotSync float-right mx-2">Sync</button>
-                    {% endif %}
-                    <button class="btn btn-info btn-sm showList float-right">Show</button>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="col-3">
-            <h3>Tracks</h3>
-            <ul id="playlistTracks" class="sortable ui-sortable"></ul>
-
-        </div>
     </div>
 
-    <script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
-    <!-- <script src="/static/common.js"></script> -->
-    <script src="/static/playlists.js"></script>
+    <div class="col-md-3">
+      <h3>Current Spotify Playlist</h3>
+      <div id="spotPlaylist"></div>
+    </div>
 
-    {# JQuery sortable for future features#}
-    <!-- <script>
+    <div class="col-3">
+      <h3>Playlists</h3>
+      <h6>Send to send playlist to Spotify</h6>
+      <h6>Sync to update playlist tracks to Spotify</h6>
+      <h6>Show to show current playlist tracks</h6>
+
+      <ul class="list-group">
+        {% for playlist in playlists%}
+        <li class="list-group-item" data-id="{{ playlist.id }}" data-spotId="{{ playlist.spotify_playlist_id }}">{{
+          playlist['name'] }}
+          {% if not playlist.spotify_playlist_id%}
+          <button class="btn btn-success btn-sm spotSync float-right mx-2">Send</button>
+          {% else %}
+          {# If playlist already sent to Spotify, Change button to Sync track changes#}
+          <button class="btn btn-light btn-sm spotSync float-right mx-2">Sync</button>
+          {% endif %}
+          <button class="btn btn-info btn-sm showList float-right">Show</button>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="col-3">
+      <h3>Tracks</h3>
+      <ul id="playlistTracks" class="sortable ui-sortable"></ul>
+
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/axios@0.19.0/dist/axios.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+  <!-- <script src="/static/common.js"></script> -->
+  <script src="/static/playlists.js"></script>
+
+  {# JQuery sortable for future features#}
+  <!-- <script>
         $(function () {
             $(".sortable").sortable();
         });
     </script> -->
 
-    {% endblock %}
+  {% endblock %}

@@ -9,11 +9,11 @@ Note: in order to use this web app a Spotify account is required: either free or
 ## Features
 
 - Postgresql Database of users, tracks, features, playlists, artists, albums and genres
-- Implemented using Flask 2.0
-- Implemented using Python 3.8.10
+- Implemented using Flask 2.2.3
+- Implemented using Python 3.11.2
 - The front-end is implemented with Ajax and JQuery
 - RESTful API to interact with the database
-- The app handles authorization with Spotify
+- The app implements OAuth for to authorize with Spotify
 - Unit-testing test suite
 - Deployed to Heroku
 
@@ -254,4 +254,4 @@ heroku ps:scale web=1
 
 ### Author
 
-Kep Kaeppeler is the author of this project, test suite, and all documentation.
+Kep Kaeppeler is the author of this project, test suite, and all documentation © 2023
