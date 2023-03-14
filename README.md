@@ -81,12 +81,23 @@ git clone https://github.com/Keparoo/Tuttitracks.git
 
 ### Key Dependencies
 
-- [Python 3.8.10](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python) This project was developed using Python 3.8.5 and the project will not run with versions of Python below 3.6.
-- [Flask 2.0](http://flask.pocoo.org/) handles requests and responses.
-- [Flask-Migrate](https://flask-cors.readthedocs.io/en/latest/) is used to handle SQLAlchemy database migrations for Flask applications using Alembic. The database operations are made available through the Flask command-line interface.
+- [Python 3.11.2](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python) This project was developed using Python 3.8.5, upgraded to Python 3.8.10, and currently Python 3.11.2. The project will not run with versions of Python below 3.6.
+- [Flask 2.2.3](https://flask.pocoo.org/) handles requests and responses.
+- [FlaskSQLAlchemy 3.0.3](https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/) is the Python SQL toolkit and ORM used to handle PostgreSQL database.
+- [Flask-Bcrypt 1.01](https://github.com/maxcountryman/flask-bcrypt) handles password hashing.
+- [psycopg2-binary 2.9.5](https://www.psycopg.org/) is the PostgresQL database adapter.
+- [requests 2.28.2](https://requests.readthedocs.io/en/latest/) handles HTTP requests.
+- [python-dotenv 1.0.0](https://github.com/theskumar/python-dotenv) handles environment variable imports.
+- [Flask-WTF 1.1.1](https://github.com/wtforms/flask-wtf/) Handles forms and validation in Flask.
+- [email_validator 1.1.1](https://github.com/JoshData/python-email-validator) handles email validation for Flask-WTF.
+
 - [PostgreSQL](https://www.postgresql.org/docs/) is the object-relational SQL database system used.
-- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM used to handle PostgreSQL database.
+
+- [Flask-Migrate](https://flask-cors.readthedocs.io/en/latest/) is used to handle SQLAlchemy database migrations for Flask applications using Alembic. The database operations are made available through the Flask command-line interface.
+
 - [Unittest](https://docs.python.org/3/library/unittest.html) is the Python testing framework used for unit testing.
+- [Flask-Debug-Toolbar 0.13.1](https://github.com/pallets-eco/flask-debugtoolbar) is a debugging tool used during development
+- [gunicorn 20.1.0](https://gunicorn.org/) is used to deploy to Heroku
 
 #### Virtual Enviornment
 
@@ -131,7 +142,21 @@ createdb <database_name>
 
 - Set the `DATABASE_URL` and `TEST_DATABASE_URL` in `.env` file to match the names of your development and testing databases.
 
-The schema for the database can be viewed visually in the tuttitracks-schema-design-3.4.pdf file
+- The schema for the database can be viewed visually in the tuttitracks-schema-design-3.4.pdf file
+
+### The Postgres service must be running in order for the app to function:
+
+- To run the Postgres service on Linux:
+
+```bash
+sudo service Postgres start
+```
+
+- To stop the Postgres service on Linux:
+
+```bash
+sudo service Postgres stop
+```
 
 ## Running the Server
 
@@ -229,4 +254,4 @@ heroku ps:scale web=1
 
 ### Author
 
-Kep Kaeppeler is the author of this project and all documentation.
+Kep Kaeppeler is the author of this project, test suite, and all documentation.
