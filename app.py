@@ -37,6 +37,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.app_context().push()
 # app.config['DEBUG'] = False
 # toolbar = DebugToolbarExtension(app)
 

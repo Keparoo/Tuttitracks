@@ -1,8 +1,8 @@
 """Tuttitracks Forms"""
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, IntegerField
-from wtforms.fields.core import BooleanField
+from wtforms import StringField, PasswordField, TextAreaField, IntegerField, BooleanField
+# from wtforms.fields.core import BooleanField
 from wtforms.validators import InputRequired, Email, Length, Optional, EqualTo
 
 class SignupForm(FlaskForm):
