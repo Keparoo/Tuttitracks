@@ -209,7 +209,17 @@ This project is deployed to [Heroku](https://heroku.com). To Deploy your own ver
 heroku create <name_of_app>
 ```
 
-- Add `heroku` as a Git remote and push your project to `Heroku` (Change `main` to the name of the appropriate git brach if it differs, i.e. `master`)
+- If project is has already been created, login to Heroku
+
+```bash
+heroku login
+```
+
+- Add `heroku` as a Git remote and push your project to `Heroku` (Change `main` to the name of the appropriate git brach if it differs, i.e. `master`). To find Heroku Git Url, from the project dashboard go to settings. It is found under App Information or from the command line:
+
+```bash
+git remote -v
+```
 
 ```bash
 git remote add heroku <heroku_git_url>
