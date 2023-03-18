@@ -1,6 +1,6 @@
 # Tuttitracks
 
-This is a web app that allows you to interact with a Spotify account to search for tracks, view saved (liked) tracks, see audio feature information like key, time-signature, tempo etc., and create and edit playlists that can be uploaded to a Spotify account.
+This is a web app that interact with a user's Spotify account to search for tracks, view saved (liked) tracks, see audio feature information like key, time-signature, tempo etc., and create and edit playlists that can be uploaded to a Spotify account.
 
 Note: in order to use this web app a Spotify account is required: either free or paid.
 
