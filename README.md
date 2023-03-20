@@ -7,7 +7,7 @@ A web app that interacts with a user's Spotify account
 - view audio feature information like key, time-signature, tempo etc. (that the standard Spotify app does not share)
 - create and edit playlists that can be saved locally and uploaded and synced to your Spotify account.
 
-Note: in order to use this web app a Spotify account is required: either free or paid.
+NOte: A Spotify Account (either free or paid) is required in order to use this web app.
 
 ---
 
