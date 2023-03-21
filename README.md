@@ -2,9 +2,23 @@
 
 A web app that interacts with a user's Spotify account
 
-- search for tracks (By name, genre, artist, liked, recently played, musical feature, etc.)
-- view and search by audio feature information like tempo, time-signature, key etc. (info the standard Spotify app does not share)
+- search for and view tracks (By album name, track name, artist name, genre, and year)
+- view audio feature information (info the standard Spotify app does not share):
+  - average tempo
+  - beats per measure
+  - key signature
+  - popularity
+  - acousticness
+  - dancability
+  - speechiness
+  - intrumentalness
+  - liveness
+  - energy
+  - loudness
+  - valence
 - create and edit playlists that can be saved locally and uploaded and synced to your Spotify account
+- view liked tracks
+- view top played tracks
 - play tracks and playlists
 
 NOte: A Spotify Account (either free or paid) is required in order to use this web app.
