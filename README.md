@@ -3,7 +3,7 @@
 A web app that interacts with a user's Spotify account
 
 - search for and view tracks (By album name, track name, artist name, genre, and year)
-- view audio feature information (info the standard Spotify app does not share):
+- view audio feature information (info the standard Spotify app does not provide):
   - average tempo
   - beats per measure
   - key signature
