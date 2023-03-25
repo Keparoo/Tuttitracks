@@ -6,11 +6,11 @@ A web app that interacts with a user's Spotify account
 - View audio feature information (info the standard Spotify app does not provide):
   - Average tempo
   - Beats per measure
-  - key signature
+  - Key signature
   - Popularity
   - Acousticness
   - Dancability
-  - speechiness
+  - Speechiness
   - Intrumentalness
   - Liveness
   - Energy
