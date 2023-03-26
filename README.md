@@ -9,7 +9,7 @@ A web app that interacts with a user's Spotify account
   - Key signature
   - Popularity
   - Acousticness
-  - Dancability
+  - Danceability
   - Speechiness
   - Intrumentalness
   - Liveness
