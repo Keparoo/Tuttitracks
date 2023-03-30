@@ -4,6 +4,7 @@ A web app that interacts with a user's Spotify account
 
 - Search for and view tracks (By album name, track name, artist name, genre, and year)
 - View audio feature information (Track information that the standard Spotify app does not provide):
+
   - Average tempo (in BPM, beats per minute)
   - Beats per measure
   - Key signature
@@ -16,6 +17,7 @@ A web app that interacts with a user's Spotify account
   - Energy
   - Loudness
   - Valence
+
 - Create and edit playlists that can be saved locally and uploaded and synced to your Spotify account
 - View liked tracks
 - View top played tracks
