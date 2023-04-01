@@ -44,7 +44,7 @@ NOte: A Spotify Account (either free or paid) is required in order to use this w
 
 ## Usage
 
-In order to user the app, the user must sign up for a Spotify account. Any account, free or premium will work.  
+In order to use the app, the user must have a Spotify account. Any account, free or premium will work.  
 Currently the app access to Spotify's backend is in development mode. Users of the app must be added by myself to the approved list of email addresses (with a Spotify account) to be able to query Spotify's database. Until Spotify grants general usage access to this app, anyone wanting to use the web app must contact me with the email address that is connected to a user's Spotify account so that I can manually add them. This will hopefully be resolved to general use soon.
 
 ### User Interface
