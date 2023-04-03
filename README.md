@@ -55,11 +55,11 @@ There are 4 main pages:
 
 The search page will allow you to enter artist, track name, album name, genre, year, or any combination to search for tracks.  
 The search will redirect you to a page that will show you the search criteria you entered and display a list of matching tracks.  
-30 second clips of the tracks can be played
-Mousing over the tracks will display the audio features for the track  
-Each track has an add button that will add the track to playlist
-Playlist tracks may be dragged and dropped to change their order  
-The playlist can be named and given a description
+30 second clips of the tracks can be played.
+Mousing over the tracks will display the audio features for the track .
+Each track has an add button that will add the track to playlist.
+Playlist tracks may be dragged and dropped to change their order.  
+The playlist can be named and given a description.
 
 #### Liked Tracks
 
