@@ -285,4 +285,4 @@ heroku ps:scale web=1
 
 ### Author
 
-Kep Kaeppeler is the author of this project, test suite, and all documentation © 2023
+Kep Kaeppeler is the author of this project, test suite, and all documentation. © 2023
