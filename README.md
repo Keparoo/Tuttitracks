@@ -86,7 +86,7 @@ The playlist can be named and given a description.
 The playlist page displays a list of all Spotify playlists displayed in pages of 25 that can be paged through.  
 Clicking the show button next to each Spotify playlist will display the tracks of the playlist in a playable iframe.  
 A list of the playlists created using this app are also displayed.
-Clicking Show will display a list of tracks from which 30 second clips can be played.  
+Clicking **Show** will display a list of tracks from which 30 second clips can be played.  
 Clicking the Send button will upload the playlist to Spotify.  
 Clicking the Sync button will sync any track changes with the playlist on the Spotify server.
 
