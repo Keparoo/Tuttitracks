@@ -19,8 +19,8 @@ A web app that interacts with a user's Spotify account.
   - Valence
 
 - Create and edit playlists that can be saved locally and uploaded and synced to your Spotify account
-- View liked tracks
-- View top played tracks
+- View the liked tracks
+- View the top played tracks
 - Play tracks and playlists
 
 NOte: A Spotify Account (either free or paid) is required in order to use this web app.
