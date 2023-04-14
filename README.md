@@ -6,7 +6,7 @@ A web app that allows a user to interact with their Spotify account, search for 
 - View audio feature information (Track information that the standard Spotify app does not provide):
 
   - Average tempo (in BPM, beats per minute)
-  - Beats per measure
+  - Beats per measure (aka Time Signature)
   - Key signature
   - Popularity
   - Acousticness
