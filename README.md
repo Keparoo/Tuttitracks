@@ -23,7 +23,7 @@ A web app that allows a user to interact with their Spotify account, search for 
 - View the top played tracks
 - Play tracks and playlists
 
-NOte: A Spotify Account (either free or paid) is required in order to use this web app.
+Note: A Spotify Account (either free or paid) is required in order to use this web app.
 
 ---
 
