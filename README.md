@@ -2,7 +2,7 @@
 
 A web app that allows a user to interact with their Spotify account, search for tracks and track info, and create playlists.
 
-- Search for and view tracks (By album name, track name, artist name, genre, and year)
+- Search for and view song tracks (By album name, track name, artist name, genre, and year)
 - View audio track feature information (Track information that the standard Spotify app does not provide):
 
   - Average Tempo (in BPM, beats per minute)
