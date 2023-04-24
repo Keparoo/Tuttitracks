@@ -27,7 +27,7 @@ Note: A Spotify Account (either a free or a premium account) is required in orde
 
 ---
 
-## Features
+## App Features
 
 - Postgresql Database of users, tracks, features, playlists, artists, albums, and genres
 - Implemented using Flask 2.2.3
