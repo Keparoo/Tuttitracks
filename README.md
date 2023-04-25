@@ -23,7 +23,7 @@ A web app that allows a user to interact with their Spotify account, search for 
 - View the top played tracks
 - Play tracks and playlists
 
-Note: A Spotify Account (either a free or a premium account) is required in order to use the Tuttitracks web app.
+Note: A Spotify Account (either a free or a premium account) is required in order to use the Tuttitracks web app..
 
 ---
 
