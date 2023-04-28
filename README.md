@@ -2,6 +2,8 @@
 
 A web app that allows a user to interact with their Spotify account, search for tracks and track info, and create playlists.
 
+## App Functionality
+
 - Search for and view song tracks (By album name, track name, artist name, genre, and year)
 - View audio track feature information (Track information that the standard Spotify app does not provide)
 
@@ -27,7 +29,7 @@ Note: A Spotify Account (either a free or a premium account) is required in orde
 
 ---
 
-## App Features
+## App Implementation Features
 
 - Postgresql Database of users, tracks, features, playlists, artists, albums, and genres
 - Implemented using Flask 2.2.3
