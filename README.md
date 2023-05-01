@@ -5,7 +5,7 @@ A web app that allows a user to interact with their Spotify account, search for 
 ## App Features
 
 - Search for and view song tracks (By album name, track name, artist name, genre, and year)
-- View audio track feature information (Track information that the standard Spotify app does not provide)
+- View audio track feature information (Track information that the standard Spotify app does not provide) including:
 
   - Average Tempo (in BPM, beats per minute)
   - Beats per Measure (aka Time Signature)
