@@ -20,9 +20,10 @@ A web app that allows a user to interact with their Spotify account, search for 
   - Loudness
   - Valence
 
-- Create and edit playlists that can be saved on the app's server and uploaded and synced to your Spotify account.
-- View the liked tracks
-- View the top played tracks
+- Create and edit playlists
+- Playlists can be created and edited locally and uploaded and synced to your Spotify account.
+- View a user's liked tracks
+- View a user's top played tracks
 - Play tracks and playlists
 
 Note: A Spotify Account (either a free or a premium account) is required in order to use the Tuttitracks web app.
