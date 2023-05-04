@@ -20,7 +20,7 @@ A web app that allows a user to interact with their Spotify account, search for 
   - Loudness
   - Valence
 
-- Create and edit playlists
+- Create and edit Spotify playlists
 - Playlists can be created and edited locally and uploaded and synced to your Spotify account.
 - Playlists can be downloaded from a Spotify account, played, and edited and then synched to the Spotify account.
 - View a user's liked tracks
