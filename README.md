@@ -33,12 +33,12 @@ Note: A Spotify Account (either a free or a premium account) is required in orde
 
 ## App Implementation Details
 
-- Postgresql Database of users, tracks, features, playlists, artists, albums, and genres
+- PostgreSQL Database of users, tracks, features, playlists, artists, albums, and genres
 - Implemented using Flask 2.2.3
 - Implemented using Python 3.11.2
 - The front-end is implemented with Ajax and JQuery
 - RESTful API to interact with the database
-- The app implements OAuth for to authorize with Spotify
+- The app implements OAuth for authorization with Spotify
 - Unit-testing test suite
 - Deployed to Heroku
 
