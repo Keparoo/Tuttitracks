@@ -37,7 +37,7 @@ Note: A Spotify Account (either a free or a premium account) is required in orde
 - Implemented using Flask 2.2.3
 - Implemented using Python 3.11.2
 - The front-end is implemented with Ajax and JQuery
-- RESTful API to interact with the database
+- RESTful database API
 - The app implements OAuth for authorization with Spotify
 - Unit-testing test suite
 - Deployed to Heroku
