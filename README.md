@@ -8,7 +8,7 @@ A web app that allows a user to interact with their Spotify account, search for 
 - View audio track feature information (Track information that the standard Spotify app does not provide), including:
 
   - Average Tempo (in BPM, beats per minute)
-  - Beats per Measure (aka Time Signature)
+  - Beats per Measure (Time Signature)
   - Key Signature
   - Popularity
   - Acousticness
