@@ -22,7 +22,7 @@ A web app that allows a user to interact with their Spotify account, search for 
 
 - Create and edit Spotify playlists
 - Playlists can be created and edited locally and uploaded and synched to your Spotify account.
-- Playlists can be downloaded from a Spotify account, played, and edited and then synched to the Spotify account.
+- Playlists can be downloaded from a Spotify account, edited, and played and then synched to the Spotify account.
 - View the user's liked audio tracks
 - View the user's top played audio tracks
 - Play audio tracks and playlists
