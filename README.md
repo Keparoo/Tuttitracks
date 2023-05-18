@@ -1,6 +1,6 @@
 # Tuttitracks
 
-A web app that allows a user to interact with their Spotify account, search for tracks and track info, and create playlists.
+A web application that allows a user to interact with their Spotify account, search for tracks and track info, and create playlists.
 
 ## App Features
 
