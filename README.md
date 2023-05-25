@@ -7,7 +7,7 @@ A web application that allows a user to interact with their Spotify account, sea
 - Search for and view audio tracks (By album name, track name, artist name, genre, and year)
 - View audio-track-feature information (Track metadata that the Spotify app does not make available publicly), including:
 
-  - Average Tempo (in BPM, beats per minute)
+  - Average Tempo (metronome marking in BPM, beats per minute)
   - Beats per Measure (Time Signature)
   - Key Signature
   - Popularity
