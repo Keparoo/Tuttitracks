@@ -4,7 +4,7 @@ A web application that allows a user to interact with their Spotify account, sea
 
 ## App Features
 
-- Search for and view audio tracks (By album name, track name, artist name, genre, and year)
+- Search for and view audio tracks (By album name, track name, artist name, genre, or year)
 - View audio-track-feature information (Track metadata in the Spotify database that the Spotify app does not make available to the user), including:
 
   - Average Tempo (metronome marking in BPM, beats per minute)
