@@ -174,13 +174,13 @@ createdb <database_name>
 - To run the Postgres service on Linux:
 
 ```bash
-sudo service Postgres start
+sudo service postgresql start
 ```
 
 - To stop the Postgres service on Linux:
 
 ```bash
-sudo service Postgres stop
+sudo service postgresql stop
 ```
 
 ## Running the Server
